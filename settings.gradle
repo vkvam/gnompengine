@@ -1,1 +1,2 @@
-include 'desktop', 'android', 'ios', 'html', 'core', 'engine'
+rootProject.name = 'gnompengine'
+include 'engine'
