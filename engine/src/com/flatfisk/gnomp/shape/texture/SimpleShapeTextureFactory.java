@@ -8,8 +8,13 @@ import com.badlogic.gdx.math.DelaunayTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
+<<<<<<< HEAD
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
 import com.flatfisk.gnomp.math.Translation;
+=======
+import com.flatfisk.gnomp.components.StructureNode;
+import com.flatfisk.gnomp.systems.NodeSystem;
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 import com.flatfisk.gnomp.shape.CircleShape;
 import com.flatfisk.gnomp.shape.PolygonShape;
 import com.flatfisk.gnomp.shape.RectangularLineShape;
@@ -24,7 +29,11 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
     /**
      * Created by a-004213 on 27/04/14.
      */
+<<<<<<< HEAD
     public static class SimpleShapeTexture extends Pixmap implements ShapeTexture {
+=======
+    public static class SimpleShapeTexture extends Pixmap implements NodeSystem.IterateDTO, ShapeTexture {
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
         public Vector2 offset;
 
         public SimpleShapeTexture(TextureCoordinates.BoundingRectangle envelope) {
@@ -32,8 +41,13 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
+<<<<<<< HEAD
         public void draw(StructureRelative structure,Translation orientation) {
             Vector2 pos = orientation.position;
+=======
+        public void draw(StructureNode structure) {
+            Vector2 pos = structure.worldTranslation.position;
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
             Shape shape = structure.shape;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
@@ -55,18 +69,30 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
                 if (structure.shape.fillColor != null) {
                     setColor(structure.shape.fillColor);
                     RectangularLineShape ls = (RectangularLineShape) shape;
+<<<<<<< HEAD
                     ls.getPolygon().rotate(orientation.angle);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.angle);
+=======
+                    ls.getPolygon().rotate(structure.worldTranslation.angle);
+                    float[] vertices = ls.getPolygon().getTransformedVertices();
+                    ls.getPolygon().rotate(-structure.worldTranslation.angle);
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.shape.lineColor != null) {
                     setColor(structure.shape.lineColor);
                     RectangularLineShape ls = (RectangularLineShape) shape;
+<<<<<<< HEAD
                     ls.getPolygon().rotate(orientation.angle);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.angle);
+=======
+                    ls.getPolygon().rotate(structure.worldTranslation.angle);
+                    float[] vertices = ls.getPolygon().getTransformedVertices();
+                    ls.getPolygon().rotate(-structure.worldTranslation.angle);
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 
                     drawPolygon(vertices, centerX, centerY);
                 }
@@ -74,18 +100,30 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
                 if (structure.shape.fillColor != null) {
                     setColor(structure.shape.fillColor);
                     PolygonShape ls = (PolygonShape) shape;
+<<<<<<< HEAD
                     ls.getPolygon().rotate(orientation.angle);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.angle);
+=======
+                    ls.getPolygon().rotate(structure.worldTranslation.angle);
+                    float[] vertices = ls.getPolygon().getTransformedVertices();
+                    ls.getPolygon().rotate(-structure.worldTranslation.angle);
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.shape.lineColor != null) {
                     setColor(structure.shape.lineColor);
                     PolygonShape ls = (PolygonShape) shape;
+<<<<<<< HEAD
                     ls.getPolygon().rotate(orientation.angle);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.angle);
+=======
+                    ls.getPolygon().rotate(structure.worldTranslation.angle);
+                    float[] vertices = ls.getPolygon().getTransformedVertices();
+                    ls.getPolygon().rotate(-structure.worldTranslation.angle);
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 
                     drawPolygon(vertices, centerX, centerY);
                 }
@@ -136,6 +174,9 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
         public Vector2 getOffset() {
             return offset;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
     }
 }

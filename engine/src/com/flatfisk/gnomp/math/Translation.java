@@ -2,7 +2,10 @@ package com.flatfisk.gnomp.math;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+<<<<<<< HEAD
 import com.flatfisk.gnomp.utils.Pools;
+=======
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
 import com.flatfisk.gnomp.PhysicsConstants;
 
 public class Translation {
@@ -23,6 +26,7 @@ public class Translation {
         this.angle = angle;
     }
 
+<<<<<<< HEAD
     public Translation subtractCopy(Translation subtractor){
         Translation copy = this.getCopy();
 
@@ -49,6 +53,19 @@ public class Translation {
 
     public void set(Vector2 position, float angle) {
         this.position = position;
+=======
+    public Translation getCopy() {
+        return new Translation(position.cpy(), angle);
+    }
+
+    public void setCopy(Translation t) {
+        this.position = t.position.cpy();
+        this.angle = t.angle;
+    }
+
+    public void set(Vector2 vector, float angle) {
+        this.position = vector;
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
         this.angle = angle;
     }
 

@@ -4,7 +4,11 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Pool;
 
+<<<<<<< HEAD
 public abstract class Node implements Component, Pool.Poolable{
+=======
+public abstract class Node implements Component, Pool.Poolable {
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
     public Entity[] children;
     public Entity owner;
     private static int initialSize = 0;
@@ -24,7 +28,11 @@ public abstract class Node implements Component, Pool.Poolable{
      */
     public boolean addChild(Entity entity) {
 
+<<<<<<< HEAD
         if (!hasChild(entity) && !entity.equals(this.parent)) {
+=======
+        if (!hasChild(entity)) {
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
             add(entity);
             Node a = entity.getComponent(this.childType);
             a.parent = owner;
@@ -40,7 +48,10 @@ public abstract class Node implements Component, Pool.Poolable{
         newItems[size]=id;
         children =newItems;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> fc14ad1272c990219874203be172ce562fabaf5a
     private boolean hasChild(Entity entity){
         boolean result = false;
         for(Entity child : children){
