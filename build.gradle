@@ -1,5 +1,5 @@
 apply plugin: 'maven'
-group = 'com.github.vkvam'
+group = 'com.flatfisk.gnomp'
 
 buildscript {
     repositories {
