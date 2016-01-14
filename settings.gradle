@@ -1,2 +1,3 @@
 include 'engine'
 include 'desktop'
+include 'html'
