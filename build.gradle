@@ -21,6 +21,7 @@ allprojects {
     ext {
         gdxVersion = '1.7.1'
         ashleyVersion = '1.7.0'
+        box2DLightsVersion = '1.4'
     }
 
     repositories {
@@ -31,6 +32,8 @@ allprojects {
 }
 
 project(":html") {
+    apply plugin: "java"
+
     dependencies {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
@@ -42,7 +45,6 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
-        compile "com.github.vkvam.gnompengine:engine:$gnompEngineVersion:sources"
     }
 }
 
