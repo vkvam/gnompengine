@@ -30,28 +30,27 @@ allprojects {
     }
 }
 
-subprojects {
 
-        apply plugin: "java"
+project(":engine") {
+    apply plugin: "java"
 
-        dependencies {
-            compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-            compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-            compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-            compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
-        }
+    dependencies {
+        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+    }
 
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
-        artifacts {
-            archives sourcesJar
-        }
+    artifacts {
+        archives sourcesJar
+    }
 
 
-    
 }
 
 tasks.eclipse.doLast {
