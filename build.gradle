@@ -1,14 +1,6 @@
 apply plugin: 'maven'
 group = 'com.github.vkvam'
 
-ext {
-    gdxVersion = '1.7.1'
-    roboVMVersion = '1.9.0'
-    box2DLightsVersion = '1.4'
-    ashleyVersion = '1.7.0'
-    aiVersion = '1.6.0'
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -26,7 +18,10 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-
+    ext {
+        gdxVersion = '1.7.1'
+        ashleyVersion = '1.7.0'
+    }
 
     repositories {
         mavenCentral()
@@ -35,28 +30,28 @@ allprojects {
     }
 }
 
+subprojects {
+    project(":engine") {
+        apply plugin: "java"
 
-project(":engine") {
-    apply plugin: "java"
+        dependencies {
+            compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
+            compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+            compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+            compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        }
 
-    dependencies {
-        compile "com.badlogicgames.ashley:ashley:$ashleyVersion"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
+        }
+
+
     }
-
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-
-    artifacts {
-        archives sourcesJar
-    }
-
-
 }
 
 tasks.eclipse.doLast {
