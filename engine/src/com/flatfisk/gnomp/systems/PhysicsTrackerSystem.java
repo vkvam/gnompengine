@@ -53,7 +53,7 @@ public class PhysicsTrackerSystem extends IteratingSystem implements Application
                 PhysicsBody parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;
 
-                Spatial t = orientation.worldSpatial.getCopy().toBox2D();
+                Spatial t = orientation.world.getCopy().toBox2D();
                 Transform t2 = b.getTransform();
 
                 float xDiff=(t.vector.x-(t2.getPosition().x))/f;

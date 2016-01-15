@@ -69,7 +69,7 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
         StructureRelative structure = structureRelativeComponentMapper.get(entity);
 
         // Use vector relativeType to constructor.
-        Spatial spatial = childOrientation.worldSpatial.subtractedCopy(constructorOrientation.worldSpatial);
+        Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         LOG.info("Inserting child at vector:"+ spatial.vector);
 
         if (structure.shape != null) {

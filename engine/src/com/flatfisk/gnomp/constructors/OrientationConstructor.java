@@ -19,7 +19,7 @@ public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelati
     public SpatialRelative parentAdded(Entity entity,
                                    SpatialRelative rootOrientation,
                                    SpatialRelative constructorOrientation) {
-        constructorOrientation.worldSpatial.setCopy(rootOrientation.localSpatial);
+        constructorOrientation.world.setCopy(rootOrientation.local);
         return rootOrientation;
     }
 
@@ -31,9 +31,9 @@ public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelati
                                      SpatialRelative childOrientation,
                                      SpatialRelative constructorDTO) {
 
-        Spatial parentWorld = parentOrientation.worldSpatial;
-        Spatial childLocal = childOrientation.localSpatial;
-        Spatial childWorld = childOrientation.worldSpatial;
+        Spatial parentWorld = parentOrientation.world;
+        Spatial childLocal = childOrientation.local;
+        Spatial childWorld = childOrientation.world;
 
         boolean transferAngle = childOrientation.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
 

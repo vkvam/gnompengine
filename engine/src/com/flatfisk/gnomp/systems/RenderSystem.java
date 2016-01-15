@@ -76,7 +76,7 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
 
             Texture texture = renderable.texture;
             Vector2 offset = renderable.offset;
-            Spatial spatial = orientation.worldSpatial;
+            Spatial spatial = orientation.world;
             float x = spatial.vector.x, y= spatial.vector.y;
             int tW = texture.getWidth();
             int tH = texture.getHeight();

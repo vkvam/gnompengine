@@ -37,7 +37,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     public PhysicsBodyDef parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructor) {
         PhysicsBodyDef bodyContainer = constructorMapper.get(entity);
 
-        Spatial t = constructor.worldSpatial.getCopy().toBox2D();
+        Spatial t = constructor.world.getCopy().toBox2D();
 
         LOG.info("Inserting parent at vector:"+t.vector);
 
@@ -55,7 +55,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     public PhysicsBodyDef insertedChild(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, PhysicsBodyDef bodyDefContainer) {
 
         // Use vector relativeType to constructor.
-        Spatial spatial = childOrientation.worldSpatial.subtractedCopy(constructorOrientation.worldSpatial);
+        Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         LOG.info("Inserting child at vector:"+ spatial.vector);
 
         bodyDefContainer.addFixtures(structureMapper.get(entity), spatial);

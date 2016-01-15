@@ -57,12 +57,11 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            if(body.positionChanged){
-                SpatialRelative relative = orientationMapper.get(entity);
-                Spatial spatial = relative.worldSpatial.toBox2D();
-                body.body.setTransform(spatial.vector,spatial.rotation);
-                LOG.info("Set transform to:"+spatial.vector.x+","+spatial.vector.y+","+spatial.rotation);
+            if(!body.positionChanged){
                 body.positionChanged = false;
+                SpatialRelative relative = orientationMapper.get(entity);
+                Spatial spatial = relative.world.toBox2D();
+                body.body.setTransform(spatial.vector,spatial.rotation);
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
@@ -71,7 +70,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 }
 
                 SpatialRelative orientation = orientationMapper.get(entity);
-                orientation.worldSpatial = body.getTranslation().getCopy().toWorld();
+                orientation.world = body.getTranslation().getCopy().toWorld();
             }
         }
     }

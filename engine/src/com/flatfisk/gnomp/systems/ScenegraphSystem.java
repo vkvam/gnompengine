@@ -32,7 +32,7 @@ public class ScenegraphSystem extends IteratingSystem {
         ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
         SpatialRelative parentOrientation = orientationRelativeComponentMapper.get(entity);
         for(Entity child : scenegraphNode.children){
-            processChild(child,parentOrientation.worldSpatial);
+            processChild(child,parentOrientation.world);
         }
     }
 
@@ -43,8 +43,8 @@ public class ScenegraphSystem extends IteratingSystem {
         boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
 
         SpatialRelative childOrientation = orientationRelativeComponentMapper.get(entity);
-        Spatial childLocal = childOrientation.localSpatial;
-        Spatial childWorld = childOrientation.worldSpatial;
+        Spatial childLocal = childOrientation.local;
+        Spatial childWorld = childOrientation.world;
 
         childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
         childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
