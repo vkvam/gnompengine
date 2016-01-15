@@ -34,7 +34,7 @@ public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelati
         Spatial childLocal = childOrientation.localSpatial;
         Spatial childWorld = childOrientation.worldSpatial;
 
-        boolean transferAngle = childOrientation.inheritFromParentType.equals(SpatialRelative.TranslationInheritType.POSITION_ANGLE);
+        boolean transferAngle = childOrientation.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
 
         childWorld.setCopy(parentWorld.vector, transferAngle ? parentWorld.rotation : 0);
         childWorld.addRotated(childLocal.vector,childWorld.rotation);

@@ -39,7 +39,7 @@ public class ScenegraphSystem extends IteratingSystem {
         ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
         SpatialRelative orientationRelative = orientationRelativeComponentMapper.get(entity);
 
-        boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.TranslationInheritType.POSITION_ANGLE);
+        boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
 
         SpatialRelative childOrientation = orientationRelativeComponentMapper.get(entity);
         Spatial childLocal = childOrientation.localSpatial;

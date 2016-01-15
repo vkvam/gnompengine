@@ -13,7 +13,7 @@ public class SpatialRelative extends Node implements RelativeComponent {
     public Relative relativeType = Relative.CHILD;
     public Spatial localSpatial;
     public Spatial worldSpatial = Pools.obtainSpatial();
-    public TranslationInheritType inheritFromParentType = TranslationInheritType.POSITION_ANGLE;
+    public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
     protected SpatialRelative() {
         super(SpatialRelative.class);
     }
@@ -32,7 +32,7 @@ public class SpatialRelative extends Node implements RelativeComponent {
         return relativeType;
     }
 
-    public enum TranslationInheritType{
+    public enum SpatialInheritType {
         POSITION,
         POSITION_ANGLE
     }
