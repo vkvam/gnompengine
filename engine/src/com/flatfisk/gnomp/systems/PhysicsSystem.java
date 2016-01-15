@@ -3,7 +3,6 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -59,7 +58,11 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
         if(body.body!=null) {
             if(body.positionChanged){
-                body.body.setTransform(new Vector2(1000,0),0);
+                SpatialRelative relative = orientationMapper.get(entity);
+                Spatial spatial = relative.worldSpatial.toBox2D();
+                body.body.setTransform(spatial.vector,spatial.rotation);
+                LOG.info("Set transform to:"+spatial.vector.x+","+spatial.vector.y+","+spatial.rotation);
+                body.positionChanged = false;
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
