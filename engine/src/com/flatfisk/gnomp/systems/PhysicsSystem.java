@@ -63,7 +63,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 for(Component component:entity.getComponents()) {
                     entity1.add(component);
                 }
-                entity.removeAll();
+
                 getEngine().removeEntity(entity);
                 getEngine().addEntity(entity1);
                 /*
