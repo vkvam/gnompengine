@@ -57,7 +57,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            if(!body.positionChanged){
+            if(body.positionChanged){
                 body.positionChanged = false;
                 SpatialRelative relative = orientationMapper.get(entity);
                 Spatial spatial = relative.world.toBox2D();
