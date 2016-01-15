@@ -9,6 +9,7 @@ import com.flatfisk.gnomp.math.Spatial;
 
 public class PhysicsBody implements  Component, Pool.Poolable {
     public Body body;
+    public boolean positionChanged = false;
 
     public PhysicsBody() {
     }

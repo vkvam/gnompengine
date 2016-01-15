@@ -57,13 +57,20 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            Velocity velocity = velocityMapper.get(entity);
-            if (velocity != null) {
-                velocity.velocity = body.getVelocity().toWorld().getCopy();
-            }
+            if(body.positionChanged){
+                box2DWorld.destroyBody(body.body);
+                entityAdded(entity);
+                body.positionChanged = false;
+            }else {
+                Velocity velocity = velocityMapper.get(entity);
 
-            SpatialRelative orientation = orientationMapper.get(entity);
-            orientation.worldSpatial = body.getTranslation().getCopy().toWorld();
+                if (velocity != null) {
+                    velocity.velocity = body.getVelocity().toWorld().getCopy();
+                }
+
+                SpatialRelative orientation = orientationMapper.get(entity);
+                orientation.worldSpatial = body.getTranslation().getCopy().toWorld();
+            }
         }
     }
 

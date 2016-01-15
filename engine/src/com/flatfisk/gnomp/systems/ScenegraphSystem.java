@@ -49,7 +49,7 @@ public class ScenegraphSystem extends IteratingSystem {
         childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
         childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
         childWorld.rotation += childLocal.rotation;
-        
+
         for(Entity child : scenegraphNode.children){
             processChild(child, childWorld);
         }
