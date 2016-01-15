@@ -61,9 +61,9 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 box2DWorld.destroyBody(body.body);
                 body.body.setUserData(null);
                 body.body = null;
-
-                entityAdded(entity);
                 body.positionChanged = false;
+                getEngine().removeEntity(entity);
+                getEngine().addEntity(entity);
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
