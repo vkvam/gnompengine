@@ -63,7 +63,12 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 body.body = null;
                 body.positionChanged = false;
                 getEngine().removeEntity(entity);
-                getEngine().addEntity(entity);
+
+                Entity entity1 = new Entity();
+                for(Component component:entity.getComponents()) {
+                    entity1.add(component);
+                    getEngine().addEntity(entity1);
+                }
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
