@@ -11,7 +11,7 @@ import com.flatfisk.gnomp.utils.Pools;
  */
 public class SpatialRelative extends Node implements RelativeComponent {
     public Relative relativeType = Relative.CHILD;
-    public Spatial local = Pools.obtainSpatial();
+    public Spatial local;
     public Spatial world = Pools.obtainSpatial();
     public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
     protected SpatialRelative() {
