@@ -5,11 +5,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
 import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
@@ -33,31 +34,31 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     }
 
     @Override
-    public PhysicsBodyDef parentAdded(Entity entity, OrientationRelative rootOrientation, OrientationRelative constructor) {
+    public PhysicsBodyDef parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructor) {
         PhysicsBodyDef bodyContainer = constructorMapper.get(entity);
 
-        Translation t = constructor.worldTranslation.getCopy().toBox2D();
+        Spatial t = constructor.worldSpatial.getCopy().toBox2D();
 
-        LOG.info("Inserting parent at position:"+t.position);
+        LOG.info("Inserting parent at vector:"+t.vector);
 
-        bodyContainer.bodyDef.position.set(t.position);
-        bodyContainer.bodyDef.angle = t.angle;
+        bodyContainer.bodyDef.position.set(t.vector);
+        bodyContainer.bodyDef.angle = t.rotation;
 
         // If the constructor has fixtures, they should be drawn at origin.
-        Translation fixtureOffset = new Translation();
+        Spatial fixtureOffset = Pools.obtainSpatial();
         bodyContainer.addFixtures(structureMapper.get(entity),fixtureOffset);
 
         return bodyContainer;
     }
 
     @Override
-    public PhysicsBodyDef insertedChild(Entity entity, OrientationRelative rootOrientation, OrientationRelative constructorOrientation, OrientationRelative parentOrientation, OrientationRelative childOrientation, PhysicsBodyDef bodyDefContainer) {
+    public PhysicsBodyDef insertedChild(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, PhysicsBodyDef bodyDefContainer) {
 
-        // Use position relativeType to constructor.
-        Translation translation = childOrientation.worldTranslation.subtractCopy(constructorOrientation.worldTranslation);
-        LOG.info("Inserting child at position:"+translation.position);
+        // Use vector relativeType to constructor.
+        Spatial spatial = childOrientation.worldSpatial.subtractedCopy(constructorOrientation.worldSpatial);
+        LOG.info("Inserting child at vector:"+ spatial.vector);
 
-        bodyDefContainer.addFixtures(structureMapper.get(entity), translation);
+        bodyDefContainer.addFixtures(structureMapper.get(entity), spatial);
 
         return bodyDefContainer;
     }

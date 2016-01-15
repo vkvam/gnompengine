@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.flatfisk.gnomp.math.GeometryUtils;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.PhysicsConstants;
 
@@ -102,13 +102,13 @@ public class PolygonShape extends Shape {
     }
 
     @Override
-    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Translation translation) {
-        Gdx.app.log(getClass().getName(), translation.toString());
-        setRotation(translation.angle);
+    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Spatial spatial) {
+        Gdx.app.log(getClass().getName(), spatial.toString());
+        setRotation(spatial.rotation);
         float[] v = this.polygon.getTransformedVertices();
-        setRotation(-translation.angle);
-        float centerX = translation.position.x;
-        float centerY = translation.position.y;
+        setRotation(-spatial.rotation);
+        float centerX = spatial.vector.x;
+        float centerY = spatial.vector.y;
         return getTextureCoordinatesFromVertices(textureCoordinates, v, centerX, centerY);
     }
 

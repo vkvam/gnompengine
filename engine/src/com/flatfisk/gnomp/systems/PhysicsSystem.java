@@ -11,16 +11,16 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.Velocity;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 
 public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBodyDef> physicsBodyDefMapper;
     private ComponentMapper<PhysicsBody> physicsBodyMapper;
-    private ComponentMapper<OrientationRelative> orientationMapper;
+    private ComponentMapper<SpatialRelative> orientationMapper;
     private ComponentMapper<Velocity> velocityMapper;
     private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
 
@@ -41,7 +41,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         super.addedToEngine(engine);
         physicsBodyDefMapper = ComponentMapper.getFor(PhysicsBodyDef.class);
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.class);
-        orientationMapper = ComponentMapper.getFor(OrientationRelative.class);
+        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(ScenegraphNode.class);
     }
@@ -62,8 +62,8 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 velocity.velocity = body.getVelocity().toWorld().getCopy();
             }
 
-            OrientationRelative orientation = orientationMapper.get(entity);
-            orientation.worldTranslation = body.getTranslation().getCopy().toWorld();
+            SpatialRelative orientation = orientationMapper.get(entity);
+            orientation.worldSpatial = body.getTranslation().getCopy().toWorld();
         }
     }
 
@@ -82,9 +82,9 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
             bodyContainer.body.setUserData(entity);
 
             if(velocity!=null && velocity.velocity != null){
-                Translation nodeVelocityBox2D = velocity.velocity.getCopy().toBox2D();
-                bodyContainer.body.setLinearVelocity(nodeVelocityBox2D.position);
-                bodyContainer.body.setAngularVelocity(nodeVelocityBox2D.angle);
+                Spatial nodeVelocityBox2D = velocity.velocity.getCopy().toBox2D();
+                bodyContainer.body.setLinearVelocity(nodeVelocityBox2D.vector);
+                bodyContainer.body.setAngularVelocity(nodeVelocityBox2D.rotation);
             }
     }
 

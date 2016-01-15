@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.CircleShape;
 import com.flatfisk.gnomp.shape.PolygonShape;
 import com.flatfisk.gnomp.shape.RectangularLineShape;
@@ -32,12 +32,12 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
-        public void draw(StructureRelative structure,Translation orientation) {
-            Vector2 pos = orientation.position;
+        public void draw(StructureRelative structure,Spatial orientation) {
+            Vector2 pos = orientation.vector;
             Shape shape = structure.shape;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
-            Gdx.app.log("Draw position:", centerX + "," + centerY);
+            Gdx.app.log("Draw vector:", centerX + "," + centerY);
 
             if (shape instanceof CircleShape) {
                 if (structure.shape.fillColor != null) {
@@ -55,18 +55,18 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
                 if (structure.shape.fillColor != null) {
                     setColor(structure.shape.fillColor);
                     RectangularLineShape ls = (RectangularLineShape) shape;
-                    ls.getPolygon().rotate(orientation.angle);
+                    ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.angle);
+                    ls.getPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.shape.lineColor != null) {
                     setColor(structure.shape.lineColor);
                     RectangularLineShape ls = (RectangularLineShape) shape;
-                    ls.getPolygon().rotate(orientation.angle);
+                    ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.angle);
+                    ls.getPolygon().rotate(-orientation.rotation);
 
                     drawPolygon(vertices, centerX, centerY);
                 }
@@ -74,18 +74,18 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
                 if (structure.shape.fillColor != null) {
                     setColor(structure.shape.fillColor);
                     PolygonShape ls = (PolygonShape) shape;
-                    ls.getPolygon().rotate(orientation.angle);
+                    ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.angle);
+                    ls.getPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.shape.lineColor != null) {
                     setColor(structure.shape.lineColor);
                     PolygonShape ls = (PolygonShape) shape;
-                    ls.getPolygon().rotate(orientation.angle);
+                    ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.angle);
+                    ls.getPolygon().rotate(-orientation.rotation);
 
                     drawPolygon(vertices, centerX, centerY);
                 }

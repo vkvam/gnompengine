@@ -315,14 +315,14 @@ public abstract class GeometryUtils {
     /**
      * Keeps the first described rectangle in the second described rectangle. If the second rectangle is smaller than the first one, the first will be centered on the second one.
      *
-     * @param position the position of the first rectangle
+     * @param position the vector of the first rectangle
      * @param width    the width of the first rectangle
      * @param height   the height of the first rectangle
      * @param x2       the x of the second rectangle
      * @param y2       the y of the second rectangle
      * @param width2   the width of the second rectangle
      * @param height2  the height of the second rectangle
-     * @return the position of the first rectangle
+     * @return the vector of the first rectangle
      */
     public static Vector2 keepWithin(Vector2 position, float width, float height, float x2, float y2, float width2, float height2) {
         if (width2 < width)

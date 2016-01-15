@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Pool;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 
 /**
@@ -48,7 +48,7 @@ public abstract class Shape implements Pool.Poolable {
 
     public abstract FixtureDef[] getFixtureDefinitions(Vector2 offset);
 
-    public abstract TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Translation translation);
+    public abstract TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Spatial spatial);
 
     protected TextureCoordinates getTextureCoordinatesFromVertices(TextureCoordinates textureCoordinates, float[] v, float centerX, float centerY) {
         if (textureCoordinates == null) {

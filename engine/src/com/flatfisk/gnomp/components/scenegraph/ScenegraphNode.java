@@ -1,7 +1,7 @@
 package com.flatfisk.gnomp.components.scenegraph;
 
 import com.flatfisk.gnomp.components.Node;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
@@ -23,7 +23,7 @@ public class ScenegraphNode extends Node {
     }
 
     public static class SideStepper{
-        public Translation worldChanges;
+        public Spatial worldChanges;
         public boolean sideStepped;
     }
 

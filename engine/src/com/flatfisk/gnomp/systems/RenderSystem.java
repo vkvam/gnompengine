@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.constructed.Renderable;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.math.Spatial;
 
 import java.util.Comparator;
 
@@ -27,7 +27,7 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
     private Array<Entity> renderQueue = new Array<Entity>();
 
     public ComponentMapper<Renderable> renderableMapper;
-    public ComponentMapper<OrientationRelative> orientationMapper;
+    public ComponentMapper<SpatialRelative> orientationMapper;
     private Comparator comperator;
     private Family family;
 
@@ -54,7 +54,7 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
     @Override
     public void addedToEngine(Engine engine) {
         renderableMapper = ComponentMapper.getFor(Renderable.class);
-        orientationMapper = ComponentMapper.getFor(OrientationRelative.class);
+        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
     }
 
     public OrthographicCamera getCamera() {
@@ -72,12 +72,12 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
 
         for (Entity e : renderQueue) {
             Renderable renderable = renderableMapper.get(e);
-            OrientationRelative orientation = orientationMapper.get(e);
+            SpatialRelative orientation = orientationMapper.get(e);
 
             Texture texture = renderable.texture;
             Vector2 offset = renderable.offset;
-            Translation translation = orientation.worldTranslation;
-            float x = translation.position.x, y=translation.position.y;
+            Spatial spatial = orientation.worldSpatial;
+            float x = spatial.vector.x, y= spatial.vector.y;
             int tW = texture.getWidth();
             int tH = texture.getHeight();
             float tWDiv2 = ((float) tW) / 2 - offset.x;
@@ -98,7 +98,7 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
                         tH,                                 // float height
                         1,                                  // float scaleX
                         1,                                  // float scaleY
-                        translation.angle,                  // float rotation
+                        spatial.rotation,                  // float rotation
                         0,                                  // int srcX
                         0,                                  // int srcY
                         tW,                                 // int srcHeight

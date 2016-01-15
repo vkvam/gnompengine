@@ -2,44 +2,42 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
-import com.flatfisk.gnomp.utils.Pools;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
-import com.flatfisk.gnomp.components.roots.OrientationDef;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.roots.SpatialDef;
+import com.flatfisk.gnomp.math.Spatial;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class OrientationConstructor extends Constructor<OrientationDef,OrientationRelative,OrientationRelative> {
+public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelative,SpatialRelative> {
     public OrientationConstructor(PooledEngine engine) {
-        super(engine, OrientationDef.class, OrientationRelative.class);
+        super(engine, SpatialDef.class, SpatialRelative.class);
     }
 
     @Override
-    public OrientationRelative parentAdded(Entity entity,
-                                   OrientationRelative rootOrientation,
-                                   OrientationRelative constructorOrientation) {
-        constructorOrientation.worldTranslation.setCopy(rootOrientation.localTranslation);
+    public SpatialRelative parentAdded(Entity entity,
+                                   SpatialRelative rootOrientation,
+                                   SpatialRelative constructorOrientation) {
+        constructorOrientation.worldSpatial.setCopy(rootOrientation.localSpatial);
         return rootOrientation;
     }
 
     @Override
-    public OrientationRelative insertedChild(Entity entity,
-                                     OrientationRelative rootOrientation,
-                                     OrientationRelative constructorOrientation,
-                                     OrientationRelative parentOrientation,
-                                     OrientationRelative childOrientation,
-                                     OrientationRelative constructorDTO) {
+    public SpatialRelative insertedChild(Entity entity,
+                                     SpatialRelative rootOrientation,
+                                     SpatialRelative constructorOrientation,
+                                     SpatialRelative parentOrientation,
+                                     SpatialRelative childOrientation,
+                                     SpatialRelative constructorDTO) {
 
-        Translation parentWorldTranslation = parentOrientation.worldTranslation;
-        Translation childLocalTranslation = childOrientation.localTranslation;
-        Translation childWorldTranslation = childOrientation.worldTranslation;
+        Spatial parentWorld = parentOrientation.worldSpatial;
+        Spatial childLocal = childOrientation.localSpatial;
+        Spatial childWorld = childOrientation.worldSpatial;
 
-        boolean transferAngle = childOrientation.inheritFromParentType.equals(OrientationRelative.TranslationInheritType.POSITION_ANGLE);
+        boolean transferAngle = childOrientation.inheritFromParentType.equals(SpatialRelative.TranslationInheritType.POSITION_ANGLE);
 
-        childWorldTranslation.set(Pools.obtainFromCopy(parentWorldTranslation.position),transferAngle?parentWorldTranslation.angle:0);
-        childWorldTranslation.position.add(Pools.obtainFromCopy(childLocalTranslation.position).rotate(childWorldTranslation.angle));
-        childWorldTranslation.angle += childLocalTranslation.angle;
+        childWorld.setCopy(parentWorld.vector, transferAngle ? parentWorld.rotation : 0);
+        childWorld.addRotated(childLocal.vector,childWorld.rotation);
 
         return constructorOrientation;
     }

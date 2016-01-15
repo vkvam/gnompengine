@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 
 
@@ -58,12 +58,12 @@ public class LineShape extends Shape {
 
 
     @Override
-    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Translation translation) {
-        setRotation(translation.angle);
+    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Spatial spatial) {
+        setRotation(spatial.rotation);
         float[] v = this.polyline.getTransformedVertices();
-        setRotation(-translation.angle);
-        float centerX = translation.position.x;
-        float centerY = translation.position.y;
+        setRotation(-spatial.rotation);
+        float centerX = spatial.vector.x;
+        float centerY = spatial.vector.y;
         return getTextureCoordinatesFromVertices(textureCoordinates, v, centerX, centerY);
     }
 

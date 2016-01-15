@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Pool;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 
 public class PhysicsBody implements  Component, Pool.Poolable {
     public Body body;
@@ -13,11 +13,11 @@ public class PhysicsBody implements  Component, Pool.Poolable {
     public PhysicsBody() {
     }
 
-    public Translation getTranslation(){
-        return new Translation(getPosition(),getAngle());
+    public Spatial getTranslation(){
+        return new Spatial(getPosition(),getAngle());
     }
-    public Translation getVelocity(){
-        return new Translation(getLinearVelocity(),getAngularVelocity());
+    public Spatial getVelocity(){
+        return new Spatial(getLinearVelocity(),getAngularVelocity());
     }
 
     private Vector2 getLinearVelocity(){

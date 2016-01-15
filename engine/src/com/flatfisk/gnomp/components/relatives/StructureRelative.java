@@ -3,7 +3,7 @@ package com.flatfisk.gnomp.components.relatives;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.flatfisk.gnomp.components.Relative;
 import com.flatfisk.gnomp.components.RelativeComponent;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.Shape;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 
@@ -23,10 +23,10 @@ public class StructureRelative implements RelativeComponent {
     public StructureRelative(){
     }
 
-    public FixtureDef[] getFixtureDefinitions(Translation translation) {
+    public FixtureDef[] getFixtureDefinitions(Spatial spatial) {
 
-        shape.setRotation(translation.angle);
-        FixtureDef[] fixtureDefinitions = shape.getFixtureDefinitions(translation.position);
+        shape.setRotation(spatial.rotation);
+        FixtureDef[] fixtureDefinitions = shape.getFixtureDefinitions(spatial.vector);
 
         for(FixtureDef fixtureDef:fixtureDefinitions){
             fixtureDef.density = density;

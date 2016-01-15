@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.*;
 import com.flatfisk.gnomp.shape.LineShape;
 import com.flatfisk.gnomp.shape.texture.ShapeTexture;
@@ -66,12 +66,12 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
         @Override
-        public void draw(StructureRelative structure, Translation translation){
+        public void draw(StructureRelative structure, Spatial spatial){
             if (structure == null || structure.shape == null) {
                 return;
             }
 
-            Shape jShape = createAWTShape(structure,translation);
+            Shape jShape = createAWTShape(structure,spatial);
 
             drawFilled(structure,jShape);
             drawLine(structure, jShape);
@@ -119,15 +119,15 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
 
-        private Shape createAWTShape(StructureRelative structure, Translation translation) {
+        private Shape createAWTShape(StructureRelative structure, Spatial spatial) {
 
-            Vector2 pos = translation.position;//worldTranslation.position;
+            Vector2 pos = spatial.vector;
             Vector2 offsetPosition = new Vector2(
                     pos.x+getWidth()/2-offset.x,
                     pos.y+getHeight()/2-offset.y
             );
 
-            float angle = translation.angle;//worldTranslation.angle;
+            float angle = spatial.rotation;
 
             com.flatfisk.gnomp.shape.Shape geShape = structure.shape;
             Shape awtShape = null;

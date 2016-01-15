@@ -11,7 +11,7 @@ import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.Relative;
 import com.flatfisk.gnomp.components.RelativeComponent;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 
 public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends RelativeComponent, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
@@ -42,6 +42,6 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     }
 
     public void parentAddedFinal(Entity entity, CONSTRUCTION_DTO construction_dto){};
-    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, OrientationRelative rootOrientation, OrientationRelative constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, OrientationRelative rootOrientation, OrientationRelative constructorOrientation, OrientationRelative parentOrientation, OrientationRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
+    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation);
+    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
 }

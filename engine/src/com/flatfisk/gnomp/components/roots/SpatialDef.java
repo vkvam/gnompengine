@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Pool;
 /**
  * Created by a-004213 on 22/04/14.
  */
-public class OrientationDef implements Component, Pool.Poolable{
+public class SpatialDef implements Component, Pool.Poolable{
     @Override
     public void reset() {
 

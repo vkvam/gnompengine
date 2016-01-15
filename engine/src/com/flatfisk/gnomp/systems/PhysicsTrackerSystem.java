@@ -10,22 +10,22 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
-import com.flatfisk.gnomp.math.Translation;
+import com.flatfisk.gnomp.math.Spatial;
 
 public class PhysicsTrackerSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBody> physicsBodyMapper;
     private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
-    private ComponentMapper<OrientationRelative> orientationMapper;
+    private ComponentMapper<SpatialRelative> orientationMapper;
 
     public PhysicsTrackerSystem(int priority) {
         super(Family.all(PhysicsBody.class, ScenegraphNode.class).exclude(ScenegraphRoot.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.class);
-        orientationMapper = ComponentMapper.getFor(OrientationRelative.class);
+        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(ScenegraphNode.class);
 
     }
@@ -46,19 +46,19 @@ public class PhysicsTrackerSystem extends IteratingSystem implements Application
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            OrientationRelative orientation = orientationMapper.get(entity);
+            SpatialRelative orientation = orientationMapper.get(entity);
             ScenegraphNode node = scenegraphNodeComponentMapper.get(entity);
             Entity parent = node.parent;
             if(parent!=null) {
                 PhysicsBody parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;
 
-                Translation t = orientation.worldTranslation.getCopy().toBox2D();
+                Spatial t = orientation.worldSpatial.getCopy().toBox2D();
                 Transform t2 = b.getTransform();
 
-                float xDiff=(t.position.x-(t2.getPosition().x))/f;
-                float yDiff=(t.position.y-(t2.getPosition().y))/f;
-                float aDiff=(t.angle-t2.getRotation())/f;
+                float xDiff=(t.vector.x-(t2.getPosition().x))/f;
+                float yDiff=(t.vector.y-(t2.getPosition().y))/f;
+                float aDiff=(t.rotation -t2.getRotation())/f;
 
                 b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff,yDiff));
                 b.setAngularVelocity(parentBody.body.getAngularVelocity()+aDiff);

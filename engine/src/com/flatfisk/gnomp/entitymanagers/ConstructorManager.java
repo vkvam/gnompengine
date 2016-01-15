@@ -8,14 +8,14 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SortedIntList;
 import com.flatfisk.gnomp.components.Node;
-import com.flatfisk.gnomp.components.relatives.OrientationRelative;
-import com.flatfisk.gnomp.components.roots.OrientationDef;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.roots.SpatialDef;
 import com.flatfisk.gnomp.constructors.Constructor;
 
 public class ConstructorManager implements EntityListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public ComponentMapper<OrientationRelative> orientationMapper;
+    public ComponentMapper<SpatialRelative> orientationMapper;
     public ComponentMapper<Node> nodeMapper;
 
     public SortedIntList<Constructor> constructors;
@@ -23,10 +23,10 @@ public class ConstructorManager implements EntityListener {
 
     public PooledEngine engine;
     public ConstructorManager(){
-        rootFamily = Family.all(OrientationDef.class,OrientationRelative.class).get();
+        rootFamily = Family.all(SpatialDef.class,SpatialRelative.class).get();
 
         nodeMapper = ComponentMapper.getFor(Node.class);
-        orientationMapper = ComponentMapper.getFor(OrientationRelative.class);
+        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
         constructors = new SortedIntList<Constructor>();
     }
 
@@ -37,7 +37,7 @@ public class ConstructorManager implements EntityListener {
     @Override
     public void entityAdded(Entity entity) {
 
-        OrientationRelative rootOrientation = orientationMapper.get(entity);
+        SpatialRelative rootOrientation = orientationMapper.get(entity);
 
         for(SortedIntList.Node<Constructor> constructorNode:constructors){
             LOG.info("Adding entity to constructor "+constructorNode.value.getClass());
@@ -49,9 +49,9 @@ public class ConstructorManager implements EntityListener {
         }
     }
 
-    private void parentAdded(Constructor constructor, Entity entity, OrientationRelative rootOrientation){
+    private void parentAdded(Constructor constructor, Entity entity, SpatialRelative rootOrientation){
         LOG.info("Parent added for constructor:"+constructor.getClass());
-        OrientationRelative constructorOrientation = orientationMapper.get(entity);
+        SpatialRelative constructorOrientation = orientationMapper.get(entity);
         Entity[] children = constructorOrientation.children;
 
         Object iterateDTO = constructor.parentAdded(entity, rootOrientation, constructorOrientation);
@@ -59,10 +59,10 @@ public class ConstructorManager implements EntityListener {
         constructor.parentAddedFinal(entity, iterateDTO);
     }
 
-    private void entityChildrenAdded(Entity[] children, Constructor constructor, OrientationRelative rootOrientation, OrientationRelative constructorOrientation, OrientationRelative parentOrientation, Object iterateDTO){
+    private void entityChildrenAdded(Entity[] children, Constructor constructor, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, Object iterateDTO){
         for(Entity child : children) {
             if(constructor.isChild(child)){
-                OrientationRelative orientation = orientationMapper.get(child);
+                SpatialRelative orientation = orientationMapper.get(child);
                 LOG.info("Child added for constructor:"+constructor.getClass());
                 iterateDTO = constructor.insertedChild(child,rootOrientation,constructorOrientation,parentOrientation,orientation,iterateDTO);
                 entityChildrenAdded(orientation.children, constructor, rootOrientation, constructorOrientation, orientation, iterateDTO);
