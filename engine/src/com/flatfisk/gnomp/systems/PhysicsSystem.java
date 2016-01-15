@@ -59,6 +59,9 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         if(body.body!=null) {
             if(body.positionChanged){
                 box2DWorld.destroyBody(body.body);
+                body.body.setUserData(null);
+                body.body = null;
+
                 entityAdded(entity);
                 body.positionChanged = false;
             }else {
