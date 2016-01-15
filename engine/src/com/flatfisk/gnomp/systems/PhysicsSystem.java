@@ -3,6 +3,7 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -58,27 +59,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
         if(body.body!=null) {
             if(body.positionChanged){
-
-                Entity entity1 = new Entity();
-                for(Component component:entity.getComponents()) {
-                    entity1.add(component);
-                }
-
-                getEngine().removeEntity(entity);
-                getEngine().addEntity(entity1);
-                /*
-                box2DWorld.destroyBody(body.body);
-                body.body.setUserData(null);
-                body.body = null;
-
-                body.positionChanged = false;
-                getEngine().removeEntity(entity);
-                Entity entity1 = new Entity();
-                for(Component component:entity.getComponents()) {
-                    entity1.add(component);
-                    getEngine().addEntity(entity1);
-                }
-                */
+                body.body.setTransform(new Vector2(1000,0),0);
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
@@ -128,11 +109,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
     @Override
     public void entityRemoved(Entity entity) {
-        LOG.info("Entity removed");
-        PhysicsBody body = physicsBodyMapper.get(entity);
-        box2DWorld.destroyBody(body.body);
-        body.body.setUserData(null);
-        body.body = null;
+
     }
 
     @Override
