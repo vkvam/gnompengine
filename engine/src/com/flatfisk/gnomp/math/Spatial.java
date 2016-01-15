@@ -36,15 +36,8 @@ public class Spatial implements Pool.Poolable {
         return copy;
     }
 
-    public Spatial addRotated(Vector2 vector, float rotation){
-        this.vector.add(Pools.obtainVector2FromCopy(vector).rotate(rotation));
-        this.rotation+=rotation;
-        return this;
-    }
-
-
     public Spatial getCopy() {
-        return new Spatial(Pools.obtainVector2FromCopy(vector), rotation);
+        return Pools.obtainSpatialFromCopy(this);
     }
 
     public void setCopy(Spatial t) {

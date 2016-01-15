@@ -9,6 +9,7 @@ import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
 import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
@@ -45,9 +46,10 @@ public class ScenegraphSystem extends IteratingSystem {
         Spatial childLocal = childOrientation.localSpatial;
         Spatial childWorld = childOrientation.worldSpatial;
 
-        childWorld.setCopy(parentWorld.vector, transferAngle ? parentWorld.rotation : 0);
-        childWorld.addRotated(childLocal.vector, childWorld.rotation);
-
+        childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
+        childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
+        childWorld.rotation += childLocal.rotation;
+        
         for(Entity child : scenegraphNode.children){
             processChild(child, childWorld);
         }
