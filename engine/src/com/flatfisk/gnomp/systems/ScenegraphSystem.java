@@ -3,8 +3,10 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Node;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
@@ -31,27 +33,32 @@ public class ScenegraphSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
         SpatialRelative parentOrientation = orientationRelativeComponentMapper.get(entity);
-        for(Entity child : scenegraphNode.children){
-            processChild(child,parentOrientation.world);
+        for(Node.EntityWrapper child : scenegraphNode.children){
+            processChild(child.getEntity((GnompEngine) getEngine()),parentOrientation.world);
         }
     }
 
     private void processChild(Entity entity,  Spatial parentWorld){
-        ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
-        SpatialRelative orientationRelative = orientationRelativeComponentMapper.get(entity);
+        if(entity!=null) {
+            ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
+            SpatialRelative orientationRelative = orientationRelativeComponentMapper.get(entity);
+            if(orientationRelative!=null) {
+                boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
 
-        boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
+                SpatialRelative childOrientation = orientationRelativeComponentMapper.get(entity);
+                Spatial childLocal = childOrientation.local;
+                Spatial childWorld = childOrientation.world;
 
-        SpatialRelative childOrientation = orientationRelativeComponentMapper.get(entity);
-        Spatial childLocal = childOrientation.local;
-        Spatial childWorld = childOrientation.world;
+                childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
+                childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
+                childWorld.rotation += childLocal.rotation;
 
-        childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
-        childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
-        childWorld.rotation += childLocal.rotation;
-
-        for(Entity child : scenegraphNode.children){
-            processChild(child, childWorld);
+                for (Node.EntityWrapper child : scenegraphNode.children) {
+                    processChild(child.getEntity((GnompEngine) getEngine()), childWorld);
+                }
+            }
+        }else{
+            LOG.info("Entity is null!");
         }
     }
 }

@@ -2,13 +2,13 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.constructed.Renderable;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.relatives.RenderableRelative;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
 import com.flatfisk.gnomp.components.roots.RenderableDef;
+import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
@@ -23,7 +23,7 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
     private ShapeTextureFactory shapeTextureFactory;
     private ComponentMapper<StructureRelative> structureRelativeComponentMapper;
 
-    public RenderableConstructor(PooledEngine engine,ShapeTextureFactory shapeTextureFactory) {
+    public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
         super(engine,RenderableDef.class,RenderableRelative.class);
         structureRelativeComponentMapper = ComponentMapper.getFor(StructureRelative.class);
         this.shapeTextureFactory = shapeTextureFactory;
@@ -35,15 +35,16 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
 
         RenderableDef renderableDef = constructorMapper.get(entity);
 
-        Renderable renderable = engine.createComponent(Renderable.class);
+        Renderable renderable = engine.addComponent(Renderable.class, entity);
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();
         renderable.zIndex = renderableDef.zIndex;
-        entity.add(renderable);
+
+        LOG.info("Inserting parent final:"+ renderable);
     }
 
     @Override
-    public ShapeTexture parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation) {
+    public ShapeTexture parentAdded(Entity entity, SpatialRelative constructorOrientation) {
         StructureRelative structure = structureRelativeComponentMapper.get(entity);
         ShapeTexture px = shapeTextureFactory.createShapeTexture(structure.boundingRectangle);
 
@@ -60,7 +61,6 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
 
     @Override
     public ShapeTexture insertedChild(Entity entity,
-                                      SpatialRelative rootOrientation,
                                       SpatialRelative constructorOrientation,
                                       SpatialRelative parentOrientation,
                                       SpatialRelative childOrientation,
@@ -76,5 +76,15 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
             constructorDTO.draw(structure, spatial);
         }
         return constructorDTO;
+    }
+
+    @Override
+    public void parentRemoved(Entity entity) {
+        entity.remove(Renderable.class);
+    }
+
+    @Override
+    public void childRemoved(Entity entity) {
+
     }
 }

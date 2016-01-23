@@ -3,11 +3,7 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.Velocity;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
@@ -15,6 +11,7 @@ import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
 import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.utils.Pools;
 
 public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
@@ -48,6 +45,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
     @Override
     public void update(final float f) {
+        //LOG.info("COUNT:"+box2DWorld.getBodyCount()+"E:"+getEngine().getEntities().size());
         box2DWorld.step(f, 3, 3);
         super.update(f);
     }
@@ -55,7 +53,6 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
     @Override
     public void processEntity(Entity entity, float f) {
         PhysicsBody body = physicsBodyMapper.get(entity);
-
         if(body.body!=null) {
             if(body.positionChanged){
                 body.positionChanged = false;
@@ -66,7 +63,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 Velocity velocity = velocityMapper.get(entity);
 
                 if (velocity != null) {
-                    velocity.velocity = body.getVelocity().toWorld().getCopy();
+                    velocity.velocity = Pools.obtainSpatialFromCopy(body.getVelocity().toWorld());
                 }
 
                 SpatialRelative orientation = orientationMapper.get(entity);
@@ -78,35 +75,6 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
     @Override
     public void entityAdded(Entity entity) {
 
-            LOG.info("Entity added");
-            Velocity velocity = velocityMapper.get(entity);
-
-            PhysicsBodyDef bodyDefContainer = physicsBodyDefMapper.get(entity);
-            Array<FixtureDef> fixtureDefs = bodyDefContainer.fixtureDefs;
-            BodyDef bodyDef = bodyDefContainer.bodyDef;
-
-            PhysicsBody bodyContainer = physicsBodyMapper.get(entity);
-            bodyContainer.body = createBody(bodyDef,fixtureDefs);
-            bodyContainer.body.setUserData(entity);
-
-            if(velocity!=null && velocity.velocity != null){
-                Spatial nodeVelocityBox2D = velocity.velocity.getCopy().toBox2D();
-                bodyContainer.body.setLinearVelocity(nodeVelocityBox2D.vector);
-                bodyContainer.body.setAngularVelocity(nodeVelocityBox2D.rotation);
-            }
-    }
-
-    private Body createBody(BodyDef bodyDef, Array<FixtureDef> fixtureDefs) {
-
-        LOG.info("Type:"+bodyDef.type);
-        Body body = box2DWorld.createBody(bodyDef);
-        LOG.info("Adding "+fixtureDefs.size+" fixtures");
-        for (FixtureDef def : fixtureDefs) {
-            body.createFixture(def);
-            def.shape.dispose();
-        }
-        LOG.info("Mass:"+body.getMass());
-        return body;
     }
 
     @Override

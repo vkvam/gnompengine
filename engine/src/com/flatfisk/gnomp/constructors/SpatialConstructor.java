@@ -1,35 +1,34 @@
 package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.roots.SpatialDef;
+import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelative,SpatialRelative> {
-    public OrientationConstructor(PooledEngine engine) {
+public class SpatialConstructor extends Constructor<SpatialDef,SpatialRelative,SpatialRelative> {
+    public SpatialConstructor(GnompEngine engine) {
         super(engine, SpatialDef.class, SpatialRelative.class);
     }
 
     @Override
     public SpatialRelative parentAdded(Entity entity,
-                                   SpatialRelative rootOrientation,
-                                   SpatialRelative constructorOrientation) {
-        constructorOrientation.world.setCopy(rootOrientation.local);
-        return rootOrientation;
+                                       SpatialRelative constructorOrientation) {
+        //constructorOrientation.world.setCopy(rootOrientation.local);
+        constructorOrientation.local.setCopy(constructorOrientation.world);
+        return constructorOrientation;
     }
 
     @Override
     public SpatialRelative insertedChild(Entity entity,
-                                     SpatialRelative rootOrientation,
-                                     SpatialRelative constructorOrientation,
-                                     SpatialRelative parentOrientation,
-                                     SpatialRelative childOrientation,
-                                     SpatialRelative constructorDTO) {
+                                         SpatialRelative constructorOrientation,
+                                         SpatialRelative parentOrientation,
+                                         SpatialRelative childOrientation,
+                                         SpatialRelative constructorDTO) {
 
         Spatial parentWorld = parentOrientation.world;
         Spatial childLocal = childOrientation.local;
@@ -44,4 +43,13 @@ public class OrientationConstructor extends Constructor<SpatialDef,SpatialRelati
         return constructorOrientation;
     }
 
+    @Override
+    public void parentRemoved(Entity entity) {
+
+    }
+
+    @Override
+    public void childRemoved(Entity entity) {
+
+    }
 }

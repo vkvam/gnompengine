@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.shape;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -26,8 +25,10 @@ public abstract class Shape implements Pool.Poolable {
     }
 
     public Shape(){
-        Gdx.app.log(getClass().getName(),"Calling constructor of shape, so not using Pool.");
+
     }
+
+    public abstract Shape getCopy();
 
     public void init(float lineWidth, Color lineColor, Color fillColor){
         this.lineWidth = lineWidth;
@@ -41,7 +42,7 @@ public abstract class Shape implements Pool.Poolable {
 
     public abstract void setRotation(float angle);
 
-    public void dispose() {
+    public void reset() {
         lineColor = null;
         fillColor = null;
     }

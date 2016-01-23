@@ -5,9 +5,11 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Pool;
+import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.utils.Pools;
 
-public class PhysicsBody implements  Component, Pool.Poolable {
+public class PhysicsBody implements SpatialRelative.Controller, Component, Pool.Poolable {
     public Body body;
     public boolean positionChanged = false;
 
@@ -18,7 +20,9 @@ public class PhysicsBody implements  Component, Pool.Poolable {
         return new Spatial(getPosition(),getAngle());
     }
     public Spatial getVelocity(){
-        return new Spatial(getLinearVelocity(),getAngularVelocity());
+        Spatial spat = Pools.obtainSpatial();
+        spat.set(getLinearVelocity(),getAngularVelocity());
+        return spat;
     }
 
     private Vector2 getLinearVelocity(){
@@ -38,6 +42,7 @@ public class PhysicsBody implements  Component, Pool.Poolable {
     @Override
     public void reset() {
         body = null;
+        positionChanged = false;
     }
 
 }

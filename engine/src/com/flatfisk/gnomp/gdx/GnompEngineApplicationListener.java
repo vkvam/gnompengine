@@ -1,19 +1,19 @@
 package com.flatfisk.gnomp.gdx;
 
 import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.ashley.core.GnompEngine;
 
 
 public class GnompEngineApplicationListener implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    protected PooledEngine world;
+    protected GnompEngine world;
 
     @Override
     public void create() {
-        world = new PooledEngine();
+        world = new GnompEngine();
     }
 
     @Override

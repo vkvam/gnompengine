@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.shape;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by: Vemund Kvam 004213
@@ -11,8 +12,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class RectangularLineShape extends PolygonShape {
     public float rectangleWidth;
-    public Vector2 from;
-    public Vector2 to;
+    public Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
 
     public RectangularLineShape(){
         super();
@@ -22,10 +22,10 @@ public class RectangularLineShape extends PolygonShape {
         this.rectangleWidth = rectangleWidth;
     }
 
-    public void dispose() {
-        super.dispose();
-        from = null;
-        to = null;
+    public void reset() {
+        super.reset();
+        from = Pools.obtainVector();
+        to =  Pools.obtainVector();
     }
 
     public void createPolygonVertices() {

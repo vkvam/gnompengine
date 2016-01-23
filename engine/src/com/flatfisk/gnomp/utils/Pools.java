@@ -14,6 +14,9 @@ public class Pools {
     public static Spatial obtainSpatial(){
         return spatialPool.obtain();
     }
+    public static Vector2 obtainVector(){
+        return vector2Pool.obtain();
+    }
 
     public static Vector2 obtainVector2FromCopy(Vector2 vector){
         return vector2Pool.createCopy(vector);

@@ -7,11 +7,11 @@ package com.flatfisk.gnomp.constructors;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.Relative;
 import com.flatfisk.gnomp.components.RelativeComponent;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.badlogic.ashley.core.GnompEngine;
 
 public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends RelativeComponent, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
@@ -21,9 +21,9 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     public ComponentMapper<CONSTRUCTOR_ROOT> constructorMapper;
     public ComponentMapper<RELATIONSHIP> relationshipMapper;
 
-    public PooledEngine engine;
+    public GnompEngine engine;
 
-    public Constructor(PooledEngine engine, Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
+    public Constructor(GnompEngine engine, Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
         this.constructor = constructor;
         this.relationship = relationship;
 
@@ -41,7 +41,16 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
         return relationship!=null&&relationship.getRelativeType() == Relative.CHILD;
     }
 
+    /**
+     * Entity added with constructorComponent for constructor
+     * @param entity added
+     * @param constructorOrientation
+     * @return
+     */
+    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, SpatialRelative constructorOrientation);
+    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
     public void parentAddedFinal(Entity entity, CONSTRUCTION_DTO construction_dto){};
-    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
+
+    public abstract void parentRemoved(Entity entity);
+    public abstract void childRemoved(Entity entity);
 }

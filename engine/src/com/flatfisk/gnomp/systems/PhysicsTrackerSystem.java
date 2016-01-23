@@ -1,9 +1,6 @@
 package com.flatfisk.gnomp.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -43,25 +40,31 @@ public class PhysicsTrackerSystem extends IteratingSystem implements Application
 
     @Override
     public void processEntity(Entity entity, float f) {
+
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
             SpatialRelative orientation = orientationMapper.get(entity);
             ScenegraphNode node = scenegraphNodeComponentMapper.get(entity);
-            Entity parent = node.parent;
+            Entity parent = node.parent.getEntity((GnompEngine) getEngine());
             if(parent!=null) {
                 PhysicsBody parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;
+                if(b!=null && parentBody!=null) {
+                    Spatial t = orientation.world.getCopy().toBox2D();
+                    Transform t2 = b.getTransform();
 
-                Spatial t = orientation.world.getCopy().toBox2D();
-                Transform t2 = b.getTransform();
+                    float xDiff = (t.vector.x - (t2.getPosition().x)) / f;
+                    float yDiff = (t.vector.y - (t2.getPosition().y)) / f;
 
-                float xDiff=(t.vector.x-(t2.getPosition().x))/f;
-                float yDiff=(t.vector.y-(t2.getPosition().y))/f;
-                float aDiff=(t.rotation -t2.getRotation())/f;
-
-                b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff,yDiff));
-                b.setAngularVelocity(parentBody.body.getAngularVelocity()+aDiff);
+                    b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff, yDiff));
+                    // TODO: Wee need some fancy stuff if we need a physics-node to follow around another nodes trajectory.
+                    if(orientation.inheritFromParentType == SpatialRelative.SpatialInheritType.POSITION_ANGLE) {
+                        throw new UnsupportedOperationException("Transfer of rotation to child is unsupported");
+                        //float aDiff = (t.rotation - t2.getRotation()) / f;
+                        //b.setAngularVelocity(parentBody.body.getAngularVelocity() + aDiff);
+                    }
+                }
             }
         }
     }

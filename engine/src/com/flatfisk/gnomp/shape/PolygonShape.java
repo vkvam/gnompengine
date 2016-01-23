@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.math.GeometryUtils;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
@@ -34,6 +35,21 @@ public class PolygonShape extends Shape {
     }
 
     @Override
+    public PolygonShape getCopy() {
+        PolygonShape lineShape = Pools.obtain(PolygonShape.class);
+
+        Polygon polygon = Pools.obtain(Polygon.class);
+        polygon.setVertices(this.polygon.getVertices());
+        polygon.setPosition(this.polygon.getX(), this.polygon.getY());
+        polygon.setOrigin(this.polygon.getOriginX(), this.polygon.getOriginY());
+        polygon.setRotation(this.polygon.getRotation());
+        polygon.setScale(this.polygon.getScaleX(), this.polygon.getScaleY());
+
+        lineShape.polygon = polygon;
+        return lineShape;
+    }
+
+    @Override
     public void drawFrom(Vector2 vector) {
 
     }
@@ -46,11 +62,6 @@ public class PolygonShape extends Shape {
     @Override
     public void drawTo(Vector2 vector) {
 
-    }
-
-    public void dispose() {
-        super.dispose();
-        polygon = null;
     }
 
     @Override
@@ -114,6 +125,6 @@ public class PolygonShape extends Shape {
 
     @Override
     public void reset() {
-
+        super.reset();
     }
 }

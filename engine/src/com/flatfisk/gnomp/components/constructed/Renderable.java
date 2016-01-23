@@ -14,9 +14,12 @@ public class Renderable implements Component,Pool.Poolable {
 
     @Override
     public void reset() {
-        texture.dispose();
+
         Gdx.app.debug(getClass().getName(), "Disposing texture, " + texture.toString());
+        texture.dispose();
         texture = null;
+
         offset = null;
+        zIndex = 0;
     }
 }

@@ -1,11 +1,11 @@
 package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.relatives.StructureRelative;
 import com.flatfisk.gnomp.components.roots.StructureDef;
+import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
 
@@ -16,12 +16,12 @@ import com.flatfisk.gnomp.utils.Pools;
 public class StructureConstructor extends Constructor<StructureDef,StructureRelative, StructureRelative> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public StructureConstructor(PooledEngine engine) {
+    public StructureConstructor(GnompEngine engine) {
         super(engine,StructureDef.class,StructureRelative.class);
     }
 
     @Override
-    public StructureRelative parentAdded(Entity entity, SpatialRelative rootOrientation, SpatialRelative structureOrientation) {
+    public StructureRelative parentAdded(Entity entity, SpatialRelative structureOrientation) {
         StructureRelative structure = relationshipMapper.get(entity);
 
         // If the constructor has a shape, the shape should be drawn at origin.
@@ -38,7 +38,7 @@ public class StructureConstructor extends Constructor<StructureDef,StructureRela
     }
 
     @Override
-    public StructureRelative insertedChild(Entity entity, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, StructureRelative constructorDTO) {
+    public StructureRelative insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, StructureRelative constructorDTO) {
         StructureRelative structure = relationshipMapper.get(entity);
 
         // Use vector relativeType to constructor.
@@ -47,6 +47,9 @@ public class StructureConstructor extends Constructor<StructureDef,StructureRela
 
         if(structure.shape !=null){
             constructorDTO.textureCoordinates = structure.shape.getTextureCoordinates(constructorDTO.textureCoordinates, spatial);
+            LOG.info("B:"+constructorDTO.textureCoordinates.getBoundingRectangle());
+        }else{
+            LOG.info("S:"+structure.shape);
         }
 
         constructorDTO.boundingRectangle = constructorDTO.textureCoordinates.getBoundingRectangle();
@@ -54,5 +57,13 @@ public class StructureConstructor extends Constructor<StructureDef,StructureRela
         return constructorDTO;
     }
 
+    @Override
+    public void parentRemoved(Entity entity) {
 
+    }
+
+    @Override
+    public void childRemoved(Entity entity) {
+
+    }
 }

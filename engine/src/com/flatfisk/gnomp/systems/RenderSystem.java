@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.systems;
 
 
 import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,7 +18,7 @@ import com.flatfisk.gnomp.math.Spatial;
 
 import java.util.Comparator;
 
-public class RenderSystem extends EntitySystem implements ApplicationListener, EntityListener {
+public class RenderSystem extends /*EntitySystem*/ IteratingSystem implements ApplicationListener, EntityListener {
     private static float ROOT2 = (float) Math.sqrt(2);
 
 
@@ -29,11 +30,12 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
     public ComponentMapper<Renderable> renderableMapper;
     public ComponentMapper<SpatialRelative> orientationMapper;
     private Comparator comperator;
-    private Family family;
+    //private Family family;
 
     public RenderSystem(int priority) {
-        family = Family.all(Renderable.class).get();
-        this.priority = priority;
+        super(Family.all(Renderable.class).get(),priority);
+        //family = Family.all(Renderable.class).get();
+        //this.priority = priority;
         batch = new SpriteBatch();
         orthographicCamera = new OrthographicCamera(640, 480);
 
@@ -46,13 +48,15 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
             }
         };
     }
-
+/*
     public Family getFamily() {
         return family;
     }
+*/
 
     @Override
     public void addedToEngine(Engine engine) {
+        super.addedToEngine(engine);
         renderableMapper = ComponentMapper.getFor(Renderable.class);
         orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
     }
@@ -61,33 +65,26 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
         return orthographicCamera;
     }
 
-    @Override
-    public void update(float f) {
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    public void processEntity(Entity e,float f){
 
-        orthographicCamera.update(true);
-        batch.setProjectionMatrix(orthographicCamera.combined);
-        batch.begin();
+        Renderable renderable = renderableMapper.get(e);
+        SpatialRelative orientation = orientationMapper.get(e);
 
-        for (Entity e : renderQueue) {
-            Renderable renderable = renderableMapper.get(e);
-            SpatialRelative orientation = orientationMapper.get(e);
-
-            Texture texture = renderable.texture;
-            Vector2 offset = renderable.offset;
-            Spatial spatial = orientation.world;
-            float x = spatial.vector.x, y= spatial.vector.y;
+        Texture texture = renderable.texture;
+        Vector2 offset = renderable.offset;
+        Spatial spatial = orientation.world;
+        float x = spatial.vector.x, y= spatial.vector.y;
+        if(texture!=null){
             int tW = texture.getWidth();
             int tH = texture.getHeight();
             float tWDiv2 = ((float) tW) / 2 - offset.x;
             float tHDiv2 = ((float) tH) / 2 - offset.y;
-            float xCenter = x-tWDiv2, yCenter=y-tHDiv2;
+            float xCenter = x - tWDiv2, yCenter = y - tHDiv2;
 
             // The idea for this check is that a texture's rotated bounding-box never will be larger than root(2) of half of longest side.
-            float longestSide = Math.max(tW,tH)*0.5f*ROOT2;
+            float longestSide = Math.max(tW, tH) * 0.5f * ROOT2;
 
-            if(getCamera().frustum.boundsInFrustum(xCenter+tWDiv2, yCenter+tHDiv2,0, longestSide,longestSide, 0)) {
+            if (getCamera().frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
                 batch.draw(
                         texture,                            // Texture texture
                         xCenter,                            // float x
@@ -98,7 +95,7 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
                         tH,                                 // float height
                         1,                                  // float scaleX
                         1,                                  // float scaleY
-                        spatial.rotation,                  // float rotation
+                        spatial.rotation,                   // float rotation
                         0,                                  // int srcX
                         0,                                  // int srcY
                         tW,                                 // int srcHeight
@@ -107,7 +104,64 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
                         true                                // boolean flipY
                 );
             }
+        }else{
+            LOG.info("Texture is null");
         }
+    }
+
+    @Override
+    public void update(float f) {
+        Gdx.gl.glClearColor(0, 0, 0, 0);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        orthographicCamera.update(true);
+        batch.setProjectionMatrix(orthographicCamera.combined);
+        batch.begin();
+        super.update(f);
+/*
+        for (Entity e : renderQueue) {
+            Renderable renderable = renderableMapper.get(e);
+            SpatialRelative orientation = orientationMapper.get(e);
+
+            Texture texture = renderable.texture;
+            Vector2 offset = renderable.offset;
+            Spatial spatial = orientation.world;
+            float x = spatial.vector.x, y= spatial.vector.y;
+            if(texture!=null){
+            int tW = texture.getWidth();
+            int tH = texture.getHeight();
+                float tWDiv2 = ((float) tW) / 2 - offset.x;
+                float tHDiv2 = ((float) tH) / 2 - offset.y;
+                float xCenter = x - tWDiv2, yCenter = y - tHDiv2;
+
+                // The idea for this check is that a texture's rotated bounding-box never will be larger than root(2) of half of longest side.
+                float longestSide = Math.max(tW, tH) * 0.5f * ROOT2;
+
+                if (getCamera().frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
+                    batch.draw(
+                            texture,                            // Texture texture
+                            xCenter,                            // float x
+                            yCenter,                            // float y
+                            tWDiv2,                             // float originX
+                            tHDiv2,                             // float originY
+                            tW,                                 // float width
+                            tH,                                 // float height
+                            1,                                  // float scaleX
+                            1,                                  // float scaleY
+                            spatial.rotation,                  // float rotation
+                            0,                                  // int srcX
+                            0,                                  // int srcY
+                            tW,                                 // int srcHeight
+                            tH,                                 // int srcWidth
+                            false,                              // boolean flipX
+                            true                                // boolean flipY
+                    );
+                }
+            }else{
+                LOG.info("Texture is null");
+            }
+        }
+        */
         batch.end();
     }
 
@@ -149,13 +203,25 @@ public class RenderSystem extends EntitySystem implements ApplicationListener, E
 
     @Override
     public void entityAdded(Entity entity) {
+
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+
+    }
+/*
+    @Override
+    public void entityAdded(Entity entity) {
+        LOG.info("Adding to render queue");
         renderQueue.add(entity);
         renderQueue.sort(comperator);
     }
 
     @Override
     public void entityRemoved(Entity entity) {
+        LOG.info("Removed from render queue");
         renderQueue.removeValue(entity,false);
     }
-
+*/
 }

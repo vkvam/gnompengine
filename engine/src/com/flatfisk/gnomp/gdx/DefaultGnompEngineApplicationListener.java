@@ -1,11 +1,11 @@
 package com.flatfisk.gnomp.gdx;
 
 import com.badlogic.gdx.physics.box2d.World;
-import com.flatfisk.gnomp.constructors.OrientationConstructor;
+import com.flatfisk.gnomp.constructors.SpatialConstructor;
 import com.flatfisk.gnomp.constructors.PhysicsConstructor;
 import com.flatfisk.gnomp.constructors.RenderableConstructor;
 import com.flatfisk.gnomp.constructors.StructureConstructor;
-import com.flatfisk.gnomp.entitymanagers.ConstructorManager;
+import com.flatfisk.gnomp.ConstructorManager;
 import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.systems.*;
 
@@ -24,13 +24,13 @@ public class DefaultGnompEngineApplicationListener extends GnompEngineApplicatio
         world.addSystem(scenegraphSystem);
     }
 
-    protected void createConstructorManager(int priority){
-        ConstructorManager constructorManager = new ConstructorManager();
-        constructorManager.addConstructor(new OrientationConstructor(world),0);
+    protected void createConstructorManager(int priority,World physicsWorld){
+        ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
+        constructorManager.addConstructor(new SpatialConstructor(world),0);
         constructorManager.addConstructor(new StructureConstructor(world),1);
-        constructorManager.addConstructor(new PhysicsConstructor(world),2);
+        constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
         constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),3);
-        world.addEntityListener(constructorManager.rootFamily,priority,constructorManager);
+        //world.addEntityListener(constructorManager.rootFamily,priority,constructorManager);
     }
 
     protected RenderSystem createRenderSystem(int priority){

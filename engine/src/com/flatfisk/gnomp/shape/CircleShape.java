@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
-import com.flatfisk.gnomp.PhysicsConstants;
+import com.flatfisk.gnomp.utils.Pools;
 
 
 /**
@@ -16,8 +18,9 @@ import com.flatfisk.gnomp.PhysicsConstants;
  * Project:Raven
  */
 public class CircleShape extends Shape{
-    public Circle circle;
-    private Vector2 from,to;
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    public Circle circle = new Circle();
+    private Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
 
     public CircleShape(float lineWidth, float radius, Color lineColor, Color fillColor) {
         super(lineWidth, lineColor, fillColor);
@@ -25,6 +28,14 @@ public class CircleShape extends Shape{
     }
     public CircleShape(){
         super();
+        this.circle = new Circle(0, 0, 0);
+    }
+
+    @Override
+    public CircleShape getCopy(){
+        CircleShape circleShape = com.badlogic.gdx.utils.Pools.obtain(CircleShape.class);
+        circleShape.circle.set(circle.x,circle.y,circle.radius);
+        return circleShape;
     }
 
     @Override
@@ -108,6 +119,6 @@ public class CircleShape extends Shape{
 
     @Override
     public void reset() {
-
+        super.reset();
     }
 }

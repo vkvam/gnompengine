@@ -82,6 +82,12 @@ project(":ios") {
     }
 }
 
+project(":test") {
+    apply plugin: "java"
+    dependencies {
+        compile project(":desktop")
+    }
+}
 
 project(":desktop") {
     apply plugin: "java"
