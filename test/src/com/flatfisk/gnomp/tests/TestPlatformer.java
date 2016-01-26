@@ -213,7 +213,7 @@ public class TestPlatformer extends Test {
         StructureRelative structure = world.addComponent(StructureRelative.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,5,Color.RED,Color.BLUE);
         structure.shape = rectangularLineShape;
-        structure.density = .1f;
+        structure.density = .01f;
         structure.friction = 5f;
         structure.relativeType = Relative.CHILD;
 

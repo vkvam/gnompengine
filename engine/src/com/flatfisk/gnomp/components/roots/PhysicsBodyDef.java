@@ -16,7 +16,19 @@ public class PhysicsBodyDef implements ConstructorComponent<PhysicsBodyDef>, Poo
 
     @Override
     public void reset() {
-        bodyDef = null;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.setZero();
+        bodyDef.angle = 0;
+        bodyDef.linearVelocity.setZero();
+        bodyDef.angularVelocity = 0;
+        bodyDef.linearDamping = 0;
+        bodyDef.angularDamping = 0;
+        bodyDef.allowSleep = true;
+        bodyDef.awake = true;
+        bodyDef.fixedRotation = false;
+        bodyDef.bullet = false;
+        bodyDef.active = true;
+        bodyDef.gravityScale = 1;
     }
 
     @Override

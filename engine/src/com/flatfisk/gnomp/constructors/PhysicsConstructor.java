@@ -110,15 +110,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
 
     @Override
     public void parentRemoved(Entity entity) {
-        PhysicsBody physicsBody = bodyMapper.get(entity);
-        if(physicsBody!=null) {
-            Body b = physicsBody.body;
-            if (b != null) {
-                b.setUserData(null);
-                box2DWorld.destroyBody(bodyMapper.get(entity).body);
-            }
-        }
-
+        entity.remove(PhysicsBody.class);
     }
 
     @Override
@@ -127,15 +119,14 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     }
 
     private Body createBody(BodyDef bodyDef, Array<FixtureDef> fixtureDefs) {
-        LOG.info("CREATING BODY");
-        LOG.info("Type:"+bodyDef.type);
+        LOG.info("Create physics body of type:"+bodyDef.type);
         Body body = box2DWorld.createBody(bodyDef);
         LOG.info("Adding "+fixtureDefs.size+" fixtures");
-        for (FixtureDef def : fixtureDefs) {
-            body.createFixture(def);
-            def.shape.dispose();
+        for (FixtureDef fixture : fixtureDefs) {
+            body.createFixture(fixture);
+            fixture.shape.dispose();
         }
-        LOG.info("Mass:"+body.getMass());
+        LOG.info("Total mass:"+body.getMass());
         return body;
     }
 

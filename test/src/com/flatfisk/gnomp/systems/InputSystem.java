@@ -115,7 +115,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         StructureRelative structure = world.addComponent(StructureRelative.class,e);
         com.flatfisk.gnomp.shape.CircleShape rectangularLineShape = new com.flatfisk.gnomp.shape.CircleShape(1,5, Color.GREEN,Color.BLACK);
         structure.shape = rectangularLineShape;
-        structure.density = .1f;
+        structure.density = .01f;
         structure.friction = 5f;
         structure.relativeType = Relative.CHILD;
 
