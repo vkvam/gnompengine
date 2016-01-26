@@ -37,6 +37,10 @@ public class GnompEngine extends PooledEngine {
         super.addEntity(entity);
     }
 
+    /**
+     * Constructs or reconstructs the entity or the nearest descendant entity with one or more constructors.
+     * @param entity
+     */
     public void constructEntity(Entity entity){
         if(constructorManager.rootFamily.matches(entity)) {
             constructorManager.constructEntity(entity);

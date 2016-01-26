@@ -31,7 +31,7 @@ public class RenderableConstructor extends Constructor<RenderableDef,RenderableR
 
 
     @Override
-    public void parentAddedFinal(Entity entity, ShapeTexture shapeTexture) {
+    public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, ShapeTexture shapeTexture) {
 
         RenderableDef renderableDef = constructorMapper.get(entity);
 

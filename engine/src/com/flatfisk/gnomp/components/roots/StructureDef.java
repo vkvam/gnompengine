@@ -6,14 +6,14 @@ import com.flatfisk.gnomp.components.ConstructorComponent;
 import com.badlogic.ashley.core.GnompEngine;
 
 
-public class StructureDef implements ConstructorComponent,Pool.Poolable {
+public class StructureDef implements ConstructorComponent<StructureDef>,Pool.Poolable {
 
     @Override
     public void reset() {
     }
 
     @Override
-    public ConstructorComponent addCopy(GnompEngine gnompEngine, Entity entity) {
+    public StructureDef addCopy(GnompEngine gnompEngine, Entity entity) {
         return gnompEngine.addComponent(this.getClass(),entity);
     }
 }

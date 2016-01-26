@@ -22,7 +22,7 @@ import com.flatfisk.gnomp.utils.Pools;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRelative,PhysicsBodyDef> {
+public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRelative,Array<FixtureDef>> {
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
@@ -39,7 +39,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     }
 
     @Override
-    public void parentAddedFinal(Entity entity, PhysicsBodyDef physicsBodyDef) {
+    public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, Array<FixtureDef> physicsBodyDef) {
         LOG.info("Finalizing physicsbody construction");
         LOG.info("ADDED BODY");
         engine.addComponent(PhysicsBody.class,entity);
@@ -48,11 +48,14 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
         Velocity velocity = velocityMapper.get(entity);
 
         PhysicsBodyDef bodyDefContainer = constructorMapper.get(entity);
-        Array<FixtureDef> fixtureDefs = bodyDefContainer.fixtureDefs;
         BodyDef bodyDef = bodyDefContainer.bodyDef;
 
+        Spatial t = constructorOrientation.world.getCopy().toBox2D();
+        bodyDef.position.set(t.vector);
+        bodyDef.angle = t.rotation;
+
         PhysicsBody bodyContainer = engine.addComponent(PhysicsBody.class,entity);//physicsBodyMapper.get(entity);
-        bodyContainer.body = createBody(bodyDef,fixtureDefs);
+        bodyContainer.body = createBody(bodyDef,physicsBodyDef);
         bodyContainer.body.setUserData(entity);
 
 
@@ -65,46 +68,41 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
 
     }
 
-    private Body createBody(BodyDef bodyDef, Array<FixtureDef> fixtureDefs) {
-        LOG.info("CREATING BODY");
-        LOG.info("Type:"+bodyDef.type);
-        Body body = box2DWorld.createBody(bodyDef);
-        LOG.info("Adding "+fixtureDefs.size+" fixtures");
-        for (FixtureDef def : fixtureDefs) {
-            body.createFixture(def);
-            def.shape.dispose();
-        }
-        LOG.info("Mass:"+body.getMass());
-        return body;
-    }
-
     @Override
-    public PhysicsBodyDef parentAdded(Entity entity, SpatialRelative constructor) {
-        PhysicsBodyDef bodyContainer = constructorMapper.get(entity);
+    public Array<FixtureDef> parentAdded(Entity entity, SpatialRelative constructor) {
+        Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
+
+        //PhysicsBodyDef bodyContainer = constructorMapper.get(entity);
 
         Spatial t = constructor.world.getCopy().toBox2D();
 
         LOG.info("Inserting parent at vector:"+t.vector);
-        bodyContainer.bodyDef.position.set(t.vector);
-        bodyContainer.bodyDef.angle = t.rotation;
+        //bodyContainer.bodyDef.position.set(t.vector);
+        //bodyContainer.bodyDef.angle = t.rotation;
 
         // If the constructor has fixtures, they should be drawn at origin.
         // TODO: This should always be empty, before this stage !!!!
-        bodyContainer.fixtureDefs.clear();
-        bodyContainer.addFixtures(structureMapper.get(entity),Pools.obtainSpatial());
-
-        return bodyContainer;
+        //bodyContainer.fixtureDefs.clear();
+        //bodyContainer.addFixtures(structureMapper.get(entity),Pools.obtainSpatial());
+        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial());
+        if(fixtures!=null){
+            fixtureDefs.addAll(fixtures);
+        }
+        return fixtureDefs;
     }
 
     @Override
-    public PhysicsBodyDef insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, PhysicsBodyDef bodyDefContainer) {
+    public Array<FixtureDef> insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, Array<FixtureDef> bodyDefContainer) {
 
         // Use vector relativeType to constructor.
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         LOG.info("Inserting child at vector:"+ spatial.vector);
 
         if(relationshipMapper.get(entity).relativeType == Relative.CHILD) {
-            bodyDefContainer.addFixtures(structureMapper.get(entity), spatial);
+            FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial);
+            if(fixtures!=null){
+                bodyDefContainer.addAll(fixtures);
+            }
         }
 
         return bodyDefContainer;
@@ -125,6 +123,28 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
 
     @Override
     public void childRemoved(Entity entity) {
+
+    }
+
+    private Body createBody(BodyDef bodyDef, Array<FixtureDef> fixtureDefs) {
+        LOG.info("CREATING BODY");
+        LOG.info("Type:"+bodyDef.type);
+        Body body = box2DWorld.createBody(bodyDef);
+        LOG.info("Adding "+fixtureDefs.size+" fixtures");
+        for (FixtureDef def : fixtureDefs) {
+            body.createFixture(def);
+            def.shape.dispose();
+        }
+        LOG.info("Mass:"+body.getMass());
+        return body;
+    }
+
+    public FixtureDef[] getFixtures(StructureRelative structure,Spatial spatial) {
+        if (structure.shape != null) {
+            FixtureDef[] structureFixtureDefs = structure.getFixtureDefinitions(spatial);
+            return structureFixtureDefs;
+        }
+        return null;
 
     }
 }

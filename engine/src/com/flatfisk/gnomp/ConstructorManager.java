@@ -55,7 +55,7 @@ public class ConstructorManager {
 
         Object iterateDTO = constructor.parentAdded(entity, constructorOrientation);
         childrenAdded(children, constructor, rootOrientation, constructorOrientation, constructorOrientation, iterateDTO);
-        constructor.parentAddedFinal(entity, iterateDTO);
+        constructor.parentAddedFinal(entity, constructorOrientation, iterateDTO);
     }
 
     private void childrenAdded(Array<Entity> children, Constructor constructor, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, Object iterateDTO){

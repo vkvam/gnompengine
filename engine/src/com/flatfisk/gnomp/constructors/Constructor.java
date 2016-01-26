@@ -49,7 +49,7 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
      */
     public abstract CONSTRUCTION_DTO parentAdded(Entity entity, SpatialRelative constructorOrientation);
     public abstract CONSTRUCTION_DTO insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
-    public void parentAddedFinal(Entity entity, CONSTRUCTION_DTO construction_dto){};
+    public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, CONSTRUCTION_DTO construction_dto){};
 
     public abstract void parentRemoved(Entity entity);
     public abstract void childRemoved(Entity entity);
