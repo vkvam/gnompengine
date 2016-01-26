@@ -48,7 +48,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         if( entityA.equals(sensor) || entityB.equals(sensor)){
             playerComponent.touchedPlatformTimes++;
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
-                Array<Node.EntityWrapper> children = player.getComponent(SpatialRelative.class).children;
+                Array<Entity> children = player.getComponent(SpatialRelative.class).children;
                 // TODO: This triggers two removes, need to have a trigger reconstruct flag.
                 GnompEngine engine = (GnompEngine) getEngine();
 
@@ -57,10 +57,10 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
                         Entity dot = null;
 
-                        for(Node.EntityWrapper e : children){
+                        for(Entity e : children){
 
-                            if(e.getEntity(engine).getComponent(Dot.class)!=null){
-                                dot = e.getEntity(engine);
+                            if(e.getComponent(Dot.class)!=null){
+                                dot = e;
                                 break;
                             }
                         }
@@ -68,10 +68,10 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                         if(dot!=null) {
 
                             i++;
-                                GnompEngine.GnompEntity e = createCharacterDot(new Spatial(20*i, 0,0));
-                                GnompEngine.GnompEntity e2 = createCharacterDot(new Spatial(-20*i, 0,0));
-                                player.getComponent(SpatialRelative.class).addChild(e, (GnompEngine) getEngine());
-                                player.getComponent(SpatialRelative.class).addChild(e2, (GnompEngine) getEngine());
+                                Entity e = createCharacterDot(new Spatial(20*i, 0,0));
+                                Entity e2 = createCharacterDot(new Spatial(-20*i, 0,0));
+                                player.getComponent(SpatialRelative.class).addChild(e);
+                                player.getComponent(SpatialRelative.class).addChild(e2);
 
                                 engine.addEntity(e);
                                 engine.addEntity(e2);
@@ -96,11 +96,11 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         }
     }
 
-    protected GnompEngine.GnompEntity createCharacterDot(Spatial translation){
+    protected Entity createCharacterDot(Spatial translation){
 
         GnompEngine world = ((GnompEngine) getEngine());
 
-        GnompEngine.GnompEntity e = world.createEntity();
+        Entity e = world.createEntity();
 
         world.addComponent(Dot.class,e);
 

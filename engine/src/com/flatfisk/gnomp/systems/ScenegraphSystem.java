@@ -33,8 +33,8 @@ public class ScenegraphSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
         SpatialRelative parentOrientation = orientationRelativeComponentMapper.get(entity);
-        for(Node.EntityWrapper child : scenegraphNode.children){
-            processChild(child.getEntity((GnompEngine) getEngine()),parentOrientation.world);
+        for(Entity child : scenegraphNode.children){
+            processChild(child,parentOrientation.world);
         }
     }
 
@@ -53,8 +53,8 @@ public class ScenegraphSystem extends IteratingSystem {
                 childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
                 childWorld.rotation += childLocal.rotation;
 
-                for (Node.EntityWrapper child : scenegraphNode.children) {
-                    processChild(child.getEntity((GnompEngine) getEngine()), childWorld);
+                for (Entity child : scenegraphNode.children) {
+                    processChild(child, childWorld);
                 }
             }
         }else{

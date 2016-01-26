@@ -70,17 +70,17 @@ public class TestReconstruct extends Test {
         int i;
 
         Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
-        platform.getComponent(SpatialRelative.class).addChild(character,world);
+        platform.getComponent(SpatialRelative.class).addChild(character);
 
         Entity sensor = createSensor(new Spatial(0,-10,0));
-        character.getComponent(SpatialRelative.class).addChild(sensor,world);
-        character.getComponent(ScenegraphNode.class).addChild(sensor,world);
+        character.getComponent(SpatialRelative.class).addChild(sensor);
+        character.getComponent(ScenegraphNode.class).addChild(sensor);
 
         Entity dot = character,dot2;
         for(i=0;i<5;i++) {
 
                 dot2 = createCharacterDot(new Spatial(17, 0, 0));
-                dot.getComponent(SpatialRelative.class).addChild(dot2, world);
+                dot.getComponent(SpatialRelative.class).addChild(dot2);
                 world.addEntity(dot2);
                 dot = dot2;
         }
@@ -89,7 +89,7 @@ public class TestReconstruct extends Test {
         for(i=0;i<5;i++) {
 
             dot2 = createCharacterDot(new Spatial(-17, 0, 0));
-            dot.getComponent(SpatialRelative.class).addChild(dot2, world);
+            dot.getComponent(SpatialRelative.class).addChild(dot2);
             world.addEntity(dot2);
             dot = dot2;
         }

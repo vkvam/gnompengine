@@ -78,22 +78,22 @@ public class TestPlatformer extends Test {
 
 
         Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
-        platform.getComponent(SpatialRelative.class).addChild(character,world);
+        platform.getComponent(SpatialRelative.class).addChild(character);
 
         Entity sensor = createSensor(new Spatial(0,-10,0));
-        character.getComponent(SpatialRelative.class).addChild(sensor,world);
-        character.getComponent(ScenegraphNode.class).addChild(sensor,world);
+        character.getComponent(SpatialRelative.class).addChild(sensor);
+        character.getComponent(ScenegraphNode.class).addChild(sensor);
 
 
         Entity dot2;
         for(i=0;i<10;i++) {
 
             dot2 = createCharacterDot(new Spatial(7+9*i, -i*i, i));
-            character.getComponent(SpatialRelative.class).addChild(dot2, world);
+            character.getComponent(SpatialRelative.class).addChild(dot2);
             world.addEntity(dot2);
 
             dot2 = createCharacterDot(new Spatial(-7+-9*i, i*i, i));
-            character.getComponent(SpatialRelative.class).addChild(dot2, world);
+            character.getComponent(SpatialRelative.class).addChild(dot2);
             world.addEntity(dot2);
         }
 

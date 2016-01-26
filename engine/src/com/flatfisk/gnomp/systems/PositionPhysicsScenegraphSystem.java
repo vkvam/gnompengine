@@ -49,7 +49,7 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
             verifyPositionTransfer(orientation);
 
             ScenegraphNode node = scenegraphNodeComponentMapper.get(entity);
-            Entity parent = node.parent.getEntity((GnompEngine) getEngine());
+            Entity parent = node.parent;
             if(parent!=null) {
                 PhysicsBody parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;

@@ -22,6 +22,8 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
     private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
 
     private World box2DWorld;
+    private boolean fixedStep=false;
+    private float fixedStepInterval = 1/60f;
 
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.class).get(),priority);
@@ -30,6 +32,14 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
     public World getBox2DWorld() {
         return box2DWorld;
+    }
+
+    public void setFixedStep(boolean fixedStep) {
+        this.fixedStep = fixedStep;
+    }
+
+    public void setFixedStepInterval(float fixedStepInterval) {
+        this.fixedStepInterval = fixedStepInterval;
     }
 
     @Override
@@ -45,8 +55,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
     @Override
     public void update(final float f) {
-        //LOG.info("COUNT:"+box2DWorld.getBodyCount()+"E:"+getEngine().getEntities().size());
-        box2DWorld.step(f, 3, 3);
+        box2DWorld.step(fixedStep?fixedStepInterval:f,3,3);
         super.update(f);
     }
 

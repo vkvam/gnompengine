@@ -12,9 +12,9 @@ public class Node implements Component, Pool.Poolable{
     private static int initialSize = 0;
 
     // The parent
-    public EntityWrapper owner;
-    public EntityWrapper parent = null;
-    public Array<EntityWrapper> children;
+    public Entity owner;
+    public Entity parent = null;
+    public Array<Entity> children;
     public Class<? extends Node> childType;
 
     public boolean hasChildren(){
@@ -22,25 +22,24 @@ public class Node implements Component, Pool.Poolable{
     }
 
     protected Node(Class<? extends Node> childType) {
-        children = new Array<EntityWrapper>(initialSize);
+        children = new Array<Entity>(initialSize);
         this.childType = childType;
     }
 
     public void setOwner(Entity entity) {
-        owner = new EntityWrapper((GnompEngine.GnompEntity) entity);
+        owner = entity;
     }
 
     public void setParent(Entity entity) {
-        parent = new EntityWrapper((GnompEngine.GnompEntity) entity);
+        parent = entity;
     }
 
     /**
-     * @param entity, the child entity to be added.
      * @return true if child was added
      */
-    public boolean addChild(Entity entity, GnompEngine engine) {
+    public boolean addChild(Entity entity) {
 
-        if (!hasChild(entity,engine) && !entity.equals(this.parent)) {
+        if (!hasChild(entity) && !entity.equals(this.parent)) {
             add(entity);
             Node childNoe = entity.getComponent(this.childType);
             childNoe.parent = owner;
@@ -57,26 +56,15 @@ public class Node implements Component, Pool.Poolable{
         children.clear();
     }
     private void add(Entity entity){
-        children.add(new EntityWrapper((GnompEngine.GnompEntity) entity));
+        children.add(entity);
     }
-    public void removeChild(Entity entity,GnompEngine engine){
+    public void removeChild(Entity entity){
         LOG.info("Removing child!");
-        EntityWrapper remove = null;
-        for(EntityWrapper wrapper:children){
-            if(wrapper.getEntity(engine).equals(entity)){
-                remove = wrapper;
-            }
-        }
-
-        children.removeValue(remove, false);
+        children.removeValue(entity, false);
     }
 
-    private boolean hasChild(Entity entity, GnompEngine engine){
-
-        for(EntityWrapper entityWrapper:children){
-            return entityWrapper.getEntity(engine).equals(entity);
-        }
-
+    private boolean hasChild(Entity entity){
+        children.contains(entity,false);
         return false;
     }
 
@@ -96,22 +84,4 @@ public class Node implements Component, Pool.Poolable{
         return node;
     }
 
-    public class EntityWrapper{
-        private GnompEngine.GnompEntity entity;
-        private long id;
-
-        public EntityWrapper(GnompEngine.GnompEntity entity) {
-            this.entity = entity;
-            this.id = entity.id;
-        }
-
-        public GnompEngine.GnompEntity getEntity(GnompEngine gnompEngine) {
-            if(entity!=null && entity.id == id) {
-                return entity;
-            }else{
-                entity = gnompEngine.getEntity(id);
-                return entity;
-            }
-        }
-    }
 }

@@ -19,12 +19,12 @@ public class DefaultGnompEngineApplicationListener extends GnompEngineApplicatio
         super.create();
     }
 
-    protected void createScenegraphSystem(int priority){
+    protected void addScenegraphSystem(int priority){
         ScenegraphSystem scenegraphSystem = new ScenegraphSystem(priority);
         world.addSystem(scenegraphSystem);
     }
 
-    protected void createConstructorManager(int priority,World physicsWorld){
+    protected void initializeConstructorManager(int priority, World physicsWorld){
         ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
         constructorManager.addConstructor(new SpatialConstructor(world),0);
         constructorManager.addConstructor(new StructureConstructor(world),1);
@@ -33,26 +33,27 @@ public class DefaultGnompEngineApplicationListener extends GnompEngineApplicatio
         //world.addEntityListener(constructorManager.rootFamily,priority,constructorManager);
     }
 
-    protected RenderSystem createRenderSystem(int priority){
+    protected RenderSystem addRenderSystem(int priority){
         RenderSystem renderer = new RenderSystem(priority);
         //world.addEntityListener(renderer.getFamily(),priority,renderer);
         world.addSystem(renderer);
         return renderer;
     }
 
-    protected void createDebugRenderer(int priority, World physicsWorld, RenderSystem renderer, boolean clear){
+    protected void addDebugRenderer(int priority, World physicsWorld, RenderSystem renderer, boolean clear){
         PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(renderer.getCamera(),physicsWorld,priority);
         debugRenderer.setClearScreen(clear);
         world.addSystem(debugRenderer);
     }
 
-    protected void createPhysicsSystem(int priority,World physicsWorld){
+    protected PhysicsSystem addPhysicsSystem(int priority,World physicsWorld){
         PhysicsSystem physicsSystem = new PhysicsSystem(physicsWorld,priority);
         world.addEntityListener(physicsSystem.getFamily(),priority,physicsSystem);
         world.addSystem(physicsSystem);
+        return physicsSystem;
     }
 
-    protected void createPhysicsTrackerSystem(int priority){
+    protected void addPhysicsTrackerSystem(int priority){
         PositionPhysicsScenegraphSystem physicsSystem = new PositionPhysicsScenegraphSystem(priority);
         world.addSystem(physicsSystem);
     }

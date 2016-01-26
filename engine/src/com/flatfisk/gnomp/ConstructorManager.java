@@ -11,7 +11,6 @@ import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SortedIntList;
-import com.flatfisk.gnomp.components.Node;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 import com.flatfisk.gnomp.components.roots.SpatialDef;
 import com.flatfisk.gnomp.constructors.Constructor;
@@ -52,18 +51,18 @@ public class ConstructorManager {
     private void parentAdded(Constructor constructor, Entity entity, SpatialRelative rootOrientation){
         LOG.info("Parent added for constructor:"+constructor.getClass());
         SpatialRelative constructorOrientation = spatialRelativeComponentMapper.get(entity);
-        Array<Node.EntityWrapper> children = constructorOrientation.children;
+        Array<Entity> children = constructorOrientation.children;
 
         Object iterateDTO = constructor.parentAdded(entity, constructorOrientation);
         childrenAdded(children, constructor, rootOrientation, constructorOrientation, constructorOrientation, iterateDTO);
         constructor.parentAddedFinal(entity, iterateDTO);
     }
 
-    private void childrenAdded(Array<Node.EntityWrapper> children, Constructor constructor, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, Object iterateDTO){
-        for(Node.EntityWrapper childWrapper : children) {
-            LOG.info("Child for constructor:"+childWrapper.getEntity(engine));
-            if(childWrapper!=null && childWrapper.getEntity(engine)!=null) {
-            Entity child = childWrapper.getEntity(engine);
+    private void childrenAdded(Array<Entity> children, Constructor constructor, SpatialRelative rootOrientation, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, Object iterateDTO){
+        for(Entity childWrapper : children) {
+            LOG.info("Child for constructor:"+childWrapper);
+            if(childWrapper!=null && childWrapper!=null) {
+            Entity child = childWrapper;
                 if (constructor.isChild(child)) {
                     SpatialRelative orientation = spatialRelativeComponentMapper.get(child);
                     LOG.info("Child added for constructor:" + constructor.getClass());
@@ -83,7 +82,7 @@ public class ConstructorManager {
     }
 
 
-    public GnompEngine.GnompEntity getConstructor(GnompEngine.GnompEntity entity, boolean isParent) {
+    public Entity getConstructor(Entity entity, boolean isParent) {
 
         boolean hasChildren = false;
         boolean hasConstructor = false;
@@ -102,13 +101,13 @@ public class ConstructorManager {
 
         if(isParent&&hasConstructor){
             return entity;
-        }else if(hasChildren && rel!=null &&rel.parent!=null && rel.parent.getEntity(engine)!=null){
-            return getConstructor(rel.parent.getEntity(engine), true);
+        }else if(hasChildren && rel!=null &&rel.parent!=null){
+            return getConstructor(rel.parent, true);
         }
         return null;
     }
 
-    public GnompEngine.GnompEntity dismantleEntity(GnompEngine.GnompEntity constructorEntity){
+    public Entity dismantleEntity(Entity constructorEntity){
 
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
@@ -122,18 +121,18 @@ public class ConstructorManager {
     private void parentRemoved(Constructor constructor, Entity entity){
         LOG.info("Parent removed for constructor:"+constructor.getClass());
         SpatialRelative constructorOrientation = spatialRelativeComponentMapper.get(entity);
-        Array<Node.EntityWrapper> children = constructorOrientation.children;
+        Array<Entity> children = constructorOrientation.children;
 
         constructor.parentRemoved(entity);
         childrenRemoved(children, constructor);
     }
 
 
-    private void childrenRemoved(Array<Node.EntityWrapper> children, Constructor constructor){
-        for(Node.EntityWrapper childWrapper : children) {
-            LOG.info("Child for constructor:"+childWrapper.getEntity(engine));
-            if(childWrapper!=null && childWrapper.getEntity(engine)!=null) {
-                Entity child = childWrapper.getEntity(engine);
+    private void childrenRemoved(Array<Entity> children, Constructor constructor){
+        for(Entity childWrapper : children) {
+            LOG.info("Child for constructor:"+childWrapper);
+            if(childWrapper!=null && childWrapper!=null) {
+                Entity child = childWrapper;
                 if (constructor.isChild(child)) {
                     SpatialRelative orientation = spatialRelativeComponentMapper.get(child);
                     LOG.info("Child added for constructor:" + constructor.getClass());
