@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp;
+package com.flatfisk.gnomp.tests;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -60,18 +60,21 @@ public class TestPlatformer extends Test {
         Entity platform2 = createPlatform(new Spatial(-1000,-200,0),3000,Color.RED,false);
         world.addComponent(SpatialDef.class,platform2);
         world.addEntity(platform2);
+        world.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Spatial(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
             world.addComponent(SpatialDef.class,platform2);
             world.addEntity(platform2);
+            world.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Spatial(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
         world.addComponent(SpatialDef.class,platform2);
         world.addComponent(EndPoint.class,platform2);
         world.addEntity(platform2);
+        world.constructEntity(platform2);
 
 
         Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
@@ -81,27 +84,24 @@ public class TestPlatformer extends Test {
         character.getComponent(SpatialRelative.class).addChild(sensor,world);
         character.getComponent(ScenegraphNode.class).addChild(sensor,world);
 
-        Entity dot = character,dot2;
-        for(i=0;i<50;i++) {
 
-                dot2 = createCharacterDot(new Spatial(17, 0, 0));
-                dot.getComponent(SpatialRelative.class).addChild(dot2, world);
-                world.addEntity(dot2);
-                dot = dot2;
-        }
+        Entity dot2;
+        for(i=0;i<10;i++) {
 
-        dot = character;
-        for(i=0;i<50;i++) {
-
-            dot2 = createCharacterDot(new Spatial(-17, 0, 0));
-            dot.getComponent(SpatialRelative.class).addChild(dot2, world);
+            dot2 = createCharacterDot(new Spatial(7+9*i, -i*i, i));
+            character.getComponent(SpatialRelative.class).addChild(dot2, world);
             world.addEntity(dot2);
-            dot = dot2;
+
+            dot2 = createCharacterDot(new Spatial(-7+-9*i, i*i, i));
+            character.getComponent(SpatialRelative.class).addChild(dot2, world);
+            world.addEntity(dot2);
         }
 
         world.addEntity(sensor);
         world.addEntity(character);
         world.addEntity(platform);
+
+        world.constructEntity(platform);
     }
 
     protected Entity createSensor(Spatial translation){
@@ -170,7 +170,7 @@ public class TestPlatformer extends Test {
         world.addComponent(Player.class,e);
 
         StructureRelative structure = world.addComponent(StructureRelative.class,e);
-        CircleShape rectangularLineShape = new CircleShape(1,10,Color.WHITE,Color.FIREBRICK);
+        CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
         structure.shape = rectangularLineShape;
         structure.density = 1;
         structure.friction = 5f;
@@ -211,18 +211,17 @@ public class TestPlatformer extends Test {
         renderableRelative.relativeType = Relative.CHILD;
 
         StructureRelative structure = world.addComponent(StructureRelative.class,e);
-        CircleShape rectangularLineShape = new CircleShape(1,3,Color.RED,Color.RED);
+        CircleShape rectangularLineShape = new CircleShape(1,5,Color.RED,Color.BLUE);
         structure.shape = rectangularLineShape;
-        structure.density = 1;
+        structure.density = .1f;
         structure.friction = 5f;
         structure.relativeType = Relative.CHILD;
 
-        //RenderableDef renderableDef = world.addComponent(RenderableDef.class,e);
-        //renderableDef.zIndex = 1;
+        PhysicsBodyRelative rel  = world.addComponent(PhysicsBodyRelative.class, e);
 
-        //world.addComponent(StructureDef.class,e);
-        //world.addComponent(ScenegraphNode.class,e);
-        //world.addComponent(PhysicsBodyRelative.class,e);
+        if(Math.random()>0.9) {
+            rel.relativeType = Relative.INTERMEDIATE;
+        }
 
         return e;
     }

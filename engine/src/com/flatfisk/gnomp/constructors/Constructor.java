@@ -38,7 +38,7 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
 
     public boolean isChild(Entity entity){
         RELATIONSHIP relationship = relationshipMapper.get(entity);
-        return relationship!=null&&relationship.getRelativeType() == Relative.CHILD;
+        return relationship!=null && (relationship.getRelativeType() == Relative.CHILD || relationship.getRelativeType() == Relative.INTERMEDIATE);
     }
 
     /**

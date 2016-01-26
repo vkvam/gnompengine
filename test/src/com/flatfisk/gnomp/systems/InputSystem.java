@@ -3,12 +3,17 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.*;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
+import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
+import com.flatfisk.gnomp.components.relatives.RenderableRelative;
 import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.relatives.StructureRelative;
+import com.flatfisk.gnomp.math.Spatial;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
@@ -30,12 +35,13 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
     }
 
     boolean removed = false;
+    int i=0;
 
     @Override
     public void beginContact(Contact contact) {
         Entity entityA = (Entity) contact.getFixtureA().getBody().getUserData();
         Entity entityB = (Entity) contact.getFixtureB().getBody().getUserData();
-        int i=0;
+
 
 
 
@@ -54,22 +60,28 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                         for(Node.EntityWrapper e : children){
 
                             if(e.getEntity(engine).getComponent(Dot.class)!=null){
-                                i++;
                                 dot = e.getEntity(engine);
+                                break;
                             }
                         }
 
                         if(dot!=null) {
-                            while (dot.getComponent(SpatialRelative.class).children.size > 0) {
-                                if (dot.getComponent(Dot.class) != null) {
-                                    i++;
-                                    dot = dot.getComponent(SpatialRelative.class).children.get(0).getEntity((GnompEngine) getEngine());
-                                }
+
+                            i++;
+                                GnompEngine.GnompEntity e = createCharacterDot(new Spatial(20*i, 0,0));
+                                GnompEngine.GnompEntity e2 = createCharacterDot(new Spatial(-20*i, 0,0));
+                                player.getComponent(SpatialRelative.class).addChild(e, (GnompEngine) getEngine());
+                                player.getComponent(SpatialRelative.class).addChild(e2, (GnompEngine) getEngine());
+
+                                engine.addEntity(e);
+                                engine.addEntity(e2);
+                                engine.removeEntity(dot);
+                            if(Math.random()>0){
+                                playerComponent.touchedPlatformTimes--;
+                                engine.constructEntity(e);
                             }
-                            playerComponent.touchedPlatformTimes--;
-                            engine.removeEntity(dot);
+
                         }
-                        LOG.info("CHILD:"+i);
                         removed = true;
                     }
                 }
@@ -82,6 +94,37 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                 body.positionChanged = true;
             }
         }
+    }
+
+    protected GnompEngine.GnompEntity createCharacterDot(Spatial translation){
+
+        GnompEngine world = ((GnompEngine) getEngine());
+
+        GnompEngine.GnompEntity e = world.createEntity();
+
+        world.addComponent(Dot.class,e);
+
+        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        orientationRelative.local = translation;
+        orientationRelative.relativeType = Relative.CHILD;
+        orientationRelative.inheritFromParentType = SpatialRelative.SpatialInheritType.POSITION_ANGLE;
+
+        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
+        renderableRelative.relativeType = Relative.CHILD;
+
+        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        com.flatfisk.gnomp.shape.CircleShape rectangularLineShape = new com.flatfisk.gnomp.shape.CircleShape(1,5, Color.GREEN,Color.BLACK);
+        structure.shape = rectangularLineShape;
+        structure.density = .1f;
+        structure.friction = 5f;
+        structure.relativeType = Relative.CHILD;
+
+        PhysicsBodyRelative rel = world.addComponent(PhysicsBodyRelative.class, e);
+        if(Math.random()>0.5) {
+            rel.relativeType = Relative.INTERMEDIATE;
+        }
+
+        return e;
     }
 
     @Override

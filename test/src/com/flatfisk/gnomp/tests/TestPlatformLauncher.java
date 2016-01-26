@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp;
+package com.flatfisk.gnomp.tests;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;

@@ -47,9 +47,6 @@ public class StructureConstructor extends Constructor<StructureDef,StructureRela
 
         if(structure.shape !=null){
             constructorDTO.textureCoordinates = structure.shape.getTextureCoordinates(constructorDTO.textureCoordinates, spatial);
-            LOG.info("B:"+constructorDTO.textureCoordinates.getBoundingRectangle());
-        }else{
-            LOG.info("S:"+structure.shape);
         }
 
         constructorDTO.boundingRectangle = constructorDTO.textureCoordinates.getBoundingRectangle();

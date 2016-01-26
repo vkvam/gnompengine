@@ -3,7 +3,7 @@ package com.badlogic.ashley.core;
 import com.badlogic.gdx.utils.*;
 import com.flatfisk.gnomp.ConstructorManager;
 import com.flatfisk.gnomp.components.Node;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.roots.SpatialDef;
 import com.flatfisk.gnomp.constructors.Constructor;
 
 import java.util.Iterator;
@@ -16,12 +16,14 @@ public class GnompEngine extends Engine {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ConstructorManager constructorManager;
     public Array<EntityConstructor> reconstructList;
-    public Array<GnompEntity> removeEntities = new Array<GnompEntity>();
     private static long nextEntityId = 0;
 
     private GnompEntityPool gnompEntityPool;
     private ComponentPools componentPools;
-    private Array<Class<? extends Constructor>> classes;
+
+    public Array<GnompEntity> entitiesAdded = new Array<GnompEntity>();
+    public Array<GnompEntity> entitiesReconstructed = new Array<GnompEntity>();
+    public Family rootFamily;
 
     /**
      * Creates a new PooledEngine with a maximum of 100 entities and 100 components of each type. Use
@@ -29,6 +31,7 @@ public class GnompEngine extends Engine {
      */
     public GnompEngine () {
         this(10, 100, 10, 100);
+        rootFamily = Family.all(SpatialDef.class).get();
     }
 
     /**
@@ -63,32 +66,49 @@ public class GnompEngine extends Engine {
     }
 
     public void addEntity(Entity entity){
-        constructorManager.addEntity(entity);
         super.addEntity(entity);
     }
 
     public void removeEntity(Entity entity){
-        removeEntities.add((GnompEntity) entity);
+        removeFromParents((GnompEntity) entity);
+        super.removeEntity(entity);
     }
 
-    private void removeChildren(GnompEngine.GnompEntity parent, GnompEngine.GnompEntity child){
-        if(parent!=null) {
+    public void constructEntity(Entity entity){
+        if(constructorManager.rootFamily.matches(entity)) {
+            constructorManager.constructEntity(entity);
+        }else{
+            entitiesAdded.add((GnompEntity) entity);
+        }
+    }
 
-            for(Component c:parent.getComponents()){
-                if(c instanceof Node){
-                    ((Node) c).removeChild(child,this);
+    private void removeFromParents(GnompEntity entity){
+        for(Component c : entity.getComponents()){
+            if(c instanceof Node){
+                Node node = (Node) c;
+                Node.EntityWrapper parent = node.parent;
+                if(parent!=null){
+                    removeChildren(parent.getEntity(this),entity,node.getClass());
                 }
             }
+        }
+    }
+
+    private void removeChildren(GnompEngine.GnompEntity parent, GnompEngine.GnompEntity child, Class<? extends Node> nodeType){
+        if(parent!=null) {
+
+            Node node = parent.getComponent(nodeType);
+            node.removeChild(child,this);
 
             super.removeEntity(child);
 
-            SpatialRelative childSpatial = child.getComponent(SpatialRelative.class);
-            if(childSpatial!=null && childSpatial.children!=null) {
-                Node.EntityWrapper[] children = childSpatial.children.toArray(Node.EntityWrapper.class);
+            Node childNode = child.getComponent(nodeType);
+            if(childNode!=null && childNode.children!=null) {
+                Node.EntityWrapper[] children = childNode.children.toArray(Node.EntityWrapper.class);
 
                 for (Node.EntityWrapper entityWrapper : children) {
                     GnompEngine.GnompEntity entity = entityWrapper.getEntity(this);
-                    removeChildren(child, entity);
+                    removeChildren(child, entity,nodeType);
                 }
             }
         }
@@ -97,21 +117,25 @@ public class GnompEngine extends Engine {
 
     public void update(float f){
         super.update(f);
-        Iterator<GnompEntity> entityIterator = removeEntities.iterator();
-        while(entityIterator.hasNext()) {
-            GnompEntity entity = entityIterator.next();
+        reconstructEntities();
+    }
 
-            GnompEntity entityParent = entity.getComponent(SpatialRelative.class).parent.getEntity(this);
+    private void reconstructEntities(){
+        if(entitiesAdded.size>0) {
+            Iterator<GnompEntity> entitiesAddedIterator = entitiesAdded.iterator();
+            while (entitiesAddedIterator.hasNext()) {
+                GnompEntity entity = entitiesAddedIterator.next();
+                GnompEntity constructor = constructorManager.getConstructor(entity,true);
 
-            // Removes all constructed components.
-            GnompEntity constructor = constructorManager.removeEntity(entity);
-            entityIterator.remove();
+                if(!entitiesReconstructed.contains(constructor,false)){
+                    constructorManager.dismantleEntity(constructor);
+                    constructorManager.constructEntity(constructor);
+                    entitiesReconstructed.add(constructor);
+                }
 
-            // Remove all children of removed entity.
-            removeChildren(entityParent,entity);
-            super.removeEntity(entity);
-
-            constructorManager.reconstructEntity(constructor);
+                entitiesAddedIterator.remove();
+            }
+            entitiesReconstructed.clear();
         }
     }
 
@@ -156,7 +180,7 @@ public class GnompEngine extends Engine {
         super.removeEntityInternal(entity);
 
         if (entity instanceof GnompEntity) {
-            gnompEntityPool.free((GnompEntity)entity);
+            gnompEntityPool.free((GnompEntity) entity);
         }
     }
 

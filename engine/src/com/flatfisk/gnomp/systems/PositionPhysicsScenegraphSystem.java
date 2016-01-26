@@ -12,13 +12,13 @@ import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
 import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
 import com.flatfisk.gnomp.math.Spatial;
 
-public class PhysicsTrackerSystem extends IteratingSystem implements ApplicationListener {
+public class PositionPhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBody> physicsBodyMapper;
     private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
     private ComponentMapper<SpatialRelative> orientationMapper;
 
-    public PhysicsTrackerSystem(int priority) {
+    public PositionPhysicsScenegraphSystem(int priority) {
         super(Family.all(PhysicsBody.class, ScenegraphNode.class).exclude(ScenegraphRoot.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.class);
@@ -39,12 +39,15 @@ public class PhysicsTrackerSystem extends IteratingSystem implements Application
     }
 
     @Override
-    public void processEntity(Entity entity, float f) {
+    public void processEntity(Entity entity, float f) throws UnsupportedOperationException{
 
         PhysicsBody body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
             SpatialRelative orientation = orientationMapper.get(entity);
+
+            verifyPositionTransfer(orientation);
+
             ScenegraphNode node = scenegraphNodeComponentMapper.get(entity);
             Entity parent = node.parent.getEntity((GnompEngine) getEngine());
             if(parent!=null) {
@@ -58,14 +61,17 @@ public class PhysicsTrackerSystem extends IteratingSystem implements Application
                     float yDiff = (t.vector.y - (t2.getPosition().y)) / f;
 
                     b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff, yDiff));
-                    // TODO: Wee need some fancy stuff if we need a physics-node to follow around another nodes trajectory.
-                    if(orientation.inheritFromParentType == SpatialRelative.SpatialInheritType.POSITION_ANGLE) {
-                        throw new UnsupportedOperationException("Transfer of rotation to child is unsupported");
-                        //float aDiff = (t.rotation - t2.getRotation()) / f;
-                        //b.setAngularVelocity(parentBody.body.getAngularVelocity() + aDiff);
-                    }
                 }
             }
+        }
+    }
+
+    private void verifyPositionTransfer(SpatialRelative orientation){
+
+        if(orientation.inheritFromParentType == SpatialRelative.SpatialInheritType.POSITION_ANGLE) {
+            String msg = "inheritFromParentType should be "+SpatialRelative.SpatialInheritType.POSITION+
+                    " when used with "+this.getClass();
+            throw new UnsupportedOperationException(msg);
         }
     }
 

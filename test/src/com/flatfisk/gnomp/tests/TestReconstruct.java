@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.Test;
 import com.flatfisk.gnomp.components.*;
 import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
 import com.flatfisk.gnomp.components.relatives.RenderableRelative;
@@ -68,7 +67,7 @@ public class TestReconstruct extends Test {
         Entity platform = createPlatform(position,90,Color.GREEN,false);
         world.addComponent(SpatialDef.class,platform);
 
-        int i=0;
+        int i;
 
         Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
         platform.getComponent(SpatialRelative.class).addChild(character,world);
@@ -98,6 +97,7 @@ public class TestReconstruct extends Test {
         world.addEntity(sensor);
         world.addEntity(character);
         world.addEntity(platform);
+        world.constructEntity(platform);
     }
 
     protected Entity createSensor(Spatial translation){

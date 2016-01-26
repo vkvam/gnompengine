@@ -35,7 +35,7 @@ public class DefaultGnompEngineApplicationListener extends GnompEngineApplicatio
 
     protected RenderSystem createRenderSystem(int priority){
         RenderSystem renderer = new RenderSystem(priority);
-        world.addEntityListener(renderer.getFamily(),priority,renderer);
+        //world.addEntityListener(renderer.getFamily(),priority,renderer);
         world.addSystem(renderer);
         return renderer;
     }
@@ -53,7 +53,7 @@ public class DefaultGnompEngineApplicationListener extends GnompEngineApplicatio
     }
 
     protected void createPhysicsTrackerSystem(int priority){
-        PhysicsTrackerSystem physicsSystem = new PhysicsTrackerSystem(priority);
+        PositionPhysicsScenegraphSystem physicsSystem = new PositionPhysicsScenegraphSystem(priority);
         world.addSystem(physicsSystem);
     }
 }

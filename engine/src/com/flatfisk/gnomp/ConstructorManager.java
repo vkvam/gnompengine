@@ -4,7 +4,10 @@ package com.flatfisk.gnomp;
  * Created by Vemund Kvam on 06/12/15.
  */
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SortedIntList;
@@ -37,23 +40,9 @@ public class ConstructorManager {
         constructors.insert(priority,constructor);
     }
 
+    public void constructEntity(Entity entity) {
 
-    public void addEntity(Entity entity) {
-        if(rootFamily.matches(entity)) {
-            SpatialRelative rootOrientation = spatialRelativeComponentMapper.get(entity);
-
-            for (SortedIntList.Node<Constructor> constructorNode : constructors) {
-                Constructor constructor = constructorNode.value;
-                if (constructor.isParent(entity)) {
-                    parentAdded(constructor, entity, rootOrientation);
-                }
-            }
-        }
-    }
-
-    public void reconstructEntity(Entity entity) {
-
-        SpatialRelative constructorOrientation = spatialRelativeComponentMapper.get(entity);
+            SpatialRelative constructorOrientation = spatialRelativeComponentMapper.get(entity);
             for (SortedIntList.Node<Constructor> constructorNode : constructors) {
                 Constructor constructor = constructorNode.value;
                 parentAdded(constructor, entity, constructorOrientation);
@@ -93,12 +82,39 @@ public class ConstructorManager {
         }
     }
 
-    public GnompEngine.GnompEntity removeEntity(GnompEngine.GnompEntity entity){
-        GnompEngine.GnompEntity constructorEntity = getConstructor(entity,false);
+
+    public GnompEngine.GnompEntity getConstructor(GnompEngine.GnompEntity entity, boolean isParent) {
+
+        boolean hasChildren = false;
+        boolean hasConstructor = false;
+
+        Constructor constructor;
+
+        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
+            constructor = constructorNode.value;
+            if(!(constructor instanceof SpatialConstructor)) {
+                hasChildren = constructor.relationshipMapper.has(entity);
+                hasConstructor = constructor.constructorMapper.has(entity);
+            }
+        }
+
+        SpatialRelative rel = entity.getComponent(SpatialRelative.class);
+
+        if(isParent&&hasConstructor){
+            return entity;
+        }else if(hasChildren && rel!=null &&rel.parent!=null && rel.parent.getEntity(engine)!=null){
+            return getConstructor(rel.parent.getEntity(engine), true);
+        }
+        return null;
+    }
+
+    public GnompEngine.GnompEntity dismantleEntity(GnompEngine.GnompEntity constructorEntity){
+
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
-            //constructor.parentRemoved(constructorEntity);
-            parentRemoved(constructor,constructorEntity);
+            if(constructorEntity!=null) {
+                parentRemoved(constructor, constructorEntity);
+            }
         }
         return constructorEntity;
     }
@@ -132,29 +148,5 @@ public class ConstructorManager {
         }
     }
 
-    private GnompEngine.GnompEntity getConstructor(GnompEngine.GnompEntity entity, boolean isParent) {
-
-        boolean hasChildren = false;
-        boolean hasConstructor = false;
-
-        Constructor constructor;
-
-        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
-            constructor = constructorNode.value;
-            if(!(constructor instanceof SpatialConstructor)) {
-                hasChildren = constructor.relationshipMapper.has(entity);
-                hasConstructor = constructor.constructorMapper.has(entity);
-            }
-        }
-
-        SpatialRelative rel = entity.getComponent(SpatialRelative.class);
-
-        if(isParent&&hasConstructor){
-            return entity;
-        }else if(hasChildren && rel!=null &&rel.parent!=null && rel.parent.getEntity(engine)!=null){
-            return getConstructor(rel.parent.getEntity(engine), true);
-        }
-        return null;
-    }
 
 }

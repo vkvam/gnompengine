@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Relative;
 import com.flatfisk.gnomp.components.Velocity;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
 import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
@@ -102,7 +103,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         LOG.info("Inserting child at vector:"+ spatial.vector);
 
-        bodyDefContainer.addFixtures(structureMapper.get(entity), spatial);
+        if(relationshipMapper.get(entity).relativeType == Relative.CHILD) {
+            bodyDefContainer.addFixtures(structureMapper.get(entity), spatial);
+        }
 
         return bodyDefContainer;
     }
@@ -110,21 +113,18 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     @Override
     public void parentRemoved(Entity entity) {
         PhysicsBody physicsBody = bodyMapper.get(entity);
-        Body b = physicsBody.body;
-        if(b!=null) {
-            b.setUserData(null);
-            box2DWorld.destroyBody(bodyMapper.get(entity).body);
+        if(physicsBody!=null) {
+            Body b = physicsBody.body;
+            if (b != null) {
+                b.setUserData(null);
+                box2DWorld.destroyBody(bodyMapper.get(entity).body);
+            }
         }
+
     }
 
     @Override
     public void childRemoved(Entity entity) {
 
-        PhysicsBody physicsBody = bodyMapper.get(entity);
-        Body b = physicsBody.body;
-        if(b!=null) {
-            b.setUserData(null);
-            box2DWorld.destroyBody(bodyMapper.get(entity).body);
-        }
     }
 }
