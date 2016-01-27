@@ -6,17 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.*;
-import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
-import com.flatfisk.gnomp.components.relatives.RenderableRelative;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
-import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
-import com.flatfisk.gnomp.components.roots.RenderableDef;
-import com.flatfisk.gnomp.components.roots.SpatialDef;
-import com.flatfisk.gnomp.components.roots.StructureDef;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.shape.CircleShape;
 import com.flatfisk.gnomp.shape.RectangularLineShape;
 import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
@@ -49,7 +39,7 @@ public class TestReconstruct extends Test {
         world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
         world.addSystem(new CameraTrackerSystem(1,world.getSystem(RenderSystem.class).getCamera(),true,true));
-        createGame(new Spatial(0, -120, 0));
+        createGame(new com.flatfisk.gnomp.math.Spatial(0, -120, 0));
     }
 
     /*
@@ -62,25 +52,25 @@ public class TestReconstruct extends Test {
     c1 is removed and constructor is a, every node needs to be reconstructed.
     */
 
-    private void createGame(Spatial position){
+    private void createGame(com.flatfisk.gnomp.math.Spatial position){
 
         Entity platform = createPlatform(position,90,Color.GREEN,false);
-        world.addComponent(SpatialDef.class,platform);
+        world.addComponent(Constructor.class,platform);
 
         int i;
 
-        Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
-        platform.getComponent(SpatialRelative.class).addChild(character);
+        Entity character = createCharacter(new com.flatfisk.gnomp.math.Spatial(0,150,0),new com.flatfisk.gnomp.math.Spatial(0,0,0));
+        platform.getComponent(Constructor.Node.class).addChild(character);
 
-        Entity sensor = createSensor(new Spatial(0,-10,0));
-        character.getComponent(SpatialRelative.class).addChild(sensor);
-        character.getComponent(ScenegraphNode.class).addChild(sensor);
+        Entity sensor = createSensor(new com.flatfisk.gnomp.math.Spatial(0,-10,0));
+        character.getComponent(Constructor.Node.class).addChild(sensor);
+        character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
         Entity dot = character,dot2;
         for(i=0;i<5;i++) {
 
-                dot2 = createCharacterDot(new Spatial(17, 0, 0));
-                dot.getComponent(SpatialRelative.class).addChild(dot2);
+                dot2 = createCharacterDot(new com.flatfisk.gnomp.math.Spatial(17, 0, 0));
+                dot.getComponent(Constructor.Node.class).addChild(dot2);
                 world.addEntity(dot2);
                 dot = dot2;
         }
@@ -88,8 +78,8 @@ public class TestReconstruct extends Test {
         dot = character;
         for(i=0;i<5;i++) {
 
-            dot2 = createCharacterDot(new Spatial(-17, 0, 0));
-            dot.getComponent(SpatialRelative.class).addChild(dot2);
+            dot2 = createCharacterDot(new com.flatfisk.gnomp.math.Spatial(-17, 0, 0));
+            dot.getComponent(Constructor.Node.class).addChild(dot2);
             world.addEntity(dot2);
             dot = dot2;
         }
@@ -100,25 +90,25 @@ public class TestReconstruct extends Test {
         world.constructEntity(platform);
     }
 
-    protected Entity createSensor(Spatial translation){
+    protected Entity createSensor(com.flatfisk.gnomp.math.Spatial translation){
 
 
         Entity e = world.createEntity();
 
-        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
         orientationRelative.local = translation;
-        orientationRelative.relativeType = Relative.CHILD;
-        orientationRelative.inheritFromParentType = SpatialRelative.SpatialInheritType.POSITION;
+        orientationRelative.relativeType = IRelative.Relative.CHILD;
+        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION;
 
 
-        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
-        renderableRelative.relativeType = Relative.PARENT;
+        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        renderableRelative.relativeType = IRelative.Relative.PARENT;
 
 
-        PhysicsBodyRelative physicsBodyRelative = world.addComponent(PhysicsBodyRelative.class,e);
-        physicsBodyRelative.relativeType = Relative.PARENT;
+        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
+        physicsBodyRelative.relativeType = IRelative.Relative.PARENT;
 
-        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        Structure.Node structure = world.addComponent(Structure.Node.class,e);
 
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,4,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from = new Vector2(-1.5f,0);
@@ -128,21 +118,21 @@ public class TestReconstruct extends Test {
         structure.shape = rectangularLineShape;
         structure.density = 1;
         structure.friction = 5f;
-        structure.relativeType = Relative.PARENT;
+        structure.relativeType = IRelative.Relative.PARENT;
         structure.isSensor = true;
         structure.categoryBits = CATEGORY_SENSOR;
         structure.maskBits = CATEGORY_PLATFORM;
 
 
-        RenderableDef renderableDef = world.addComponent(RenderableDef.class,e);
+        Renderable renderableDef = world.addComponent(Renderable.class,e);
         renderableDef.zIndex = -1;
 
 
         world.addComponent(PlayerSensor.class,e);
-        world.addComponent(ScenegraphNode.class,e);
-        world.addComponent(StructureDef.class,e);
+        world.addComponent(Scenegraph.Node.class,e);
+        world.addComponent(Structure.class,e);
 
-        PhysicsBodyDef physicsBodyDef = world.addComponent(PhysicsBodyDef.class,e);
+        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=true;
         physicsBodyDef.bodyDef.angularDamping=.03f;
@@ -150,88 +140,88 @@ public class TestReconstruct extends Test {
         return e;
     }
 
-    protected Entity createCharacter(Spatial translation,Spatial velocity){
+    protected Entity createCharacter(com.flatfisk.gnomp.math.Spatial translation, com.flatfisk.gnomp.math.Spatial velocity){
 
         Entity e = world.createEntity();
 
-        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
         orientationRelative.local = translation;
-        orientationRelative.relativeType = Relative.CHILD;
+        orientationRelative.relativeType = IRelative.Relative.CHILD;
 
-        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
-        renderableRelative.relativeType = Relative.PARENT;
+        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        renderableRelative.relativeType = IRelative.Relative.PARENT;
 
         Velocity velocityComponent = world.addComponent(Velocity.class,e);
         velocityComponent.velocity = velocity;
         world.addComponent(Player.class,e);
 
-        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        Structure.Node structure = world.addComponent(Structure.Node.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,10,Color.WHITE,Color.FIREBRICK);
         structure.shape = rectangularLineShape;
         structure.density = 1;
         structure.friction = 5f;
-        structure.relativeType = Relative.PARENT;
+        structure.relativeType = IRelative.Relative.PARENT;
         structure.categoryBits = CATEGORY_PLAYER;
         structure.maskBits = CATEGORY_PLATFORM;
 
-        world.addComponent(RenderableDef.class,e);
-        world.addComponent(StructureDef.class,e);
+        world.addComponent(Renderable.class,e);
+        world.addComponent(Structure.class,e);
 
-        PhysicsBodyDef physicsBodyDef = world.addComponent(PhysicsBodyDef.class,e);
+        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=false;
         physicsBodyDef.bodyDef.angularDamping=0.5f;
 
 
-        world.addComponent(ScenegraphRoot.class,e);
-        world.addComponent(ScenegraphNode.class,e);
+        world.addComponent(Scenegraph.class,e);
+        world.addComponent(Scenegraph.Node.class,e);
 
-        PhysicsBodyRelative physicsBodyRelative = world.addComponent(PhysicsBodyRelative.class,e);
-        physicsBodyRelative.relativeType = Relative.PARENT;
+        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
+        physicsBodyRelative.relativeType = IRelative.Relative.PARENT;
 
         return e;
     }
 
-    protected Entity createCharacterDot(Spatial translation){
+    protected Entity createCharacterDot(com.flatfisk.gnomp.math.Spatial translation){
 
         Entity e = world.createEntity();
 
         world.addComponent(Dot.class,e);
 
-        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
         orientationRelative.local = translation;
-        orientationRelative.relativeType = Relative.CHILD;
-        orientationRelative.inheritFromParentType = SpatialRelative.SpatialInheritType.POSITION_ANGLE;
+        orientationRelative.relativeType = IRelative.Relative.CHILD;
+        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION_ANGLE;
 
-        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
-        renderableRelative.relativeType = Relative.CHILD;
+        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        renderableRelative.relativeType = IRelative.Relative.CHILD;
 
-        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        Structure.Node structure = world.addComponent(Structure.Node.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,3,Color.RED,Color.RED);
         structure.shape = rectangularLineShape;
         structure.density = 1;
         structure.friction = 5f;
-        structure.relativeType = Relative.CHILD;
+        structure.relativeType = IRelative.Relative.CHILD;
 
         return e;
     }
 
-    protected Entity createPlatform(Spatial translation,float width,Color color, boolean hasVelocity){
+    protected Entity createPlatform(com.flatfisk.gnomp.math.Spatial translation,float width,Color color, boolean hasVelocity){
 
         Entity e = world.createEntity();
 
-        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
-        orientationRelative.relativeType = Relative.PARENT;
+        orientationRelative.relativeType = IRelative.Relative.PARENT;
 
-        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
-        renderableRelative.relativeType = Relative.PARENT;
+        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        renderableRelative.relativeType = IRelative.Relative.PARENT;
 
-        PhysicsBodyRelative physicsBodyRelative = world.addComponent(PhysicsBodyRelative.class,e);
-        physicsBodyRelative.relativeType = Relative.PARENT;
+        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
+        physicsBodyRelative.relativeType = IRelative.Relative.PARENT;
 
-        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        Structure.Node structure = world.addComponent(Structure.Node.class,e);
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,color);
         rectangularLineShape.from = new Vector2(-width/2,0);
         rectangularLineShape.to = new Vector2(width/2,0);
@@ -242,15 +232,15 @@ public class TestReconstruct extends Test {
         structure.friction = 1;
         structure.categoryBits = CATEGORY_PLATFORM;
         structure.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR;
-        structure.relativeType = Relative.PARENT;
+        structure.relativeType = IRelative.Relative.PARENT;
 
-        world.addComponent(RenderableDef.class,e);
-        world.addComponent(StructureDef.class,e);
+        world.addComponent(Renderable.class,e);
+        world.addComponent(Structure.class,e);
 
-        PhysicsBodyDef physicsBodyDef = world.addComponent(PhysicsBodyDef.class,e);
+        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {
             Velocity velocity = world.addComponent(Velocity.class,e);
-            velocity.velocity = new Spatial(0, 0, 6);
+            velocity.velocity = new com.flatfisk.gnomp.math.Spatial(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.StaticBody;

@@ -5,28 +5,27 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructor;
 import com.flatfisk.gnomp.components.Velocity;
-import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
+import com.flatfisk.gnomp.components.Scenegraph;
+import com.flatfisk.gnomp.components.PhysicsBody;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
 
 public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private ComponentMapper<PhysicsBodyDef> physicsBodyDefMapper;
-    private ComponentMapper<PhysicsBody> physicsBodyMapper;
-    private ComponentMapper<SpatialRelative> orientationMapper;
+    private ComponentMapper<PhysicsBody> physicsBodyDefMapper;
+    private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
+    private ComponentMapper<Constructor.Node> orientationMapper;
     private ComponentMapper<Velocity> velocityMapper;
-    private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
+    private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
 
     private World box2DWorld;
     private boolean fixedStep=false;
     private float fixedStepInterval = 1/60f;
 
     public PhysicsSystem(World box2DWorld,int priority) {
-        super(Family.all(PhysicsBody.class).get(),priority);
+        super(Family.all(PhysicsBody.Container.class).get(),priority);
         this.box2DWorld = box2DWorld;
     }
 
@@ -46,11 +45,11 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
     public void addedToEngine(Engine engine) {
         LOG.info("System added to engine");
         super.addedToEngine(engine);
-        physicsBodyDefMapper = ComponentMapper.getFor(PhysicsBodyDef.class);
-        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.class);
-        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
+        physicsBodyDefMapper = ComponentMapper.getFor(PhysicsBody.class);
+        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
+        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
-        scenegraphNodeComponentMapper = ComponentMapper.getFor(ScenegraphNode.class);
+        scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
     }
 
     @Override
@@ -61,11 +60,11 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
 
     @Override
     public void processEntity(Entity entity, float f) {
-        PhysicsBody body = physicsBodyMapper.get(entity);
+        PhysicsBody.Container body = physicsBodyMapper.get(entity);
         if(body.body!=null) {
             if(body.positionChanged){
                 body.positionChanged = false;
-                SpatialRelative relative = orientationMapper.get(entity);
+                Constructor.Node relative = orientationMapper.get(entity);
                 Spatial spatial = relative.world.toBox2D();
                 body.body.setTransform(spatial.vector,spatial.rotation);
             }else {
@@ -75,7 +74,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                     velocity.velocity = Pools.obtainSpatialFromCopy(body.getVelocity().toWorld());
                 }
 
-                SpatialRelative orientation = orientationMapper.get(entity);
+                Constructor.Node orientation = orientationMapper.get(entity);
                 orientation.world = body.getTranslation().getCopy().toWorld();
             }
         }

@@ -9,35 +9,32 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Relative;
 import com.flatfisk.gnomp.components.Velocity;
-import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
-import com.flatfisk.gnomp.components.roots.PhysicsBodyDef;
+import com.flatfisk.gnomp.components.Structure;
+import com.flatfisk.gnomp.components.PhysicsBody;
+import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRelative,Array<FixtureDef>> {
+public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,Array<FixtureDef>> {
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<StructureRelative> structureMapper;
+    private ComponentMapper<Structure.Node> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
-        super(engine,PhysicsBodyDef.class, PhysicsBodyRelative.class);
-        structureMapper = ComponentMapper.getFor(StructureRelative.class);
+        super(engine,PhysicsBody.class, PhysicsBody.Node.class);
+        structureMapper = ComponentMapper.getFor(Structure.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         this.box2DWorld = box2DWorld;
     }
 
     @Override
-    public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, Array<FixtureDef> physicsBodyDef) {
+    public void parentAddedFinal(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, Array<FixtureDef> physicsBodyDef) {
 
         Spatial worldSpatial = constructorOrientation.world.getCopy().toBox2D();
 
@@ -45,7 +42,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
         bodyDef.position.set(worldSpatial.vector);
         bodyDef.angle = worldSpatial.rotation;
 
-        PhysicsBody bodyContainer = engine.addComponent(PhysicsBody.class,entity);
+        PhysicsBody.Container bodyContainer = engine.addComponent(PhysicsBody.Container.class,entity);
         bodyContainer.body = createBody(bodyDef,physicsBodyDef);
         bodyContainer.body.setUserData(entity);
 
@@ -59,7 +56,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     }
 
     @Override
-    public Array<FixtureDef> parentAdded(Entity entity, SpatialRelative constructor) {
+    public Array<FixtureDef> parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial());
         if(fixtures!=null){
@@ -69,9 +66,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     }
 
     @Override
-    public Array<FixtureDef> insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, Array<FixtureDef> bodyDefContainer) {
+    public Array<FixtureDef> insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        if(relationshipMapper.get(entity).relativeType == Relative.CHILD) {
+        if(relationshipMapper.get(entity).relativeType == IRelative.Relative.CHILD) {
             FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial);
             if(fixtures!=null){
                 bodyDefContainer.addAll(fixtures);
@@ -82,7 +79,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
 
     @Override
     public void parentRemoved(Entity entity) {
-        entity.remove(PhysicsBody.class);
+        entity.remove(PhysicsBody.Container.class);
     }
 
     @Override
@@ -102,7 +99,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
         return body;
     }
 
-    public FixtureDef[] getFixtures(StructureRelative structure,Spatial spatial) {
+    public FixtureDef[] getFixtures(Structure.Node structure,Spatial spatial) {
         if (structure.shape != null) {
             FixtureDef[] structureFixtureDefs = structure.getFixtureDefinitions(spatial);
             return structureFixtureDefs;

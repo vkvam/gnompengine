@@ -8,12 +8,10 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Relative;
-import com.flatfisk.gnomp.components.RelativeComponent;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.badlogic.ashley.core.GnompEngine;
 
-public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends RelativeComponent, CONSTRUCTION_DTO>{
+public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends IRelative, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public Class<CONSTRUCTOR_ROOT> constructor;
     public Class<RELATIONSHIP> relationship;
@@ -33,12 +31,12 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     }
 
     public boolean isParent(Entity entity){
-        return constructorMapper.has(entity) && relationshipMapper.get(entity).getRelativeType()== Relative.PARENT;
+        return constructorMapper.has(entity) && relationshipMapper.get(entity).getRelativeType()== IRelative.Relative.PARENT;
     }
 
     public boolean isChild(Entity entity){
         RELATIONSHIP relationship = relationshipMapper.get(entity);
-        return relationship!=null && (relationship.getRelativeType() == Relative.CHILD || relationship.getRelativeType() == Relative.INTERMEDIATE);
+        return relationship!=null && (relationship.getRelativeType() == IRelative.Relative.CHILD || relationship.getRelativeType() == IRelative.Relative.INTERMEDIATE);
     }
 
     /**
@@ -47,9 +45,9 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
      * @param constructorOrientation
      * @return
      */
-    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, SpatialRelative constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, CONSTRUCTION_DTO constructorDTO);
-    public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, CONSTRUCTION_DTO construction_dto){};
+    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation);
+    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
+    public void parentAddedFinal(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
 
     public abstract void parentRemoved(Entity entity);
     public abstract void childRemoved(Entity entity);

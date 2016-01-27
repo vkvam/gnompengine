@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.constructed.Renderable;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
+import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Renderable;
 import com.flatfisk.gnomp.math.Spatial;
 
 import java.util.Comparator;
@@ -27,13 +27,13 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     private OrthographicCamera orthographicCamera;
     private Array<Entity> renderQueue = new Array<Entity>();
 
-    public ComponentMapper<Renderable> renderableMapper;
-    public ComponentMapper<SpatialRelative> orientationMapper;
+    public ComponentMapper<Renderable.Constructed> renderableMapper;
+    public ComponentMapper<Constructor.Node> orientationMapper;
     private Comparator comperator;
     //private Family family;
 
     public RenderSystem(int priority) {
-        super(Family.all(Renderable.class).get(),priority);
+        super(Family.all(Renderable.Constructed.class).get(),priority);
 
         batch = new SpriteBatch();
         orthographicCamera = new OrthographicCamera(640, 480);
@@ -41,8 +41,8 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
         comperator = new Comparator<Entity>() {
             @Override
             public int compare(Entity spriteA, Entity spriteB){
-                Renderable renderableA = renderableMapper.get(spriteA);
-                Renderable renderableB = renderableMapper.get(spriteB);
+                Renderable.Constructed renderableA = renderableMapper.get(spriteA);
+                Renderable.Constructed renderableB = renderableMapper.get(spriteB);
                 return (renderableA.zIndex - renderableB.zIndex) > 0 ? 1 : -1;
             }
         };
@@ -51,8 +51,8 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     @Override
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
-        renderableMapper = ComponentMapper.getFor(Renderable.class);
-        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
+        renderableMapper = ComponentMapper.getFor(Renderable.Constructed.class);
+        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
     }
 
     public OrthographicCamera getCamera() {
@@ -75,8 +75,8 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
         renderQueue.sort(comperator);
 
         for (Entity e : renderQueue) {
-            Renderable renderable = renderableMapper.get(e);
-            SpatialRelative orientation = orientationMapper.get(e);
+            Renderable.Constructed renderable = renderableMapper.get(e);
+            Constructor.Node orientation = orientationMapper.get(e);
 
             Texture texture = renderable.texture;
             Vector2 offset = renderable.offset;

@@ -3,7 +3,7 @@ package com.badlogic.ashley.core;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.ConstructorManager;
-import com.flatfisk.gnomp.components.Node;
+import com.flatfisk.gnomp.components.abstracts.AbstractNode;
 
 import java.util.Iterator;
 
@@ -56,8 +56,8 @@ public class GnompEngine extends PooledEngine {
 
     public <T extends Component> T addComponent (Class<T> componentType, Entity entity) {
         T component = createComponent(componentType);
-        if( component instanceof Node){
-            ((Node) component).setOwner(entity);
+        if( component instanceof AbstractNode){
+            ((AbstractNode) component).setOwner(entity);
         }
         entity.add(component);
         return component;
@@ -70,8 +70,8 @@ public class GnompEngine extends PooledEngine {
 
     private void removeFromParents(Entity entity){
         for(Component c : entity.getComponents()){
-            if(c instanceof Node){
-                Node node = (Node) c;
+            if(c instanceof AbstractNode){
+                AbstractNode node = (AbstractNode) c;
                 Entity parent = node.parent;
                 if(parent!=null){
                     removeChildren(parent,entity,node.getClass());
@@ -80,15 +80,15 @@ public class GnompEngine extends PooledEngine {
         }
     }
 
-    private void removeChildren(Entity parent, Entity child, Class<? extends Node> nodeType){
+    private void removeChildren(Entity parent, Entity child, Class<? extends AbstractNode> nodeType){
         if(parent!=null) {
 
-            Node node = parent.getComponent(nodeType);
+            AbstractNode node = parent.getComponent(nodeType);
             node.removeChild(child);
 
             super.removeEntity(child);
 
-            Node childNode = child.getComponent(nodeType);
+            AbstractNode childNode = child.getComponent(nodeType);
             if(childNode!=null && childNode.children!=null) {
                 Entity[] children = childNode.children.toArray(Entity.class);
 

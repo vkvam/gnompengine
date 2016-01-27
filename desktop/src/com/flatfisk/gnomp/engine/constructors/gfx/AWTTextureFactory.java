@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
+import com.flatfisk.gnomp.components.Structure;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.*;
 import com.flatfisk.gnomp.shape.LineShape;
@@ -66,7 +66,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
         @Override
-        public void draw(StructureRelative structure, Spatial spatial){
+        public void draw(Structure.Node structure, Spatial spatial){
             if (structure == null || structure.shape == null) {
                 return;
             }
@@ -77,7 +77,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             drawLine(structure, jShape);
         }
 
-        private void drawFilled(StructureRelative structure, Shape shape){
+        private void drawFilled(Structure.Node structure, Shape shape){
             if (structure.shape.fillColor != null) {
                 Color color = gdxToAwtColor(structure.shape.fillColor);
                 g2d.setColor(color);
@@ -85,7 +85,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             }
         }
 
-        private void drawLine(StructureRelative structure, Shape shape){
+        private void drawLine(Structure.Node structure, Shape shape){
             if (structure.shape.lineColor != null) {
                 Color color = gdxToAwtColor(structure.shape.lineColor);
                 g2d.setColor(color);
@@ -119,7 +119,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
 
-        private Shape createAWTShape(StructureRelative structure, Spatial spatial) {
+        private Shape createAWTShape(Structure.Node structure, Spatial spatial) {
 
             Vector2 pos = spatial.vector;
             Vector2 offsetPosition = new Vector2(

@@ -2,9 +2,7 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
-import com.flatfisk.gnomp.components.roots.StructureDef;
+import com.flatfisk.gnomp.components.Structure;
 import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
@@ -13,16 +11,16 @@ import com.flatfisk.gnomp.utils.Pools;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class StructureConstructor extends Constructor<StructureDef,StructureRelative, StructureRelative> {
+public class StructureConstructor extends Constructor<Structure,Structure.Node, Structure.Node> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     public StructureConstructor(GnompEngine engine) {
-        super(engine,StructureDef.class,StructureRelative.class);
+        super(engine,Structure.class,Structure.Node.class);
     }
 
     @Override
-    public StructureRelative parentAdded(Entity entity, SpatialRelative structureOrientation) {
-        StructureRelative structure = relationshipMapper.get(entity);
+    public Structure.Node parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node structureOrientation) {
+        Structure.Node structure = relationshipMapper.get(entity);
 
         // If the constructor has a shape, the shape should be drawn at origin.
         Spatial spatial = Pools.obtainSpatial();
@@ -38,8 +36,8 @@ public class StructureConstructor extends Constructor<StructureDef,StructureRela
     }
 
     @Override
-    public StructureRelative insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, StructureRelative constructorDTO) {
-        StructureRelative structure = relationshipMapper.get(entity);
+    public Structure.Node insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, Structure.Node constructorDTO) {
+        Structure.Node structure = relationshipMapper.get(entity);
 
         // Use vector relativeType to constructor.
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);

@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.components;
+package com.flatfisk.gnomp.components.abstracts;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 
-public class Node implements Component, Pool.Poolable{
+public abstract class AbstractNode implements Component, Pool.Poolable{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private static int initialSize = 0;
 
@@ -15,13 +15,13 @@ public class Node implements Component, Pool.Poolable{
     public Entity owner;
     public Entity parent = null;
     public Array<Entity> children;
-    public Class<? extends Node> childType;
+    public Class<? extends AbstractNode> childType;
 
     public boolean hasChildren(){
         return children.size>0;
     }
 
-    protected Node(Class<? extends Node> childType) {
+    protected AbstractNode(Class<? extends AbstractNode> childType) {
         children = new Array<Entity>(initialSize);
         this.childType = childType;
     }
@@ -41,7 +41,7 @@ public class Node implements Component, Pool.Poolable{
 
         if (!hasChild(entity) && !entity.equals(this.parent)) {
             add(entity);
-            Node childNoe = entity.getComponent(this.childType);
+            AbstractNode childNoe = entity.getComponent(this.childType);
             childNoe.parent = owner;
             return true;
         }
@@ -64,7 +64,7 @@ public class Node implements Component, Pool.Poolable{
     }
 
     private boolean hasChild(Entity entity){
-        children.contains(entity,false);
+        children.contains(entity, false);
         return false;
     }
 
@@ -75,8 +75,8 @@ public class Node implements Component, Pool.Poolable{
         owner = null;
     }
 
-    public Node addCopy(GnompEngine gnompEngine, Entity entity) {
-        Node node = gnompEngine.addComponent(this.getClass(),entity);
+    public AbstractNode addCopy(GnompEngine gnompEngine, Entity entity) {
+        AbstractNode node = gnompEngine.addComponent(this.getClass(),entity);
         node.children.addAll(children);
         node.owner = owner;
         node.parent = parent;

@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.DelaunayTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
+import com.flatfisk.gnomp.components.Structure;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.CircleShape;
 import com.flatfisk.gnomp.shape.PolygonShape;
@@ -32,7 +32,7 @@ public class SimpleShapeTextureFactory extends ShapeTextureFactory {
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
-        public void draw(StructureRelative structure,Spatial orientation) {
+        public void draw(Structure.Node structure,Spatial orientation) {
             Vector2 pos = orientation.vector;
             Shape shape = structure.shape;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);

@@ -6,24 +6,23 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
+import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.PhysicsBody;
+import com.flatfisk.gnomp.components.Scenegraph;
 import com.flatfisk.gnomp.math.Spatial;
 
 public class PositionPhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private ComponentMapper<PhysicsBody> physicsBodyMapper;
-    private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
-    private ComponentMapper<SpatialRelative> orientationMapper;
+    private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
+    private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
+    private ComponentMapper<Constructor.Node> orientationMapper;
 
     public PositionPhysicsScenegraphSystem(int priority) {
-        super(Family.all(PhysicsBody.class, ScenegraphNode.class).exclude(ScenegraphRoot.class).get(),priority);
+        super(Family.all(PhysicsBody.Container.class, Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
 
-        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.class);
-        orientationMapper = ComponentMapper.getFor(SpatialRelative.class);
-        scenegraphNodeComponentMapper = ComponentMapper.getFor(ScenegraphNode.class);
+        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
+        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
+        scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
     }
 
@@ -41,17 +40,17 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
     @Override
     public void processEntity(Entity entity, float f) throws UnsupportedOperationException{
 
-        PhysicsBody body = physicsBodyMapper.get(entity);
+        PhysicsBody.Container body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            SpatialRelative orientation = orientationMapper.get(entity);
+            Constructor.Node orientation = orientationMapper.get(entity);
 
             verifyPositionTransfer(orientation);
 
-            ScenegraphNode node = scenegraphNodeComponentMapper.get(entity);
+            Scenegraph.Node node = scenegraphNodeComponentMapper.get(entity);
             Entity parent = node.parent;
             if(parent!=null) {
-                PhysicsBody parentBody = physicsBodyMapper.get(parent);
+                PhysicsBody.Container parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;
                 if(b!=null && parentBody!=null) {
                     Spatial t = orientation.world.getCopy().toBox2D();
@@ -66,10 +65,10 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
         }
     }
 
-    private void verifyPositionTransfer(SpatialRelative orientation){
+    private void verifyPositionTransfer(Constructor.Node orientation){
 
-        if(orientation.inheritFromParentType == SpatialRelative.SpatialInheritType.POSITION_ANGLE) {
-            String msg = "inheritFromParentType should be "+SpatialRelative.SpatialInheritType.POSITION+
+        if(orientation.inheritFromParentType == Constructor.Node.SpatialInheritType.POSITION_ANGLE) {
+            String msg = "inheritFromParentType should be "+ Constructor.Node.SpatialInheritType.POSITION+
                     " when used with "+this.getClass();
             throw new UnsupportedOperationException(msg);
         }

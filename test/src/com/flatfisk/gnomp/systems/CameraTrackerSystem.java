@@ -7,8 +7,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructor;
 import com.flatfisk.gnomp.components.Player;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
@@ -17,12 +17,12 @@ public class CameraTrackerSystem extends IteratingSystem{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     //private Entity tracked;
     private Camera camera;
-    private ComponentMapper<SpatialRelative> orientationRelativeComponentMapper;
+    private ComponentMapper<Constructor.Node> orientationRelativeComponentMapper;
     private boolean trackX,trackY;
 
     public CameraTrackerSystem(int priority, Camera camera, boolean trackX, boolean trackY) {
         super(Family.all(Player.class).get(),priority);
-        orientationRelativeComponentMapper = ComponentMapper.getFor(SpatialRelative.class);
+        orientationRelativeComponentMapper = ComponentMapper.getFor(Constructor.Node.class);
         //this.tracked = tracker;
         this.camera = camera;
         this.trackX = trackX;

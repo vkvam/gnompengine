@@ -3,13 +3,10 @@ package com.flatfisk.gnomp.systems;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Node;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphNode;
-import com.flatfisk.gnomp.components.scenegraph.ScenegraphRoot;
+import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Scenegraph;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
 
@@ -19,20 +16,20 @@ import com.flatfisk.gnomp.utils.Pools;
 public class ScenegraphSystem extends IteratingSystem {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<ScenegraphNode> scenegraphNodeComponentMapper;
-    private ComponentMapper<SpatialRelative> orientationRelativeComponentMapper;
+    private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
+    private ComponentMapper<Constructor.Node> orientationRelativeComponentMapper;
 
     public ScenegraphSystem(int priority) {
-        super(Family.all(ScenegraphRoot.class).get(), priority);
-        scenegraphNodeComponentMapper = ComponentMapper.getFor(ScenegraphNode.class);
-        orientationRelativeComponentMapper = ComponentMapper.getFor(SpatialRelative.class);
+        super(Family.all(Scenegraph.class).get(), priority);
+        scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
+        orientationRelativeComponentMapper = ComponentMapper.getFor(Constructor.Node.class);
     }
 
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
-        SpatialRelative parentOrientation = orientationRelativeComponentMapper.get(entity);
+        Scenegraph.Node scenegraphNode = scenegraphNodeComponentMapper.get(entity);
+        Constructor.Node parentOrientation = orientationRelativeComponentMapper.get(entity);
         for(Entity child : scenegraphNode.children){
             processChild(child,parentOrientation.world);
         }
@@ -40,12 +37,12 @@ public class ScenegraphSystem extends IteratingSystem {
 
     private void processChild(Entity entity,  Spatial parentWorld){
         if(entity!=null) {
-            ScenegraphNode scenegraphNode = scenegraphNodeComponentMapper.get(entity);
-            SpatialRelative orientationRelative = orientationRelativeComponentMapper.get(entity);
+            Scenegraph.Node scenegraphNode = scenegraphNodeComponentMapper.get(entity);
+            Constructor.Node orientationRelative = orientationRelativeComponentMapper.get(entity);
             if(orientationRelative!=null) {
-                boolean transferAngle = orientationRelative.inheritFromParentType.equals(SpatialRelative.SpatialInheritType.POSITION_ANGLE);
+                boolean transferAngle = orientationRelative.inheritFromParentType.equals(Constructor.Node.SpatialInheritType.POSITION_ANGLE);
 
-                SpatialRelative childOrientation = orientationRelativeComponentMapper.get(entity);
+                Constructor.Node childOrientation = orientationRelativeComponentMapper.get(entity);
                 Spatial childLocal = childOrientation.local;
                 Spatial childWorld = childOrientation.world;
 

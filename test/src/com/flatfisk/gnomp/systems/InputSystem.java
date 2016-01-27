@@ -9,11 +9,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.components.*;
-import com.flatfisk.gnomp.components.constructed.PhysicsBody;
-import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
-import com.flatfisk.gnomp.components.relatives.RenderableRelative;
-import com.flatfisk.gnomp.components.relatives.SpatialRelative;
-import com.flatfisk.gnomp.components.relatives.StructureRelative;
+import com.flatfisk.gnomp.components.PhysicsBody;
+import com.flatfisk.gnomp.components.Renderable;
+import com.flatfisk.gnomp.components.Structure;
+import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.math.Spatial;
 
 /**
@@ -49,7 +48,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         if( entityA.equals(sensor) || entityB.equals(sensor)){
             playerComponent.touchedPlatformTimes++;
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
-                Array<Entity> children = player.getComponent(SpatialRelative.class).children;
+                Array<Entity> children = player.getComponent(Constructor.Node.class).children;
                 // TODO: This triggers two removes, need to have a trigger reconstruct flag.
                 GnompEngine engine = (GnompEngine) getEngine();
 
@@ -71,8 +70,8 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                             i++;
                                 Entity e = createCharacterDot(new Spatial(20*i, 0,0));
                                 Entity e2 = createCharacterDot(new Spatial(-20*i, 0,0));
-                                player.getComponent(SpatialRelative.class).addChild(e);
-                                player.getComponent(SpatialRelative.class).addChild(e2);
+                                player.getComponent(Constructor.Node.class).addChild(e);
+                                player.getComponent(Constructor.Node.class).addChild(e2);
 
                                 engine.addEntity(e);
                                 engine.addEntity(e2);
@@ -90,8 +89,8 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
         if(sensor!=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
-                player.getComponent(SpatialRelative.class).world.vector.setZero();
-                PhysicsBody body = player.getComponent(PhysicsBody.class);
+                player.getComponent(Constructor.Node.class).world.vector.setZero();
+                PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
                 body.positionChanged = true;
             }
         }
@@ -105,24 +104,24 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
         world.addComponent(Dot.class,e);
 
-        SpatialRelative orientationRelative = world.addComponent(SpatialRelative.class,e);
+        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
         orientationRelative.local = translation;
-        orientationRelative.relativeType = Relative.CHILD;
-        orientationRelative.inheritFromParentType = SpatialRelative.SpatialInheritType.POSITION_ANGLE;
+        orientationRelative.relativeType = IRelative.Relative.CHILD;
+        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION_ANGLE;
 
-        RenderableRelative renderableRelative = world.addComponent(RenderableRelative.class,e);
-        renderableRelative.relativeType = Relative.CHILD;
+        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        renderableRelative.relativeType = IRelative.Relative.CHILD;
 
-        StructureRelative structure = world.addComponent(StructureRelative.class,e);
+        Structure.Node structure = world.addComponent(Structure.Node.class,e);
         com.flatfisk.gnomp.shape.CircleShape rectangularLineShape = new com.flatfisk.gnomp.shape.CircleShape(1,5, Color.GREEN,Color.BLACK);
         structure.shape = rectangularLineShape;
         structure.density = .01f;
         structure.friction = 5f;
-        structure.relativeType = Relative.CHILD;
+        structure.relativeType = IRelative.Relative.CHILD;
 
-        PhysicsBodyRelative rel = world.addComponent(PhysicsBodyRelative.class, e);
+        PhysicsBody.Node rel = world.addComponent(PhysicsBody.Node.class, e);
         if(Math.random()>0.5) {
-            rel.relativeType = Relative.INTERMEDIATE;
+            rel.relativeType = IRelative.Relative.INTERMEDIATE;
         }
 
         return e;
@@ -154,7 +153,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
     public void update (float deltaTime) {
         if(player!=null) {
-            PhysicsBody physicsBody = player.getComponent(PhysicsBody.class);
+            PhysicsBody.Container physicsBody = player.getComponent(PhysicsBody.Container.class);
             if(physicsBody!=null) {
                 timer += deltaTime;
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

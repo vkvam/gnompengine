@@ -72,4 +72,5 @@ public class Spatial implements Pool.Poolable {
         vector.y=0;
         rotation=0;
     }
+
 }
