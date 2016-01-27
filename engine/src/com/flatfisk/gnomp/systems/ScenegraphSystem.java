@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.Scenegraph;
 import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.utils.Pools;
@@ -17,19 +17,19 @@ public class ScenegraphSystem extends IteratingSystem {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
-    private ComponentMapper<Constructor.Node> orientationRelativeComponentMapper;
+    private ComponentMapper<Constructable.Node> orientationRelativeComponentMapper;
 
     public ScenegraphSystem(int priority) {
         super(Family.all(Scenegraph.class).get(), priority);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
-        orientationRelativeComponentMapper = ComponentMapper.getFor(Constructor.Node.class);
+        orientationRelativeComponentMapper = ComponentMapper.getFor(Constructable.Node.class);
     }
 
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Scenegraph.Node scenegraphNode = scenegraphNodeComponentMapper.get(entity);
-        Constructor.Node parentOrientation = orientationRelativeComponentMapper.get(entity);
+        Constructable.Node parentOrientation = orientationRelativeComponentMapper.get(entity);
         for(Entity child : scenegraphNode.children){
             processChild(child,parentOrientation.world);
         }
@@ -38,11 +38,11 @@ public class ScenegraphSystem extends IteratingSystem {
     private void processChild(Entity entity,  Spatial parentWorld){
         if(entity!=null) {
             Scenegraph.Node scenegraphNode = scenegraphNodeComponentMapper.get(entity);
-            Constructor.Node orientationRelative = orientationRelativeComponentMapper.get(entity);
+            Constructable.Node orientationRelative = orientationRelativeComponentMapper.get(entity);
             if(orientationRelative!=null) {
-                boolean transferAngle = orientationRelative.inheritFromParentType.equals(Constructor.Node.SpatialInheritType.POSITION_ANGLE);
+                boolean transferAngle = orientationRelative.inheritFromParentType.equals(Constructable.Node.SpatialInheritType.POSITION_ANGLE);
 
-                Constructor.Node childOrientation = orientationRelativeComponentMapper.get(entity);
+                Constructable.Node childOrientation = orientationRelativeComponentMapper.get(entity);
                 Spatial childLocal = childOrientation.local;
                 Spatial childWorld = childOrientation.world;
 

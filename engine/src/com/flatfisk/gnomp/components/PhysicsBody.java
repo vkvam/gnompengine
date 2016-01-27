@@ -44,9 +44,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         return physicsBodyDef;
     }
 
-    /**
-     * Created by Vemund Kvam on 04/12/15.
-     */
+
     public static class Node implements ISerializable<Node>, IRelative {
         public Relative relativeType = Relative.CHILD;
 

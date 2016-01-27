@@ -8,6 +8,7 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.badlogic.ashley.core.GnompEngine;
 
@@ -45,9 +46,9 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
      * @param constructorOrientation
      * @return
      */
-    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
-    public void parentAddedFinal(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
+    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, Constructable.Node constructorOrientation);
+    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
+    public void parentAddedFinal(Entity entity, Constructable.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
 
     public abstract void parentRemoved(Entity entity);
     public abstract void childRemoved(Entity entity);

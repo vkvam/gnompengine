@@ -48,7 +48,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         if( entityA.equals(sensor) || entityB.equals(sensor)){
             playerComponent.touchedPlatformTimes++;
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
-                Array<Entity> children = player.getComponent(Constructor.Node.class).children;
+                Array<Entity> children = player.getComponent(Constructable.Node.class).children;
                 // TODO: This triggers two removes, need to have a trigger reconstruct flag.
                 GnompEngine engine = (GnompEngine) getEngine();
 
@@ -70,8 +70,8 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                             i++;
                                 Entity e = createCharacterDot(new Spatial(20*i, 0,0));
                                 Entity e2 = createCharacterDot(new Spatial(-20*i, 0,0));
-                                player.getComponent(Constructor.Node.class).addChild(e);
-                                player.getComponent(Constructor.Node.class).addChild(e2);
+                                player.getComponent(Constructable.Node.class).addChild(e);
+                                player.getComponent(Constructable.Node.class).addChild(e2);
 
                                 engine.addEntity(e);
                                 engine.addEntity(e2);
@@ -89,7 +89,7 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
         if(sensor!=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
-                player.getComponent(Constructor.Node.class).world.vector.setZero();
+                player.getComponent(Constructable.Node.class).world.vector.setZero();
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
                 body.positionChanged = true;
             }
@@ -104,10 +104,10 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
 
         world.addComponent(Dot.class,e);
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
-        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION_ANGLE;
+        orientationRelative.inheritFromParentType = Constructable.Node.SpatialInheritType.POSITION_ANGLE;
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
         renderableRelative.relativeType = IRelative.Relative.CHILD;

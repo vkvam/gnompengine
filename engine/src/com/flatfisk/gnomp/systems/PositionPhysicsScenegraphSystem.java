@@ -6,7 +6,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.PhysicsBody;
 import com.flatfisk.gnomp.components.Scenegraph;
 import com.flatfisk.gnomp.math.Spatial;
@@ -15,13 +15,13 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
-    private ComponentMapper<Constructor.Node> orientationMapper;
+    private ComponentMapper<Constructable.Node> orientationMapper;
 
     public PositionPhysicsScenegraphSystem(int priority) {
         super(Family.all(PhysicsBody.Container.class, Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
+        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
     }
@@ -43,7 +43,7 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
         PhysicsBody.Container body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            Constructor.Node orientation = orientationMapper.get(entity);
+            Constructable.Node orientation = orientationMapper.get(entity);
 
             verifyPositionTransfer(orientation);
 
@@ -65,10 +65,10 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
         }
     }
 
-    private void verifyPositionTransfer(Constructor.Node orientation){
+    private void verifyPositionTransfer(Constructable.Node orientation){
 
-        if(orientation.inheritFromParentType == Constructor.Node.SpatialInheritType.POSITION_ANGLE) {
-            String msg = "inheritFromParentType should be "+ Constructor.Node.SpatialInheritType.POSITION+
+        if(orientation.inheritFromParentType == Constructable.Node.SpatialInheritType.POSITION_ANGLE) {
+            String msg = "inheritFromParentType should be "+ Constructable.Node.SpatialInheritType.POSITION+
                     " when used with "+this.getClass();
             throw new UnsupportedOperationException(msg);
         }

@@ -12,7 +12,7 @@ import com.flatfisk.gnomp.utils.Pools;
 /**
  * Created by a-004213 on 22/04/14.
  */
-public class Constructor implements ISpatialController, ISerializable<Constructor>, Pool.Poolable{
+public class Constructable implements ISpatialController, ISerializable<Constructable>, Pool.Poolable{
 
     @Override
     public void reset() {
@@ -21,7 +21,7 @@ public class Constructor implements ISpatialController, ISerializable<Constructo
 
 
     @Override
-    public Constructor addCopy(GnompEngine gnompEngine, Entity entity) {
+    public Constructable addCopy(GnompEngine gnompEngine, Entity entity) {
         return gnompEngine.addComponent(this.getClass(),entity);
     }
 
@@ -35,7 +35,7 @@ public class Constructor implements ISpatialController, ISerializable<Constructo
         public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
 
         public Node() {
-            super(Node.class);
+            super();
         }
 
         @Override

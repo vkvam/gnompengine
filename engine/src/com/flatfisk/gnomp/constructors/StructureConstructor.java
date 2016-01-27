@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.Structure;
 import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.math.Spatial;
@@ -19,7 +20,7 @@ public class StructureConstructor extends Constructor<Structure,Structure.Node, 
     }
 
     @Override
-    public Structure.Node parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node structureOrientation) {
+    public Structure.Node parentAdded(Entity entity, Constructable.Node structureOrientation) {
         Structure.Node structure = relationshipMapper.get(entity);
 
         // If the constructor has a shape, the shape should be drawn at origin.
@@ -36,7 +37,7 @@ public class StructureConstructor extends Constructor<Structure,Structure.Node, 
     }
 
     @Override
-    public Structure.Node insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, Structure.Node constructorDTO) {
+    public Structure.Node insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, Structure.Node constructorDTO) {
         Structure.Node structure = relationshipMapper.get(entity);
 
         // Use vector relativeType to constructor.

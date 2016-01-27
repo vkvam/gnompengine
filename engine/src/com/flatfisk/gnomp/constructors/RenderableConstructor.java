@@ -3,6 +3,7 @@ package com.flatfisk.gnomp.constructors;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.Structure;
 import com.flatfisk.gnomp.components.Renderable;
 import com.badlogic.ashley.core.GnompEngine;
@@ -28,7 +29,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
 
 
     @Override
-    public void parentAddedFinal(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, ShapeTexture shapeTexture) {
+    public void parentAddedFinal(Entity entity, Constructable.Node constructorOrientation, ShapeTexture shapeTexture) {
 
         Renderable renderableDef = constructorMapper.get(entity);
 
@@ -41,7 +42,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     }
 
     @Override
-    public ShapeTexture parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation) {
+    public ShapeTexture parentAdded(Entity entity, Constructable.Node constructorOrientation) {
         Structure.Node structure = structureRelativeComponentMapper.get(entity);
         ShapeTexture px = shapeTextureFactory.createShapeTexture(structure.boundingRectangle);
 
@@ -58,9 +59,9 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
 
     @Override
     public ShapeTexture insertedChild(Entity entity,
-                                      com.flatfisk.gnomp.components.Constructor.Node constructorOrientation,
-                                      com.flatfisk.gnomp.components.Constructor.Node parentOrientation,
-                                      com.flatfisk.gnomp.components.Constructor.Node childOrientation,
+                                      Constructable.Node constructorOrientation,
+                                      Constructable.Node parentOrientation,
+                                      Constructable.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
         Structure.Node structure = structureRelativeComponentMapper.get(entity);

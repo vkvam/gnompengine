@@ -5,10 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.utils.Pools;
-/*
-* Spatial properties with transformations.
-*/
 
+/**
+* Spatial properties with transformation methods.
+*/
 public class Spatial implements Pool.Poolable {
     public Vector2 vector;
     public float rotation;

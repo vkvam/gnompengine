@@ -11,27 +11,16 @@ public abstract class AbstractNode implements Component, Pool.Poolable{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private static int initialSize = 0;
 
-    // The parent
     public Entity owner;
     public Entity parent = null;
     public Array<Entity> children;
-    public Class<? extends AbstractNode> childType;
 
-    public boolean hasChildren(){
-        return children.size>0;
-    }
-
-    protected AbstractNode(Class<? extends AbstractNode> childType) {
+    protected AbstractNode() {
         children = new Array<Entity>(initialSize);
-        this.childType = childType;
     }
 
     public void setOwner(Entity entity) {
         owner = entity;
-    }
-
-    public void setParent(Entity entity) {
-        parent = entity;
     }
 
     /**
@@ -40,26 +29,15 @@ public abstract class AbstractNode implements Component, Pool.Poolable{
     public boolean addChild(Entity entity) {
 
         if (!hasChild(entity) && !entity.equals(this.parent)) {
-            add(entity);
-            AbstractNode childNoe = entity.getComponent(this.childType);
-            childNoe.parent = owner;
+            children.add(entity);
+            AbstractNode childNode = entity.getComponent(getClass());
+            childNode.parent = owner;
             return true;
         }
         return false;
     }
 
-
-    /**
-     * Remove all children of node
-     */
-    public void removeAllChildren() {
-        children.clear();
-    }
-    private void add(Entity entity){
-        children.add(entity);
-    }
     public void removeChild(Entity entity){
-        LOG.info("Removing child!");
         children.removeValue(entity, false);
     }
 

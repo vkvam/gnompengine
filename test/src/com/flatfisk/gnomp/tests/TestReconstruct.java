@@ -55,22 +55,22 @@ public class TestReconstruct extends Test {
     private void createGame(com.flatfisk.gnomp.math.Spatial position){
 
         Entity platform = createPlatform(position,90,Color.GREEN,false);
-        world.addComponent(Constructor.class,platform);
+        world.addComponent(Constructable.class,platform);
 
         int i;
 
         Entity character = createCharacter(new com.flatfisk.gnomp.math.Spatial(0,150,0),new com.flatfisk.gnomp.math.Spatial(0,0,0));
-        platform.getComponent(Constructor.Node.class).addChild(character);
+        platform.getComponent(Constructable.Node.class).addChild(character);
 
         Entity sensor = createSensor(new com.flatfisk.gnomp.math.Spatial(0,-10,0));
-        character.getComponent(Constructor.Node.class).addChild(sensor);
+        character.getComponent(Constructable.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
         Entity dot = character,dot2;
         for(i=0;i<5;i++) {
 
                 dot2 = createCharacterDot(new com.flatfisk.gnomp.math.Spatial(17, 0, 0));
-                dot.getComponent(Constructor.Node.class).addChild(dot2);
+                dot.getComponent(Constructable.Node.class).addChild(dot2);
                 world.addEntity(dot2);
                 dot = dot2;
         }
@@ -79,7 +79,7 @@ public class TestReconstruct extends Test {
         for(i=0;i<5;i++) {
 
             dot2 = createCharacterDot(new com.flatfisk.gnomp.math.Spatial(-17, 0, 0));
-            dot.getComponent(Constructor.Node.class).addChild(dot2);
+            dot.getComponent(Constructable.Node.class).addChild(dot2);
             world.addEntity(dot2);
             dot = dot2;
         }
@@ -95,10 +95,10 @@ public class TestReconstruct extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
-        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION;
+        orientationRelative.inheritFromParentType = Constructable.Node.SpatialInheritType.POSITION;
 
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
@@ -144,7 +144,7 @@ public class TestReconstruct extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
 
@@ -188,10 +188,10 @@ public class TestReconstruct extends Test {
 
         world.addComponent(Dot.class,e);
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
-        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION_ANGLE;
+        orientationRelative.inheritFromParentType = Constructable.Node.SpatialInheritType.POSITION_ANGLE;
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
         renderableRelative.relativeType = IRelative.Relative.CHILD;
@@ -210,7 +210,7 @@ public class TestReconstruct extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
         orientationRelative.relativeType = IRelative.Relative.PARENT;

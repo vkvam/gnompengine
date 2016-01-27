@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.PhysicsBody;
 import com.flatfisk.gnomp.components.Structure;
 
@@ -16,7 +16,7 @@ public class PhysicsJointConstructionSystem implements EntityListener {
     //public ComponentMapper<PhysicsJointDef> jointMapper;
     public ComponentMapper<PhysicsBody.Container> bodyMapper;
     public ComponentMapper<Structure.Node> structureNodeComponent;
-    public ComponentMapper<Constructor.Node> orientationMapper;
+    public ComponentMapper<Constructable.Node> orientationMapper;
 
     public World box2DWorld;
 
@@ -25,7 +25,7 @@ public class PhysicsJointConstructionSystem implements EntityListener {
         //jointMapper = ComponentMapper.getFor(PhysicsJointDef.class);
         structureNodeComponent = ComponentMapper.getFor(Structure.Node.class);
         bodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
+        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
     }
 
     @Override

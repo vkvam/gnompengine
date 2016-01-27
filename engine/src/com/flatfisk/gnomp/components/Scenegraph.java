@@ -28,7 +28,7 @@ public class Scenegraph implements ISerializable<Scenegraph>,Pool.Poolable {
     public static class Node extends AbstractNode implements ISpatialController, ISerializable<Node> {
 
         protected Node() {
-            super(Node.class);
+            super();
         }
 
         @Override

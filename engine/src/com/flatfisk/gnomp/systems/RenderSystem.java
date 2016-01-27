@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructor;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.Renderable;
 import com.flatfisk.gnomp.math.Spatial;
 
@@ -28,7 +28,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     private Array<Entity> renderQueue = new Array<Entity>();
 
     public ComponentMapper<Renderable.Constructed> renderableMapper;
-    public ComponentMapper<Constructor.Node> orientationMapper;
+    public ComponentMapper<Constructable.Node> orientationMapper;
     private Comparator comperator;
     //private Family family;
 
@@ -52,7 +52,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
         renderableMapper = ComponentMapper.getFor(Renderable.Constructed.class);
-        orientationMapper = ComponentMapper.getFor(Constructor.Node.class);
+        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
     }
 
     public OrthographicCamera getCamera() {
@@ -76,7 +76,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
 
         for (Entity e : renderQueue) {
             Renderable.Constructed renderable = renderableMapper.get(e);
-            Constructor.Node orientation = orientationMapper.get(e);
+            Constructable.Node orientation = orientationMapper.get(e);
 
             Texture texture = renderable.texture;
             Vector2 offset = renderable.offset;

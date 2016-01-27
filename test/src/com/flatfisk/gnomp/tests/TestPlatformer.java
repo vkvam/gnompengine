@@ -48,33 +48,33 @@ public class TestPlatformer extends Test {
     private void createGame(Spatial position){
 
         Entity platform = createPlatform(position,90,Color.GREEN,false);
-        world.addComponent(Constructor.class,platform);
+        world.addComponent(Constructable.class,platform);
 
         Entity platform2 = createPlatform(new Spatial(-1000,-200,0),3000,Color.RED,false);
-        world.addComponent(Constructor.class,platform2);
+        world.addComponent(Constructable.class,platform2);
         world.addEntity(platform2);
         world.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Spatial(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
-            world.addComponent(Constructor.class,platform2);
+            world.addComponent(Constructable.class,platform2);
             world.addEntity(platform2);
             world.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Spatial(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
-        world.addComponent(Constructor.class,platform2);
+        world.addComponent(Constructable.class,platform2);
         world.addComponent(EndPoint.class,platform2);
         world.addEntity(platform2);
         world.constructEntity(platform2);
 
 
         Entity character = createCharacter(new Spatial(0,150,0),new Spatial(0,0,0));
-        platform.getComponent(Constructor.Node.class).addChild(character);
+        platform.getComponent(Constructable.Node.class).addChild(character);
 
         Entity sensor = createSensor(new Spatial(0,-10,0));
-        character.getComponent(Constructor.Node.class).addChild(sensor);
+        character.getComponent(Constructable.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
 
@@ -82,11 +82,11 @@ public class TestPlatformer extends Test {
         for(i=0;i<10;i++) {
 
             dot2 = createCharacterDot(new Spatial(7+9*i, -i*i, i));
-            character.getComponent(Constructor.Node.class).addChild(dot2);
+            character.getComponent(Constructable.Node.class).addChild(dot2);
             world.addEntity(dot2);
 
             dot2 = createCharacterDot(new Spatial(-7+-9*i, i*i, i));
-            character.getComponent(Constructor.Node.class).addChild(dot2);
+            character.getComponent(Constructable.Node.class).addChild(dot2);
             world.addEntity(dot2);
         }
 
@@ -102,10 +102,10 @@ public class TestPlatformer extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
-        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION;
+        orientationRelative.inheritFromParentType = Constructable.Node.SpatialInheritType.POSITION;
 
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
@@ -151,7 +151,7 @@ public class TestPlatformer extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
 
@@ -195,10 +195,10 @@ public class TestPlatformer extends Test {
 
         world.addComponent(Dot.class,e);
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.relativeType = IRelative.Relative.CHILD;
-        orientationRelative.inheritFromParentType = Constructor.Node.SpatialInheritType.POSITION_ANGLE;
+        orientationRelative.inheritFromParentType = Constructable.Node.SpatialInheritType.POSITION_ANGLE;
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
         renderableRelative.relativeType = IRelative.Relative.CHILD;
@@ -223,7 +223,7 @@ public class TestPlatformer extends Test {
 
         Entity e = world.createEntity();
 
-        Constructor.Node orientationRelative = world.addComponent(Constructor.Node.class,e);
+        Constructable.Node orientationRelative = world.addComponent(Constructable.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
         orientationRelative.relativeType = IRelative.Relative.PARENT;

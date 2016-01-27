@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Constructable;
 import com.flatfisk.gnomp.components.Velocity;
 import com.flatfisk.gnomp.components.Structure;
 import com.flatfisk.gnomp.components.PhysicsBody;
@@ -34,7 +35,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public void parentAddedFinal(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, Array<FixtureDef> physicsBodyDef) {
+    public void parentAddedFinal(Entity entity, Constructable.Node constructorOrientation, Array<FixtureDef> physicsBodyDef) {
 
         Spatial worldSpatial = constructorOrientation.world.getCopy().toBox2D();
 
@@ -56,7 +57,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public Array<FixtureDef> parentAdded(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructor) {
+    public Array<FixtureDef> parentAdded(Entity entity, Constructable.Node constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial());
         if(fixtures!=null){
@@ -66,7 +67,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public Array<FixtureDef> insertedChild(Entity entity, com.flatfisk.gnomp.components.Constructor.Node constructorOrientation, com.flatfisk.gnomp.components.Constructor.Node parentOrientation, com.flatfisk.gnomp.components.Constructor.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
+    public Array<FixtureDef> insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         if(relationshipMapper.get(entity).relativeType == IRelative.Relative.CHILD) {
             FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial);
