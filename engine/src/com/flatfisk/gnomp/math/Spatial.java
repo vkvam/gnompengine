@@ -55,13 +55,13 @@ public class Spatial implements Pool.Poolable {
     }
 
     public Spatial toBox2D(){
-        vector.scl(PhysicsConstants.WORLD_TO_BOX);
+        vector.scl(PhysicsConstants.METERS_PER_PIXEL);
         rotation = rotation * MathUtils.degreesToRadians;
         return this;
     }
 
     public Spatial toWorld(){
-        vector.scl(PhysicsConstants.BOX_TO_WORLD);
+        vector.scl(PhysicsConstants.PIXELS_PER_METER);
         rotation = rotation * MathUtils.radiansToDegrees;
         return this;
     }

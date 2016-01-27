@@ -66,9 +66,9 @@ public class PolygonShape extends Shape {
 
     @Override
     public FixtureDef[] getFixtureDefinitions(Vector2 offset) {
-        Vector2 scaledOffset = offset.cpy().scl(PhysicsConstants.WORLD_TO_BOX);
+        Vector2 scaledOffset = offset.cpy().scl(PhysicsConstants.METERS_PER_PIXEL);
         polygon.setPosition(scaledOffset.x, scaledOffset.y);
-        polygon.setScale(PhysicsConstants.WORLD_TO_BOX, PhysicsConstants.WORLD_TO_BOX);
+        polygon.setScale(PhysicsConstants.METERS_PER_PIXEL, PhysicsConstants.METERS_PER_PIXEL);
 
         Polygon transformedPolygon = new Polygon(polygon.getTransformedVertices());
         Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.components.*;
 import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
 import com.flatfisk.gnomp.components.relatives.RenderableRelative;
@@ -40,7 +41,8 @@ public class TestPlatformer extends Test {
     @Override
     public void create () {
         super.create();
-        createSystems(new Vector2(0, -9.8f));
+        PhysicsConstants.setPixelsPerMeter(100);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL));
 
         world.getSystem(RenderSystem.class).getCamera().zoom = 1f;
 

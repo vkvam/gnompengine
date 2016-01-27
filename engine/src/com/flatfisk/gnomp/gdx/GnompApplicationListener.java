@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.ashley.core.GnompEngine;
 
 
-public class GnompEngineApplicationListener implements ApplicationListener {
+public class GnompApplicationListener implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     protected GnompEngine world;
 

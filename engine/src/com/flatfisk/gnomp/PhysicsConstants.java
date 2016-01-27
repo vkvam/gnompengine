@@ -2,11 +2,16 @@ package com.flatfisk.gnomp;
 
 
 public class PhysicsConstants {
-    public static float WORLD_TO_BOX = 0.01f;
-    public static float BOX_TO_WORLD = 100f;
+    public static float PIXELS_PER_METER = 100f;
+    public static float METERS_PER_PIXEL = 0.01f;
 
-    public static void setBoxToWorlScale(double scale){
-        BOX_TO_WORLD = (float) scale;
-        WORLD_TO_BOX = (float )(1 / scale);
+    /**
+     * Sets the scale of pixels in the game-world to meters in Box2d-world and vice versa
+     *
+     * @param pixels pr meter
+     */
+    public static void setPixelsPerMeter(double pixels){
+        PIXELS_PER_METER = (float) pixels;
+        METERS_PER_PIXEL = (float )(1 / pixels);
     }
 }

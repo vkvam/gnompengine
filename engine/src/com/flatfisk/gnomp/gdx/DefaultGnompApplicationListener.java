@@ -10,7 +10,7 @@ import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.systems.*;
 
 
-public class DefaultGnompEngineApplicationListener extends GnompEngineApplicationListener{
+public class DefaultGnompApplicationListener extends GnompApplicationListener {
 
     protected ShapeTextureFactory shapeTextureFactory;
 

@@ -62,8 +62,8 @@ public class CircleShape extends Shape{
     @Override
     public FixtureDef[] getFixtureDefinitions(Vector2 offset) {
         com.badlogic.gdx.physics.box2d.CircleShape circleShape = new com.badlogic.gdx.physics.box2d.CircleShape();
-        circleShape.setPosition(new Vector2(offset.x, offset.y).scl(PhysicsConstants.WORLD_TO_BOX));
-        circleShape.setRadius(circle.radius * PhysicsConstants.WORLD_TO_BOX);
+        circleShape.setPosition(new Vector2(offset.x, offset.y).scl(PhysicsConstants.METERS_PER_PIXEL));
+        circleShape.setRadius(circle.radius * PhysicsConstants.METERS_PER_PIXEL);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         //TODO: set correct density!

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.components.*;
 import com.flatfisk.gnomp.components.constructed.PhysicsBody;
 import com.flatfisk.gnomp.components.relatives.PhysicsBodyRelative;
@@ -157,12 +158,12 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
             if(physicsBody!=null) {
                 timer += deltaTime;
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                    speed = -1.5f;
+                    speed = -150f;
                 } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                    speed = 1.5f;
+                    speed = 150f;
                 } else {
-                    speed += speed > 0 ? -deltaTime * 10 : deltaTime * 10;
-                    if (Math.abs(speed) < 0.5f) {
+                    speed += speed > 0 ? -deltaTime * 100 : deltaTime * 100;
+                    if (Math.abs(speed) < 5f) {
                         speed = 0;
                     }
                 }
@@ -171,12 +172,12 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                 Body b = physicsBody.body;
                 if(b!=null) {
                     if (Gdx.input.isKeyPressed(Input.Keys.UP) && (playerComponent.touchedPlatformTimes > 0)) {
-                        y = 4f;
+                        y = 400f* PhysicsConstants.METERS_PER_PIXEL;
                     } else {
                         y = b.getLinearVelocity().y;
                     }
 
-                    b.setLinearVelocity(speed, y);
+                    b.setLinearVelocity(speed* PhysicsConstants.METERS_PER_PIXEL, y);
                 }
             }
         }

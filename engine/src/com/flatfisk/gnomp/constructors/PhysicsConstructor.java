@@ -26,44 +26,34 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public ComponentMapper<StructureRelative> structureMapper;
+    private ComponentMapper<StructureRelative> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
-    private ComponentMapper<PhysicsBody> bodyMapper;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
         super(engine,PhysicsBodyDef.class, PhysicsBodyRelative.class);
         structureMapper = ComponentMapper.getFor(StructureRelative.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
-        bodyMapper = ComponentMapper.getFor(PhysicsBody.class);
         this.box2DWorld = box2DWorld;
     }
 
     @Override
     public void parentAddedFinal(Entity entity, SpatialRelative constructorOrientation, Array<FixtureDef> physicsBodyDef) {
-        LOG.info("Finalizing physicsbody construction");
-        LOG.info("ADDED BODY");
-        engine.addComponent(PhysicsBody.class,entity);
 
+        Spatial worldSpatial = constructorOrientation.world.getCopy().toBox2D();
 
-        Velocity velocity = velocityMapper.get(entity);
+        BodyDef bodyDef = constructorMapper.get(entity).bodyDef;
+        bodyDef.position.set(worldSpatial.vector);
+        bodyDef.angle = worldSpatial.rotation;
 
-        PhysicsBodyDef bodyDefContainer = constructorMapper.get(entity);
-        BodyDef bodyDef = bodyDefContainer.bodyDef;
-
-        Spatial t = constructorOrientation.world.getCopy().toBox2D();
-        bodyDef.position.set(t.vector);
-        bodyDef.angle = t.rotation;
-
-        PhysicsBody bodyContainer = engine.addComponent(PhysicsBody.class,entity);//physicsBodyMapper.get(entity);
+        PhysicsBody bodyContainer = engine.addComponent(PhysicsBody.class,entity);
         bodyContainer.body = createBody(bodyDef,physicsBodyDef);
         bodyContainer.body.setUserData(entity);
 
-
+        Velocity velocity = velocityMapper.get(entity);
         if(velocity!=null && velocity.velocity != null){
-            LOG.info("Velocity:"+velocity.velocity.vector.x+","+velocity.velocity.vector.y);
-            Spatial nodeVelocityBox2D = velocity.velocity.getCopy().toBox2D();
-            bodyContainer.body.setLinearVelocity(nodeVelocityBox2D.vector);
-            bodyContainer.body.setAngularVelocity(nodeVelocityBox2D.rotation);
+            Spatial velocitySpatial = velocity.velocity.getCopy().toBox2D();
+            bodyContainer.body.setLinearVelocity(velocitySpatial.vector);
+            bodyContainer.body.setAngularVelocity(velocitySpatial.rotation);
         }
 
     }
@@ -71,19 +61,6 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
     @Override
     public Array<FixtureDef> parentAdded(Entity entity, SpatialRelative constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
-
-        //PhysicsBodyDef bodyContainer = constructorMapper.get(entity);
-
-        Spatial t = constructor.world.getCopy().toBox2D();
-
-        LOG.info("Inserting parent at vector:"+t.vector);
-        //bodyContainer.bodyDef.position.set(t.vector);
-        //bodyContainer.bodyDef.angle = t.rotation;
-
-        // If the constructor has fixtures, they should be drawn at origin.
-        // TODO: This should always be empty, before this stage !!!!
-        //bodyContainer.fixtureDefs.clear();
-        //bodyContainer.addFixtures(structureMapper.get(entity),Pools.obtainSpatial());
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial());
         if(fixtures!=null){
             fixtureDefs.addAll(fixtures);
@@ -93,18 +70,13 @@ public class PhysicsConstructor extends Constructor<PhysicsBodyDef,PhysicsBodyRe
 
     @Override
     public Array<FixtureDef> insertedChild(Entity entity, SpatialRelative constructorOrientation, SpatialRelative parentOrientation, SpatialRelative childOrientation, Array<FixtureDef> bodyDefContainer) {
-
-        // Use vector relativeType to constructor.
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        LOG.info("Inserting child at vector:"+ spatial.vector);
-
         if(relationshipMapper.get(entity).relativeType == Relative.CHILD) {
             FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial);
             if(fixtures!=null){
                 bodyDefContainer.addAll(fixtures);
             }
         }
-
         return bodyDefContainer;
     }
 

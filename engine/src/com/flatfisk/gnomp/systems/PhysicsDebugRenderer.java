@@ -32,7 +32,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
 
     private void rescale() {
         debugMatrix = new Matrix4(camera.combined);
-        debugMatrix.scale(PhysicsConstants.BOX_TO_WORLD, PhysicsConstants.BOX_TO_WORLD, 1);
+        debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
     }
 
     @Override
