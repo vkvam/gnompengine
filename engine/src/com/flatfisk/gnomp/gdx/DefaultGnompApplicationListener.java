@@ -26,8 +26,8 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
 
     protected void initializeConstructorManager(int priority, World physicsWorld){
         ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
-        constructorManager.addConstructor(new SpatialConstructor(world),0);
-        constructorManager.addConstructor(new StructureConstructor(world),1);
+        constructorManager.addConstructor(new SpatialConstructor(),0);
+        constructorManager.addConstructor(new StructureConstructor(),1);
         constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
         constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),3);
         //world.addEntityListener(constructorManager.rootFamily,priority,constructorManager);

@@ -24,13 +24,15 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     private ComponentMapper<Geometry.Node> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
     private ComponentMapper<PhysicalProperties> physicalPropertiesMapper;
+    private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
-        super(engine,PhysicsBody.class, PhysicsBody.Node.class);
+        super(PhysicsBody.class, PhysicsBody.Node.class);
+        this.engine = engine;
+        this.box2DWorld = box2DWorld;
         structureMapper = ComponentMapper.getFor(Geometry.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         physicalPropertiesMapper = ComponentMapper.getFor(PhysicalProperties.class);
-        this.box2DWorld = box2DWorld;
     }
 
     @Override

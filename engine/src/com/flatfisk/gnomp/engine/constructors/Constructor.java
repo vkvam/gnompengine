@@ -7,7 +7,6 @@ package com.flatfisk.gnomp.engine.constructors;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Spatial;
 
@@ -19,15 +18,15 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     public ComponentMapper<CONSTRUCTOR_ROOT> constructorMapper;
     public ComponentMapper<RELATIONSHIP> relationshipMapper;
 
-    public GnompEngine engine;
+    //public GnompEngine engine;
 
-    public Constructor(GnompEngine engine, Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
+    public Constructor(/*GnompEngine engine, */Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
         this.constructor = constructor;
         this.relationship = relationship;
 
         constructorMapper = ComponentMapper.getFor(this.constructor);
         relationshipMapper = ComponentMapper.getFor(this.relationship);
-        this.engine = engine;
+        //this.engine = engine;
     }
 
     public boolean isParent(Entity entity){

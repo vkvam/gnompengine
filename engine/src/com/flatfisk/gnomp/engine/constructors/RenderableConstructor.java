@@ -20,9 +20,11 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
 
     private ShapeTextureFactory shapeTextureFactory;
     private ComponentMapper<Geometry.Node> structureRelativeComponentMapper;
+    private GnompEngine engine;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
-        super(engine,Renderable.class,Renderable.Node.class);
+        super(Renderable.class,Renderable.Node.class);
+        this.engine = engine;
         structureRelativeComponentMapper = ComponentMapper.getFor(Geometry.Node.class);
         this.shapeTextureFactory = shapeTextureFactory;
     }

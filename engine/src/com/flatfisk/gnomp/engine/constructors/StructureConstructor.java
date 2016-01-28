@@ -1,12 +1,11 @@
 package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Entity;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Geometry;
 import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 
@@ -16,8 +15,8 @@ import com.flatfisk.gnomp.utils.Pools;
 public class StructureConstructor extends Constructor<Geometry,Geometry.Node, TextureCoordinates> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public StructureConstructor(GnompEngine engine) {
-        super(engine,Geometry.class,Geometry.Node.class);
+    public StructureConstructor() {
+        super(Geometry.class,Geometry.Node.class);
     }
 
     @Override
