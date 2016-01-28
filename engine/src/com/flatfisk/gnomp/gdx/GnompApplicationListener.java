@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.ashley.core.GnompEngine;
+import com.flatfisk.gnomp.engine.GnompEngine;
 
 
 public class GnompApplicationListener implements ApplicationListener {

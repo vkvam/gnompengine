@@ -7,7 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Spatial;
+import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.tests.components.Player;
 
 /**

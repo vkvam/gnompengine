@@ -3,8 +3,8 @@ package com.flatfisk.gnomp.tests;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.flatfisk.gnomp.gdx.DefaultGnompApplicationListener;
-import com.flatfisk.gnomp.systems.PhysicsSystem;
-import com.flatfisk.gnomp.systems.RenderSystem;
+import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
+import com.flatfisk.gnomp.engine.systems.RenderSystem;
 
 public class Test extends DefaultGnompApplicationListener {
 

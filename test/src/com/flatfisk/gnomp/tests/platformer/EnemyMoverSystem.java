@@ -7,7 +7,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.PhysicsBody;
+import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.tests.components.Player;
 
 public class EnemyMoverSystem extends IteratingSystem {

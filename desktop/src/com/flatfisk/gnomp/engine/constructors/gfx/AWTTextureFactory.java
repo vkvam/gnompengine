@@ -1,24 +1,23 @@
 package com.flatfisk.gnomp.engine.constructors.gfx;
 
 import com.badlogic.gdx.Gdx;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.flatfisk.gnomp.components.Geometry;
+import com.flatfisk.gnomp.engine.components.Geometry;
+import com.flatfisk.gnomp.engine.shape.CircleShape;
+import com.flatfisk.gnomp.engine.shape.LineShape;
+import com.flatfisk.gnomp.engine.shape.PolygonShape;
+import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
+import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
+import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.shape.*;
-import com.flatfisk.gnomp.shape.LineShape;
-import com.flatfisk.gnomp.shape.texture.ShapeTexture;
-import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
-import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
-import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
@@ -129,7 +128,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
 
             float angle = transform.rotation;
 
-            com.flatfisk.gnomp.shape.Shape geShape = structure.shape;
+            com.flatfisk.gnomp.engine.shape.Shape geShape = structure.shape;
             Shape awtShape = null;
             if (geShape instanceof PolygonShape) {
                 PolygonShape ps = (PolygonShape) structure.shape;

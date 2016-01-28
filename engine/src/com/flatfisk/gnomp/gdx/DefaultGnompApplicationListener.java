@@ -1,13 +1,13 @@
 package com.flatfisk.gnomp.gdx;
 
 import com.badlogic.gdx.physics.box2d.World;
-import com.flatfisk.gnomp.constructors.SpatialConstructor;
-import com.flatfisk.gnomp.constructors.PhysicsConstructor;
-import com.flatfisk.gnomp.constructors.RenderableConstructor;
-import com.flatfisk.gnomp.constructors.StructureConstructor;
-import com.flatfisk.gnomp.ConstructorManager;
-import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
-import com.flatfisk.gnomp.systems.*;
+import com.flatfisk.gnomp.engine.constructors.SpatialConstructor;
+import com.flatfisk.gnomp.engine.constructors.PhysicsConstructor;
+import com.flatfisk.gnomp.engine.constructors.RenderableConstructor;
+import com.flatfisk.gnomp.engine.constructors.StructureConstructor;
+import com.flatfisk.gnomp.engine.ConstructorManager;
+import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
+import com.flatfisk.gnomp.engine.systems.*;
 
 
 public class DefaultGnompApplicationListener extends GnompApplicationListener {
