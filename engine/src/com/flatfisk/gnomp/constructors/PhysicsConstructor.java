@@ -9,12 +9,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
-import com.flatfisk.gnomp.components.Velocity;
-import com.flatfisk.gnomp.components.Structure;
-import com.flatfisk.gnomp.components.PhysicsBody;
+import com.flatfisk.gnomp.components.*;
 import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.shape.Shape;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
@@ -26,11 +24,13 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
     private ComponentMapper<Structure.Node> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
+    private ComponentMapper<PhysicalProperties> physicalPropertiesMapper;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
         super(engine,PhysicsBody.class, PhysicsBody.Node.class);
         structureMapper = ComponentMapper.getFor(Structure.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
+        physicalPropertiesMapper = ComponentMapper.getFor(PhysicalProperties.class);
         this.box2DWorld = box2DWorld;
     }
 
@@ -59,7 +59,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDef> parentAdded(Entity entity, Constructable.Node constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
-        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial());
+        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial(), physicalPropertiesMapper.get(entity));
         if(fixtures!=null){
             fixtureDefs.addAll(fixtures);
         }
@@ -70,7 +70,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     public Array<FixtureDef> insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
         Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
         if(relationshipMapper.get(entity).relativeType == IRelative.Relative.CHILD) {
-            FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial);
+            FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),spatial, physicalPropertiesMapper.get(entity));
             if(fixtures!=null){
                 bodyDefContainer.addAll(fixtures);
             }
@@ -100,12 +100,29 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         return body;
     }
 
-    public FixtureDef[] getFixtures(Structure.Node structure,Spatial spatial) {
+    public FixtureDef[] getFixtures(Structure.Node structure,Spatial spatial, PhysicalProperties physicalProperties) {
         if (structure.shape != null) {
-            FixtureDef[] structureFixtureDefs = structure.getFixtureDefinitions(spatial);
+            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.shape,spatial,physicalProperties);
             return structureFixtureDefs;
         }
         return null;
+    }
 
+    private FixtureDef[] getFixtureDefinitions(Shape shape, Spatial spatial, PhysicalProperties physicalProperties) {
+
+        shape.setRotation(spatial.rotation);
+        FixtureDef[] fixtureDefinitions = shape.getFixtureDefinitions(spatial.vector);
+
+        for(FixtureDef fixtureDef:fixtureDefinitions){
+
+            fixtureDef.density = physicalProperties.density;
+            fixtureDef.isSensor = physicalProperties.isSensor;
+            fixtureDef.friction = physicalProperties.friction;
+            fixtureDef.filter.categoryBits = physicalProperties.categoryBits;
+            fixtureDef.filter.maskBits = physicalProperties.maskBits;
+        }
+
+        shape.setRotation(0);
+        return fixtureDefinitions;
     }
 }

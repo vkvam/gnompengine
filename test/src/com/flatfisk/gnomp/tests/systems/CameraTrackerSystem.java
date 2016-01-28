@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.systems;
+package com.flatfisk.gnomp.tests.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.components.Constructable;
-import com.flatfisk.gnomp.components.Player;
+import com.flatfisk.gnomp.tests.components.Player;
 
 /**
  * Created by Vemund Kvam on 22/12/15.

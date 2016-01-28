@@ -16,7 +16,6 @@ public class Test extends DefaultGnompApplicationListener {
         RenderSystem renderSystem = addRenderSystem(50);
         renderSystem.setProcessing(true);
         addPhysicsTrackerSystem(400);
-        addDebugRenderer(500,physicsWorld,renderSystem,false);
         PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
         physicsSystem.setFixedStep(true);
     }

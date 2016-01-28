@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.systems;
+package com.flatfisk.gnomp.tests.addremove;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
@@ -9,22 +9,23 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.components.*;
-import com.flatfisk.gnomp.components.PhysicsBody;
-import com.flatfisk.gnomp.components.Renderable;
-import com.flatfisk.gnomp.components.Structure;
 import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.tests.components.Dot;
+import com.flatfisk.gnomp.tests.components.EndPoint;
+import com.flatfisk.gnomp.tests.components.Player;
+import com.flatfisk.gnomp.tests.components.PlayerSensor;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
  */
-public class InputSystem extends EntitySystem implements ContactListener, EntityListener{
+public class AddRemoveInputSystem extends EntitySystem implements ContactListener, EntityListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private Entity player,sensor,endpoint;
     private Player playerComponent;
     private Family family;
 
-    public InputSystem(int priority,World physicsWorld) {
+    public AddRemoveInputSystem(int priority, World physicsWorld) {
         family = Family.one(Player.class, PlayerSensor.class, EndPoint.class).get();
         this.priority = priority;
         physicsWorld.setContactListener(this);
@@ -115,9 +116,11 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
         Structure.Node structure = world.addComponent(Structure.Node.class,e);
         com.flatfisk.gnomp.shape.CircleShape rectangularLineShape = new com.flatfisk.gnomp.shape.CircleShape(1,5, Color.GREEN,Color.BLACK);
         structure.shape = rectangularLineShape;
-        structure.density = .01f;
-        structure.friction = 5f;
         structure.relativeType = IRelative.Relative.CHILD;
+
+        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        physicalProperties.density = .01f;
+        physicalProperties.friction = 5f;
 
         PhysicsBody.Node rel = world.addComponent(PhysicsBody.Node.class, e);
         if(Math.random()>0.5) {
@@ -161,8 +164,8 @@ public class InputSystem extends EntitySystem implements ContactListener, Entity
                 } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     speed = 150f;
                 } else {
-                    speed += speed > 0 ? -deltaTime * 100 : deltaTime * 100;
-                    if (Math.abs(speed) < 5f) {
+                    speed += speed > 0 ? -deltaTime * 400 : deltaTime * 400;
+                    if (Math.abs(speed) < 150f) {
                         speed = 0;
                     }
                 }

@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.components;
+package com.flatfisk.gnomp.tests.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
@@ -9,7 +9,7 @@ import com.flatfisk.gnomp.components.abstracts.ISerializable;
 /**
  * Created by Vemund Kvam on 22/12/15.
  */
-public class Player implements ISerializable<Player>, Component, Pool.Poolable {
+public class PlayerSensor implements ISerializable<PlayerSensor>,Component, Pool.Poolable {
     public int touchedPlatformTimes = 0;
 
     @Override
@@ -18,9 +18,7 @@ public class Player implements ISerializable<Player>, Component, Pool.Poolable {
     }
 
     @Override
-    public Player addCopy(GnompEngine gnompEngine, Entity entity) {
-        Player p = gnompEngine.addComponent(this.getClass(),entity);
-        p.touchedPlatformTimes = touchedPlatformTimes;
-        return p;
+    public PlayerSensor addCopy(GnompEngine gnompEngine, Entity entity) {
+        return gnompEngine.addComponent(this.getClass(),entity);
     }
 }

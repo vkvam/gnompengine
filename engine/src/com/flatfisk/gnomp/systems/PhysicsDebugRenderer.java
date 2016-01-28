@@ -14,6 +14,7 @@ import com.flatfisk.gnomp.PhysicsConstants;
 
 public class PhysicsDebugRenderer extends EntitySystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+
     private Box2DDebugRenderer debugRenderer;
     private Camera camera;
     private World box2DWorld;

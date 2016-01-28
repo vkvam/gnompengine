@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.components;
+package com.flatfisk.gnomp.tests.components;
 
 import com.badlogic.ashley.core.Component;
 

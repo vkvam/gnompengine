@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.tests;
+package com.flatfisk.gnomp.tests.addremove;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -12,16 +12,20 @@ import com.flatfisk.gnomp.math.Spatial;
 import com.flatfisk.gnomp.shape.CircleShape;
 import com.flatfisk.gnomp.shape.RectangularLineShape;
 import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
-import com.flatfisk.gnomp.systems.CameraTrackerSystem;
-import com.flatfisk.gnomp.systems.InputSystem;
 import com.flatfisk.gnomp.systems.PhysicsSystem;
 import com.flatfisk.gnomp.systems.RenderSystem;
+import com.flatfisk.gnomp.tests.Test;
+import com.flatfisk.gnomp.tests.components.Dot;
+import com.flatfisk.gnomp.tests.components.EndPoint;
+import com.flatfisk.gnomp.tests.components.Player;
+import com.flatfisk.gnomp.tests.components.PlayerSensor;
+import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
 
-public class TestPlatformer extends Test {
+public class TestAddRemove extends Test {
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public TestPlatformer(ShapeTextureFactory shapeTextureFactory){
+    public TestAddRemove(ShapeTextureFactory shapeTextureFactory){
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
@@ -37,7 +41,7 @@ public class TestPlatformer extends Test {
 
         world.getSystem(RenderSystem.class).getCamera().zoom = 1f;
 
-        InputSystem inputSystem = new InputSystem(0,world.getSystem(PhysicsSystem.class).getBox2DWorld());
+        AddRemoveInputSystem inputSystem = new AddRemoveInputSystem(0,world.getSystem(PhysicsSystem.class).getBox2DWorld());
         world.addSystem(inputSystem);
         world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
@@ -123,12 +127,14 @@ public class TestPlatformer extends Test {
         rectangularLineShape.createPolygonVertices();
 
         structure.shape = rectangularLineShape;
-        structure.density = 1;
-        structure.friction = 5f;
         structure.relativeType = IRelative.Relative.PARENT;
-        structure.isSensor = true;
-        structure.categoryBits = CATEGORY_SENSOR;
-        structure.maskBits = CATEGORY_PLATFORM;
+
+        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        physicalProperties.density = 1;
+        physicalProperties.friction = 5f;
+        physicalProperties.isSensor = true;
+        physicalProperties.categoryBits = CATEGORY_SENSOR;
+        physicalProperties.maskBits = CATEGORY_PLATFORM;
 
 
         Renderable renderableDef = world.addComponent(Renderable.class,e);
@@ -165,11 +171,13 @@ public class TestPlatformer extends Test {
         Structure.Node structure = world.addComponent(Structure.Node.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
         structure.shape = rectangularLineShape;
-        structure.density = 1;
-        structure.friction = 5f;
         structure.relativeType = IRelative.Relative.PARENT;
-        structure.categoryBits = CATEGORY_PLAYER;
-        structure.maskBits = CATEGORY_PLATFORM;
+
+        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        physicalProperties.density = 1;
+        physicalProperties.friction = 5f;
+        physicalProperties.categoryBits = CATEGORY_PLAYER;
+        physicalProperties.maskBits = CATEGORY_PLATFORM;
 
         world.addComponent(Renderable.class,e);
         world.addComponent(Structure.class,e);
@@ -206,9 +214,11 @@ public class TestPlatformer extends Test {
         Structure.Node structure = world.addComponent(Structure.Node.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,5,Color.RED,Color.BLUE);
         structure.shape = rectangularLineShape;
-        structure.density = .01f;
-        structure.friction = 5f;
         structure.relativeType = IRelative.Relative.CHILD;
+
+        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        physicalProperties.density = .01f;
+        physicalProperties.friction = 5f;
 
         PhysicsBody.Node rel  = world.addComponent(PhysicsBody.Node.class, e);
 
@@ -241,11 +251,13 @@ public class TestPlatformer extends Test {
         rectangularLineShape.createPolygonVertices();
 
         structure.shape = rectangularLineShape;
-        structure.density = 0;
-        structure.friction = 1;
-        structure.categoryBits = CATEGORY_PLATFORM;
-        structure.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR;
         structure.relativeType = IRelative.Relative.PARENT;
+
+        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        physicalProperties.density = 0;
+        physicalProperties.friction = 1;
+        physicalProperties.categoryBits = CATEGORY_PLATFORM;
+        physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR;
 
         world.addComponent(Renderable.class,e);
         world.addComponent(Structure.class,e);

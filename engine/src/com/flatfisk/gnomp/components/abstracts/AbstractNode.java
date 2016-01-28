@@ -9,8 +9,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public abstract class AbstractNode implements Component, Pool.Poolable{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private static int initialSize = 0;
-
+    private static int initialSize = 1;
     public Entity owner;
     public Entity parent = null;
     public Array<Entity> children;
