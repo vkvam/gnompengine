@@ -7,12 +7,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.*;
-import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.engine.shape.CircleShape;
 import com.flatfisk.gnomp.engine.shape.RectangularLineShape;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
+import com.flatfisk.gnomp.engine.systems.CameraSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
-import com.flatfisk.gnomp.engine.systems.RenderSystem;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.Test;
 import com.flatfisk.gnomp.tests.components.Dot;
 import com.flatfisk.gnomp.tests.components.EndPoint;
@@ -38,13 +38,13 @@ public class TestAddRemove extends Test {
         PhysicsConstants.setPixelsPerMeter(100);
         createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL));
 
-        world.getSystem(RenderSystem.class).getCamera().zoom = 1f;
+        world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
 
         AddRemoveInputSystem inputSystem = new AddRemoveInputSystem(0,world.getSystem(PhysicsSystem.class).getBox2DWorld());
         world.addSystem(inputSystem);
         world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
-        world.addSystem(new CameraTrackerSystem(1,world.getSystem(RenderSystem.class).getCamera(),true,true));
+        world.addSystem(new CameraTrackerSystem(1,world.getSystem(CameraSystem.class).getCamera(),true,true));
         createGame(new Transform(0, -120, 0));
     }
 

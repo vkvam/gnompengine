@@ -13,7 +13,6 @@ public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Spatial
         super(Spatial.class, Spatial.Node.class);
     }
 
-
     @Override
     public Spatial.Node parentAdded(Entity entity,
                                        Spatial.Node constructorOrientation) {

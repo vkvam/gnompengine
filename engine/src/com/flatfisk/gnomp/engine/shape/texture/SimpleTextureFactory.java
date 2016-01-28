@@ -15,7 +15,7 @@ import com.flatfisk.gnomp.engine.shape.RectangularLineShape;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.engine.shape.Shape;
 
-public class SimpleShapeTextureFactory extends ShapeTextureFactory {
+public class SimpleTextureFactory extends ShapeTextureFactory {
     @Override
     public ShapeTexture createShapeTexture(TextureCoordinates.BoundingRectangle boundingRectangle) {
         return new SimpleShapeTexture(boundingRectangle);

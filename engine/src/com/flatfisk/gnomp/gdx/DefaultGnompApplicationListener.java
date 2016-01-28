@@ -19,31 +19,36 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         super.create();
     }
 
-    protected void addScenegraphSystem(int priority){
+    protected ScenegraphSystem addScenegraphSystem(int priority){
         ScenegraphSystem scenegraphSystem = new ScenegraphSystem(priority);
         world.addSystem(scenegraphSystem);
+        return scenegraphSystem;
     }
 
-    protected void initializeConstructorManager(int priority, World physicsWorld){
+    protected void initializeConstructorManager(World physicsWorld){
         ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
         constructorManager.addConstructor(new SpatialConstructor(),0);
         constructorManager.addConstructor(new StructureConstructor(),1);
         constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
         constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),3);
-        //world.addEntityListener(constructorManager.rootFamily,priority,constructorManager);
+    }
+
+    protected CameraSystem addCameraSystem(int priority){
+        CameraSystem cameraSystem = new CameraSystem(priority);
+        world.addSystem(cameraSystem);
+        return cameraSystem;
     }
 
     protected RenderSystem addRenderSystem(int priority){
         RenderSystem renderer = new RenderSystem(priority);
-        //world.addEntityListener(renderer.getFamily(),priority,renderer);
         world.addSystem(renderer);
         return renderer;
     }
 
-    protected void addDebugRenderer(int priority, World physicsWorld, RenderSystem renderer, boolean clear){
-        PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(renderer.getCamera(),physicsWorld,priority);
-        debugRenderer.setClearScreen(clear);
+    protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){
+        PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(cameraSystem.getCamera(),physicsWorld,priority);
         world.addSystem(debugRenderer);
+        return debugRenderer;
     }
 
     protected PhysicsSystem addPhysicsSystem(int priority,World physicsWorld){
@@ -53,8 +58,9 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         return physicsSystem;
     }
 
-    protected void addPhysicsTrackerSystem(int priority){
+    protected PositionPhysicsScenegraphSystem addPhysicsTrackerSystem(int priority){
         PositionPhysicsScenegraphSystem physicsSystem = new PositionPhysicsScenegraphSystem(priority);
         world.addSystem(physicsSystem);
+        return physicsSystem;
     }
 }

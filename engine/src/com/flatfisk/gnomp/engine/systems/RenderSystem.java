@@ -1,19 +1,20 @@
 package com.flatfisk.gnomp.engine.systems;
 
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.Renderable;
+import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
 
 import java.util.Comparator;
@@ -24,19 +25,16 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private SpriteBatch batch;
-    private OrthographicCamera orthographicCamera;
     private Array<Entity> renderQueue = new Array<Entity>();
 
     public ComponentMapper<Renderable.Constructed> renderableMapper;
     public ComponentMapper<Spatial.Node> orientationMapper;
     private Comparator comperator;
-    //private Family family;
 
     public RenderSystem(int priority) {
         super(Family.all(Renderable.Constructed.class).get(),priority);
 
         batch = new SpriteBatch();
-        orthographicCamera = new OrthographicCamera(640, 480);
 
         comperator = new Comparator<Entity>() {
             @Override
@@ -55,9 +53,6 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
         orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
     }
 
-    public OrthographicCamera getCamera() {
-        return orthographicCamera;
-    }
 
     public void processEntity(Entity e,float f){
         renderQueue.add(e);
@@ -66,10 +61,9 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     @Override
     public void update(float f) {
         super.update(f);
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        orthographicCamera.update(true);
+        OrthographicCamera orthographicCamera = getEngine().getSystem(CameraSystem.class).getCamera();
+
         batch.setProjectionMatrix(orthographicCamera.combined);
         batch.begin();
         renderQueue.sort(comperator);
@@ -92,7 +86,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                 // The idea for this check is that a texture's rotated bounding-box never will be larger than root(2) of half of longest side.
                 float longestSide = Math.max(tW, tH) * 0.5f * ROOT2;
 
-                if (getCamera().frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
+                if (orthographicCamera.frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
                     batch.draw(
                             texture,                            // Texture texture
                             xCenter,                            // float x
@@ -150,10 +144,6 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public void resize(final int w, final int h) {
         LOG.info("Resizing render system: w="+w+"h="+h);
 
-        Gdx.graphics.setDisplayMode(w, h, false);
-        orthographicCamera.update();
-        orthographicCamera.viewportWidth = w;
-        orthographicCamera.viewportHeight = h;
     }
 
 }
