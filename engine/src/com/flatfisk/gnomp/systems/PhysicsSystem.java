@@ -5,18 +5,18 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
 import com.flatfisk.gnomp.components.Velocity;
 import com.flatfisk.gnomp.components.Scenegraph;
 import com.flatfisk.gnomp.components.PhysicsBody;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBody> physicsBodyDefMapper;
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
-    private ComponentMapper<Constructable.Node> orientationMapper;
+    private ComponentMapper<Spatial.Node> orientationMapper;
     private ComponentMapper<Velocity> velocityMapper;
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
 
@@ -47,7 +47,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         super.addedToEngine(engine);
         physicsBodyDefMapper = ComponentMapper.getFor(PhysicsBody.class);
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
+        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
     }
@@ -64,9 +64,9 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
         if(body.body!=null) {
             if(body.positionChanged){
                 body.positionChanged = false;
-                Constructable.Node relative = orientationMapper.get(entity);
-                Spatial spatial = relative.world.toBox2D();
-                body.body.setTransform(spatial.vector,spatial.rotation);
+                Spatial.Node relative = orientationMapper.get(entity);
+                Transform transform = relative.world.toBox2D();
+                body.body.setTransform(transform.vector, transform.rotation);
             }else {
                 Velocity velocity = velocityMapper.get(entity);
 
@@ -74,7 +74,7 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                     velocity.velocity = Pools.obtainSpatialFromCopy(body.getVelocity().toWorld());
                 }
 
-                Constructable.Node orientation = orientationMapper.get(entity);
+                Spatial.Node orientation = orientationMapper.get(entity);
                 orientation.world = body.getTranslation().getCopy().toWorld();
             }
         }

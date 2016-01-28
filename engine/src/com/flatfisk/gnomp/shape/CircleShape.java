@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.utils.Pools;
 
@@ -78,7 +78,7 @@ public class CircleShape extends Shape{
 
 
     @Override
-    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Spatial spatial) {
+    public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Transform transform) {
 
         if (textureCoordinates == null) {
             textureCoordinates = new TextureCoordinates();
@@ -93,8 +93,8 @@ public class CircleShape extends Shape{
         float tdX1 = textureCoordinates.x1;
         float tdY1 = textureCoordinates.y1;
 
-        float centerX = spatial.vector.x;
-        float centerY = spatial.vector.y;
+        float centerX = transform.vector.x;
+        float centerY = transform.vector.y;
         float radius = this.circle.radius;
 
         float x0 = centerX - radius - lineWidth / 2;

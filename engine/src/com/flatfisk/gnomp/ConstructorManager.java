@@ -11,24 +11,24 @@ import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SortedIntList;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
 import com.flatfisk.gnomp.constructors.SpatialConstructor;
 
 public class ConstructorManager {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public ComponentMapper<Constructable.Node> spatialRelativeComponentMapper;
-    public ComponentMapper<Constructable> spatialDefComponentMapper;
+    public ComponentMapper<Spatial.Node> spatialRelativeComponentMapper;
+    public ComponentMapper<Spatial> spatialDefComponentMapper;
 
     public SortedIntList<com.flatfisk.gnomp.constructors.Constructor> constructors;
     public Family rootFamily;
 
     public GnompEngine engine;
     public ConstructorManager(GnompEngine engine){
-        rootFamily = Family.all(Constructable.class, Constructable.Node.class).get();
+        rootFamily = Family.all(Spatial.class, Spatial.Node.class).get();
 
-        spatialRelativeComponentMapper = ComponentMapper.getFor(Constructable.Node.class);
-        spatialDefComponentMapper = ComponentMapper.getFor(Constructable.class);
+        spatialRelativeComponentMapper = ComponentMapper.getFor(Spatial.Node.class);
+        spatialDefComponentMapper = ComponentMapper.getFor(Spatial.class);
         constructors = new SortedIntList<com.flatfisk.gnomp.constructors.Constructor>();
         this.engine = engine;
     }
@@ -39,16 +39,16 @@ public class ConstructorManager {
 
     public void constructEntity(Entity entity) {
 
-            Constructable.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+            Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
             for (SortedIntList.Node<com.flatfisk.gnomp.constructors.Constructor> constructorNode : constructors) {
                 com.flatfisk.gnomp.constructors.Constructor constructor = constructorNode.value;
                 parentAdded(constructor, entity, constructorOrientation);
             }
     }
 
-    private void parentAdded(com.flatfisk.gnomp.constructors.Constructor constructor, Entity entity, Constructable.Node rootOrientation){
+    private void parentAdded(com.flatfisk.gnomp.constructors.Constructor constructor, Entity entity, Spatial.Node rootOrientation){
         LOG.info("Parent added for constructor:"+constructor.getClass());
-        Constructable.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
         Object iterateDTO = constructor.parentAdded(entity, constructorOrientation);
@@ -56,13 +56,13 @@ public class ConstructorManager {
         constructor.parentAddedFinal(entity, constructorOrientation, iterateDTO);
     }
 
-    private void childrenAdded(Array<Entity> children, com.flatfisk.gnomp.constructors.Constructor constructor, Constructable.Node rootOrientation, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Object iterateDTO){
+    private void childrenAdded(Array<Entity> children, com.flatfisk.gnomp.constructors.Constructor constructor, Spatial.Node rootOrientation, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Object iterateDTO){
         for(Entity childWrapper : children) {
             LOG.info("Child for constructor:"+childWrapper);
             if(childWrapper!=null && childWrapper!=null) {
             Entity child = childWrapper;
                 if (constructor.isChild(child)) {
-                    Constructable.Node orientation = spatialRelativeComponentMapper.get(child);
+                    Spatial.Node orientation = spatialRelativeComponentMapper.get(child);
                     LOG.info("Child added for constructor:" + constructor.getClass());
 
                     iterateDTO = constructor.insertedChild(child, constructorOrientation, parentOrientation, orientation, iterateDTO);
@@ -95,7 +95,7 @@ public class ConstructorManager {
             }
         }
 
-        Constructable.Node rel = entity.getComponent(Constructable.Node.class);
+        Spatial.Node rel = entity.getComponent(Spatial.Node.class);
 
         if(isParent&&hasConstructor){
             return entity;
@@ -118,7 +118,7 @@ public class ConstructorManager {
 
     private void parentRemoved(com.flatfisk.gnomp.constructors.Constructor constructor, Entity entity){
         LOG.info("Parent removed for constructor:"+constructor.getClass());
-        Constructable.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
         constructor.parentRemoved(entity);
@@ -132,7 +132,7 @@ public class ConstructorManager {
             if(childWrapper!=null && childWrapper!=null) {
                 Entity child = childWrapper;
                 if (constructor.isChild(child)) {
-                    Constructable.Node orientation = spatialRelativeComponentMapper.get(child);
+                    Spatial.Node orientation = spatialRelativeComponentMapper.get(child);
                     LOG.info("Child added for constructor:" + constructor.getClass());
 
                     constructor.childRemoved(child);

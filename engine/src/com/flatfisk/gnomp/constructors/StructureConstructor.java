@@ -3,9 +3,9 @@ package com.flatfisk.gnomp.constructors;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
-import com.flatfisk.gnomp.components.Structure;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.components.Geometry;
+import com.flatfisk.gnomp.components.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.utils.Pools;
 
@@ -13,42 +13,42 @@ import com.flatfisk.gnomp.utils.Pools;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class StructureConstructor extends Constructor<Structure,Structure.Node, TextureCoordinates> {
+public class StructureConstructor extends Constructor<Geometry,Geometry.Node, TextureCoordinates> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     public StructureConstructor(GnompEngine engine) {
-        super(engine,Structure.class,Structure.Node.class);
+        super(engine,Geometry.class,Geometry.Node.class);
     }
 
     @Override
-    public void parentAddedFinal(Entity entity,Constructable.Node constructorOrientation,TextureCoordinates textureCoordinates){
-        Structure.Node structure = relationshipMapper.get(entity);
+    public void parentAddedFinal(Entity entity,Spatial.Node constructorOrientation,TextureCoordinates textureCoordinates){
+        Geometry.Node structure = relationshipMapper.get(entity);
         if(textureCoordinates!=null) {
             structure.boundingRectangle = textureCoordinates.getBoundingRectangle();
         }
     }
 
     @Override
-    public TextureCoordinates parentAdded(Entity entity, Constructable.Node structureOrientation) {
-        Structure.Node structure = relationshipMapper.get(entity);
+    public TextureCoordinates parentAdded(Entity entity, Spatial.Node structureOrientation) {
+        Geometry.Node structure = relationshipMapper.get(entity);
 
-        Spatial spatial = Pools.obtainSpatial();
+        Transform transform = Pools.obtainSpatial();
         TextureCoordinates textureCoordinates = null;
 
         if (structure.shape != null) {
-            textureCoordinates = structure.shape.getTextureCoordinates(null,spatial);
+            textureCoordinates = structure.shape.getTextureCoordinates(null, transform);
         }
 
         return textureCoordinates;
     }
 
     @Override
-    public TextureCoordinates insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, TextureCoordinates textureCoordinates) {
-        Structure.Node structure = relationshipMapper.get(entity);
-        Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
+    public TextureCoordinates insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, TextureCoordinates textureCoordinates) {
+        Geometry.Node structure = relationshipMapper.get(entity);
+        Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
 
-        if(structure.shape !=null){
-            textureCoordinates = structure.shape.getTextureCoordinates(textureCoordinates, spatial);
+        if(structure.shape !=null && !structure.intermediate){
+            textureCoordinates = structure.shape.getTextureCoordinates(textureCoordinates, transform);
         }
 
         return textureCoordinates;

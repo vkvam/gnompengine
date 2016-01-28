@@ -2,38 +2,39 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.GnompEngine;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class SpatialConstructor extends Constructor<Constructable,Constructable.Node,Constructable.Node> {
+public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Spatial.Node> {
     public SpatialConstructor(GnompEngine engine) {
-        super(engine, Constructable.class, Constructable.Node.class);
+        super(engine, Spatial.class, Spatial.Node.class);
     }
 
+
     @Override
-    public Constructable.Node parentAdded(Entity entity,
-                                       Constructable.Node constructorOrientation) {
-        //constructorOrientation.world.setCopy(rootOrientation.local);
+    public Spatial.Node parentAdded(Entity entity,
+                                       Spatial.Node constructorOrientation) {
         constructorOrientation.local.setCopy(constructorOrientation.world);
         return constructorOrientation;
     }
 
 
     @Override
-    public Constructable.Node insertedChild(Entity entity,
-                                         Constructable.Node constructorOrientation,
-                                         Constructable.Node parentOrientation,
-                                         Constructable.Node childOrientation,
-                                         Constructable.Node constructorDTO) {
+    public Spatial.Node insertedChild(Entity entity,
+                                         Spatial.Node constructorOrientation,
+                                         Spatial.Node parentOrientation,
+                                         Spatial.Node childOrientation,
+                                         Spatial.Node constructorDTO) {
 
-        com.flatfisk.gnomp.math.Spatial parentWorld = parentOrientation.world;
-        com.flatfisk.gnomp.math.Spatial childLocal = childOrientation.local;
-        com.flatfisk.gnomp.math.Spatial childWorld = childOrientation.world;
+        Transform parentWorld = parentOrientation.world;
+        Transform childLocal = childOrientation.local;
+        Transform childWorld = childOrientation.world;
 
-        boolean transferAngle = childOrientation.inheritFromParentType.equals(Constructable.Node.SpatialInheritType.POSITION_ANGLE);
+        boolean transferAngle = childOrientation.inheritFromParentType.equals(Spatial.Node.SpatialInheritType.POSITION_ANGLE);
 
         childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector),transferAngle?parentWorld.rotation:0);
         childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));

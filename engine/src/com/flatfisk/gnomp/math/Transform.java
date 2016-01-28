@@ -7,28 +7,28 @@ import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
-* Spatial properties with transformation methods.
+* A vector and a rotation.
 */
-public class Spatial implements Pool.Poolable {
+public class Transform implements Pool.Poolable {
     public Vector2 vector;
     public float rotation;
 
-    public Spatial() {
+    public Transform() {
         this(0, 0, 0);
     }
 
-    public Spatial(float x, float y, float rotation) {
+    public Transform(float x, float y, float rotation) {
         this.vector = new Vector2(x, y);
         this.rotation = rotation;
     }
 
-    public Spatial(Vector2 vector, float rotation) {
+    public Transform(Vector2 vector, float rotation) {
         this.vector = vector;
         this.rotation = rotation;
     }
 
-    public Spatial subtractedCopy(Spatial subtractor){
-        Spatial copy = this.getCopy();
+    public Transform subtractedCopy(Transform subtractor){
+        Transform copy = this.getCopy();
 
         copy.vector.sub(subtractor.vector);
         copy.vector.rotate(-subtractor.rotation);
@@ -36,11 +36,11 @@ public class Spatial implements Pool.Poolable {
         return copy;
     }
 
-    public Spatial getCopy() {
+    public Transform getCopy() {
         return Pools.obtainSpatialFromCopy(this);
     }
 
-    public void setCopy(Spatial t) {
+    public void setCopy(Transform t) {
         this.vector = Pools.obtainVector2FromCopy(t.vector);
         this.rotation = t.rotation;
     }
@@ -49,18 +49,14 @@ public class Spatial implements Pool.Poolable {
         this.vector = position;
         this.rotation = angle;
     }
-    public void setCopy(Vector2 position, float angle) {
-        this.vector = Pools.obtainVector2FromCopy(position);
-        this.rotation = angle;
-    }
 
-    public Spatial toBox2D(){
+    public Transform toBox2D(){
         vector.scl(PhysicsConstants.METERS_PER_PIXEL);
         rotation = rotation * MathUtils.degreesToRadians;
         return this;
     }
 
-    public Spatial toWorld(){
+    public Transform toWorld(){
         vector.scl(PhysicsConstants.PIXELS_PER_METER);
         rotation = rotation * MathUtils.radiansToDegrees;
         return this;

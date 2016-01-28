@@ -4,24 +4,23 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
 import com.flatfisk.gnomp.components.PhysicsBody;
 import com.flatfisk.gnomp.components.Scenegraph;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 
 public class PositionPhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
-    private ComponentMapper<Constructable.Node> orientationMapper;
+    private ComponentMapper<Spatial.Node> orientationMapper;
 
     public PositionPhysicsScenegraphSystem(int priority) {
         super(Family.all(PhysicsBody.Container.class, Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
+        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
     }
@@ -43,7 +42,7 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
         PhysicsBody.Container body = physicsBodyMapper.get(entity);
 
         if(body.body!=null) {
-            Constructable.Node orientation = orientationMapper.get(entity);
+            Spatial.Node orientation = orientationMapper.get(entity);
 
             verifyPositionTransfer(orientation);
 
@@ -53,8 +52,8 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
                 PhysicsBody.Container parentBody = physicsBodyMapper.get(parent);
                 Body b = body.body;
                 if(b!=null && parentBody!=null) {
-                    Spatial t = orientation.world.getCopy().toBox2D();
-                    Transform t2 = b.getTransform();
+                    Transform t = orientation.world.getCopy().toBox2D();
+                    com.badlogic.gdx.physics.box2d.Transform t2 = b.getTransform();
 
                     float xDiff = (t.vector.x - (t2.getPosition().x)) / f;
                     float yDiff = (t.vector.y - (t2.getPosition().y)) / f;
@@ -65,10 +64,10 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
         }
     }
 
-    private void verifyPositionTransfer(Constructable.Node orientation){
+    private void verifyPositionTransfer(Spatial.Node orientation){
 
-        if(orientation.inheritFromParentType == Constructable.Node.SpatialInheritType.POSITION_ANGLE) {
-            String msg = "inheritFromParentType should be "+ Constructable.Node.SpatialInheritType.POSITION+
+        if(orientation.inheritFromParentType == Spatial.Node.SpatialInheritType.POSITION_ANGLE) {
+            String msg = "inheritFromParentType should be "+ Spatial.Node.SpatialInheritType.POSITION+
                     " when used with "+this.getClass();
             throw new UnsupportedOperationException(msg);
         }

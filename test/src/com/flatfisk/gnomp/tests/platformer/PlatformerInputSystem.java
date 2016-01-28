@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
 import com.flatfisk.gnomp.components.PhysicsBody;
 import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
@@ -51,14 +51,14 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
             }
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
         }else if(entityA.equals(player) && enemyComponentMapper.has(entityB) || entityB.equals(player) && enemyComponentMapper.has(entityA) ){
-            player.getComponent(Constructable.Node.class).world.vector.setZero();
+            player.getComponent(Spatial.Node.class).world.vector.setZero();
             PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
             body.positionChanged = true;
         }
 
         if(sensor !=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
-                player.getComponent(Constructable.Node.class).world.vector.setZero();
+                player.getComponent(Spatial.Node.class).world.vector.setZero();
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
                 body.positionChanged = true;
             }

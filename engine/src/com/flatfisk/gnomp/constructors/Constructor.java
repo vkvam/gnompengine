@@ -7,12 +7,11 @@ package com.flatfisk.gnomp.constructors;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
-import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.badlogic.ashley.core.GnompEngine;
+import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Spatial;
 
-public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends IRelative, CONSTRUCTION_DTO>{
+public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends Component/*IRelative*/, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public Class<CONSTRUCTOR_ROOT> constructor;
     public Class<RELATIONSHIP> relationship;
@@ -32,12 +31,11 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     }
 
     public boolean isParent(Entity entity){
-        return constructorMapper.has(entity) && relationshipMapper.get(entity).getRelativeType()== IRelative.Relative.PARENT;
+        return constructorMapper.has(entity);
     }
 
     public boolean isChild(Entity entity){
-        RELATIONSHIP relationship = relationshipMapper.get(entity);
-        return relationship!=null && (relationship.getRelativeType() == IRelative.Relative.CHILD || relationship.getRelativeType() == IRelative.Relative.INTERMEDIATE);
+        return !constructorMapper.has(entity);
     }
 
     /**
@@ -46,9 +44,9 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
      * @param constructorOrientation
      * @return
      */
-    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, Constructable.Node constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, Constructable.Node constructorOrientation, Constructable.Node parentOrientation, Constructable.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
-    public void parentAddedFinal(Entity entity, Constructable.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
+    public abstract CONSTRUCTION_DTO parentAdded(Entity entity, Spatial.Node constructorOrientation);
+    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
+    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
 
     public abstract void parentRemoved(Entity entity);
     public abstract void childRemoved(Entity entity);

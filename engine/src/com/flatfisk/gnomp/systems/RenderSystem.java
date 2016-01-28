@@ -12,9 +12,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
+import com.flatfisk.gnomp.components.Spatial;
 import com.flatfisk.gnomp.components.Renderable;
-import com.flatfisk.gnomp.math.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 
 import java.util.Comparator;
 
@@ -28,7 +28,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     private Array<Entity> renderQueue = new Array<Entity>();
 
     public ComponentMapper<Renderable.Constructed> renderableMapper;
-    public ComponentMapper<Constructable.Node> orientationMapper;
+    public ComponentMapper<Spatial.Node> orientationMapper;
     private Comparator comperator;
     //private Family family;
 
@@ -52,7 +52,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
         renderableMapper = ComponentMapper.getFor(Renderable.Constructed.class);
-        orientationMapper = ComponentMapper.getFor(Constructable.Node.class);
+        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
     }
 
     public OrthographicCamera getCamera() {
@@ -76,12 +76,12 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
 
         for (Entity e : renderQueue) {
             Renderable.Constructed renderable = renderableMapper.get(e);
-            Constructable.Node orientation = orientationMapper.get(e);
+            Spatial.Node orientation = orientationMapper.get(e);
 
             Texture texture = renderable.texture;
             Vector2 offset = renderable.offset;
-            Spatial spatial = orientation.world;
-            float x = spatial.vector.x, y= spatial.vector.y;
+            Transform transform = orientation.world;
+            float x = transform.vector.x, y= transform.vector.y;
             if(texture!=null){
             int tW = texture.getWidth();
             int tH = texture.getHeight();
@@ -103,7 +103,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                             tH,                                 // float height
                             1,                                  // float scaleX
                             1,                                  // float scaleY
-                            spatial.rotation,                  // float rotation
+                            transform.rotation,                  // float rotation
                             0,                                  // int srcX
                             0,                                  // int srcY
                             tW,                                 // int srcHeight

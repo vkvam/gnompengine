@@ -2,12 +2,12 @@ package com.flatfisk.gnomp.constructors;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.components.Constructable;
-import com.flatfisk.gnomp.components.Structure;
-import com.flatfisk.gnomp.components.Renderable;
 import com.badlogic.ashley.core.GnompEngine;
-import com.flatfisk.gnomp.math.Spatial;
+import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.components.Geometry;
+import com.flatfisk.gnomp.components.Renderable;
+import com.flatfisk.gnomp.components.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.utils.Pools;
@@ -19,17 +19,17 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
-    private ComponentMapper<Structure.Node> structureRelativeComponentMapper;
+    private ComponentMapper<Geometry.Node> structureRelativeComponentMapper;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
         super(engine,Renderable.class,Renderable.Node.class);
-        structureRelativeComponentMapper = ComponentMapper.getFor(Structure.Node.class);
+        structureRelativeComponentMapper = ComponentMapper.getFor(Geometry.Node.class);
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
 
     @Override
-    public void parentAddedFinal(Entity entity, Constructable.Node constructorOrientation, ShapeTexture shapeTexture) {
+    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, ShapeTexture shapeTexture) {
 
         Renderable renderableDef = constructorMapper.get(entity);
 
@@ -42,36 +42,37 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     }
 
     @Override
-    public ShapeTexture parentAdded(Entity entity, Constructable.Node constructorOrientation) {
-        Structure.Node structure = structureRelativeComponentMapper.get(entity);
+    public ShapeTexture parentAdded(Entity entity, Spatial.Node constructorOrientation) {
+        Geometry.Node structure = structureRelativeComponentMapper.get(entity);
         ShapeTexture px = shapeTextureFactory.createShapeTexture(structure.boundingRectangle);
 
         // If the constructor has a shape, the shape should be drawn at origin.
-        Spatial spatial = Pools.obtainSpatial();
+        Transform transform = Pools.obtainSpatial();
         if (structure.shape != null) {
-            px.draw(structure, spatial);
+            px.draw(structure, transform);
         }
 
-        LOG.info("Inserting parent at vector:"+ spatial.vector);
+        LOG.info("Inserting parent at vector:"+ transform.vector);
 
         return px;
     }
 
     @Override
     public ShapeTexture insertedChild(Entity entity,
-                                      Constructable.Node constructorOrientation,
-                                      Constructable.Node parentOrientation,
-                                      Constructable.Node childOrientation,
+                                      Spatial.Node constructorOrientation,
+                                      Spatial.Node parentOrientation,
+                                      Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
-        Structure.Node structure = structureRelativeComponentMapper.get(entity);
+        Geometry.Node geometry = structureRelativeComponentMapper.get(entity);
+
 
         // Use vector relativeType to constructor.
-        Spatial spatial = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        LOG.info("Inserting child at vector:"+ spatial.vector);
+        Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
+        LOG.info("Inserting child at vector:"+ transform.vector);
 
-        if (structure.shape != null) {
-            constructorDTO.draw(structure, spatial);
+        if(!geometry.intermediate && !relationshipMapper.get(entity).intermediate && geometry.shape != null) {
+            constructorDTO.draw(geometry, transform);
         }
         return constructorDTO;
     }

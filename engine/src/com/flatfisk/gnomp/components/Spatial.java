@@ -1,37 +1,35 @@
 package com.flatfisk.gnomp.components;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.GnompEngine;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.components.abstracts.AbstractNode;
-import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.components.abstracts.ISerializable;
-import com.badlogic.ashley.core.GnompEngine;
 import com.flatfisk.gnomp.components.abstracts.ISpatialController;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
- * Created by a-004213 on 22/04/14.
+ * Root node where construction of entities is started.
  */
-public class Constructable implements ISpatialController, ISerializable<Constructable>, Pool.Poolable{
+public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool.Poolable{
 
     @Override
     public void reset() {
 
     }
 
-
     @Override
-    public Constructable addCopy(GnompEngine gnompEngine, Entity entity) {
+    public Spatial addCopy(GnompEngine gnompEngine, Entity entity) {
         return gnompEngine.addComponent(this.getClass(),entity);
     }
 
     /**
-     * Created by Vemund Kvam on 05/12/15.
+     * Defines the position of all entities constructed.
      */
-    public static class Node extends AbstractNode implements ISerializable<Node>, IRelative {
-        public Relative relativeType = Relative.CHILD;
-        public com.flatfisk.gnomp.math.Spatial local = Pools.obtainSpatial();
-        public com.flatfisk.gnomp.math.Spatial world = Pools.obtainSpatial();
+    public static class Node extends AbstractNode implements ISerializable<Node> {
+        public Transform local = Pools.obtainSpatial();
+        public Transform world = Pools.obtainSpatial();
         public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
 
         public Node() {
@@ -45,17 +43,10 @@ public class Constructable implements ISpatialController, ISerializable<Construc
             local.rotation = 0;
             world.vector.setZero();
             world.rotation = 0;
-            relativeType = Relative.CHILD;
-        }
-
-        @Override
-        public Relative getRelativeType() {
-            return relativeType;
         }
 
         public Node addCopy(GnompEngine gnompEngine,Entity entity){
             Node relative = (Node) super.addCopy(gnompEngine,entity);
-            relative.relativeType = relativeType;
             relative.local = Pools.obtainSpatialFromCopy(local);
             relative.world = Pools.obtainSpatialFromCopy(world);
             relative.inheritFromParentType = inheritFromParentType;

@@ -9,9 +9,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
-import com.flatfisk.gnomp.components.abstracts.IRelative;
 import com.flatfisk.gnomp.components.abstracts.ISerializable;
 import com.flatfisk.gnomp.components.abstracts.ISpatialController;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
@@ -45,22 +45,16 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
     }
 
 
-    public static class Node implements ISerializable<Node>, IRelative {
-        public Relative relativeType = Relative.CHILD;
+    public static class Node implements ISerializable<Node> {
+        public boolean intermediate = false;
 
         @Override
         public void reset() {
-            relativeType = Relative.CHILD;
-        }
 
-        @Override
-        public Relative getRelativeType() {
-            return relativeType;
         }
 
         public Node addCopy(GnompEngine gnompEngine,Entity entity){
             Node relative = gnompEngine.addComponent(getClass(),entity);
-            relative.relativeType = relativeType;
             return relative;
         }
     }
@@ -73,11 +67,11 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         public Container() {
         }
 
-        public com.flatfisk.gnomp.math.Spatial getTranslation(){
-            return new com.flatfisk.gnomp.math.Spatial(getPosition(),getAngle());
+        public Transform getTranslation(){
+            return new Transform(getPosition(),getAngle());
         }
-        public com.flatfisk.gnomp.math.Spatial getVelocity(){
-            com.flatfisk.gnomp.math.Spatial spat = Pools.obtainSpatial();
+        public Transform getVelocity(){
+            Transform spat = Pools.obtainSpatial();
             spat.set(getLinearVelocity(),getAngularVelocity());
             return spat;
         }
