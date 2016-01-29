@@ -8,12 +8,12 @@ import com.badlogic.gdx.math.DelaunayTriangulator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ShortArray;
-import com.flatfisk.gnomp.engine.components.Geometry;
-import com.flatfisk.gnomp.engine.shape.CircleShape;
-import com.flatfisk.gnomp.engine.shape.PolygonShape;
-import com.flatfisk.gnomp.engine.shape.RectangularLineShape;
+import com.flatfisk.gnomp.engine.components.Shape;
+import com.flatfisk.gnomp.engine.shape.AbstractShape;
+import com.flatfisk.gnomp.engine.shape.Circle;
+import com.flatfisk.gnomp.engine.shape.Polygon;
+import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.engine.shape.Shape;
 
 public class SimpleTextureFactory extends ShapeTextureFactory {
     @Override
@@ -32,57 +32,57 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
-        public void draw(Geometry structure,Transform orientation) {
+        public void draw(Shape structure,Transform orientation) {
             Vector2 pos = orientation.vector;
-            Shape shape = structure.shape;
+            AbstractShape abstractShape = structure.geometry;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
             Gdx.app.log("Draw vector:", centerX + "," + centerY);
 
-            if (shape instanceof CircleShape) {
-                if (structure.shape.fillColor != null) {
-                    setColor(structure.shape.fillColor);
-                    int radius = Math.round(((CircleShape) shape).circle.radius);
+            if (abstractShape instanceof Circle) {
+                if (structure.geometry.fillColor != null) {
+                    setColor(structure.geometry.fillColor);
+                    int radius = Math.round(((Circle) abstractShape).circle.radius);
                     fillCircle(centerX, centerY, radius);
                 }
-                if (structure.shape.lineColor != null) {
-                    setColor(structure.shape.lineColor);
-                    int radius = Math.round(((CircleShape) shape).circle.radius);
+                if (structure.geometry.lineColor != null) {
+                    setColor(structure.geometry.lineColor);
+                    int radius = Math.round(((Circle) abstractShape).circle.radius);
                     drawCircle(centerX, centerY, radius);
                 }
 
-            } else if (shape instanceof RectangularLineShape) {
-                if (structure.shape.fillColor != null) {
-                    setColor(structure.shape.fillColor);
-                    RectangularLineShape ls = (RectangularLineShape) shape;
+            } else if (abstractShape instanceof RectangularLine) {
+                if (structure.geometry.fillColor != null) {
+                    setColor(structure.geometry.fillColor);
+                    RectangularLine ls = (RectangularLine) abstractShape;
                     ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
-                if (structure.shape.lineColor != null) {
-                    setColor(structure.shape.lineColor);
-                    RectangularLineShape ls = (RectangularLineShape) shape;
+                if (structure.geometry.lineColor != null) {
+                    setColor(structure.geometry.lineColor);
+                    RectangularLine ls = (RectangularLine) abstractShape;
                     ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.rotation);
 
                     drawPolygon(vertices, centerX, centerY);
                 }
-            } else if (shape instanceof PolygonShape) {
-                if (structure.shape.fillColor != null) {
-                    setColor(structure.shape.fillColor);
-                    PolygonShape ls = (PolygonShape) shape;
+            } else if (abstractShape instanceof Polygon) {
+                if (structure.geometry.fillColor != null) {
+                    setColor(structure.geometry.fillColor);
+                    Polygon ls = (Polygon) abstractShape;
                     ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
-                if (structure.shape.lineColor != null) {
-                    setColor(structure.shape.lineColor);
-                    PolygonShape ls = (PolygonShape) shape;
+                if (structure.geometry.lineColor != null) {
+                    setColor(structure.geometry.lineColor);
+                    Polygon ls = (Polygon) abstractShape;
                     ls.getPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getPolygon().getTransformedVertices();
                     ls.getPolygon().rotate(-orientation.rotation);

@@ -19,7 +19,7 @@ public class ConstructorManager {
     public ComponentMapper<Spatial.Node> spatialRelativeComponentMapper;
     public ComponentMapper<Spatial> spatialDefComponentMapper;
 
-    public SortedIntList<com.flatfisk.gnomp.engine.constructors.Constructor> constructors;
+    public SortedIntList<Constructor> constructors;
     public Family rootFamily;
 
     public GnompEngine engine;
@@ -28,24 +28,24 @@ public class ConstructorManager {
 
         spatialRelativeComponentMapper = ComponentMapper.getFor(Spatial.Node.class);
         spatialDefComponentMapper = ComponentMapper.getFor(Spatial.class);
-        constructors = new SortedIntList<com.flatfisk.gnomp.engine.constructors.Constructor>();
+        constructors = new SortedIntList<Constructor>();
         this.engine = engine;
     }
 
-    public void addConstructor(com.flatfisk.gnomp.engine.constructors.Constructor constructor, int priority){
+    public void addConstructor(Constructor constructor, int priority){
         constructors.insert(priority,constructor);
     }
 
     public void constructEntity(Entity entity) {
 
             Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
-            for (SortedIntList.Node<com.flatfisk.gnomp.engine.constructors.Constructor> constructorNode : constructors) {
-                com.flatfisk.gnomp.engine.constructors.Constructor constructor = constructorNode.value;
+            for (SortedIntList.Node<Constructor> constructorNode : constructors) {
+                Constructor constructor = constructorNode.value;
                 parentAdded(constructor, entity, constructorOrientation);
             }
     }
 
-    private void parentAdded(com.flatfisk.gnomp.engine.constructors.Constructor constructor, Entity entity, Spatial.Node rootOrientation){
+    private void parentAdded(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
         LOG.info("Parent added for constructor:"+constructor.getClass());
         Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
@@ -55,7 +55,7 @@ public class ConstructorManager {
         constructor.parentAddedFinal(entity, constructorOrientation, iterateDTO);
     }
 
-    private void childrenAdded(Array<Entity> children, com.flatfisk.gnomp.engine.constructors.Constructor constructor, Spatial.Node rootOrientation, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Object iterateDTO){
+    private void childrenAdded(Array<Entity> children, Constructor constructor, Spatial.Node rootOrientation, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Object iterateDTO){
         for(Entity childWrapper : children) {
             LOG.info("Child for constructor:"+childWrapper);
             if(childWrapper!=null && childWrapper!=null) {
@@ -84,9 +84,9 @@ public class ConstructorManager {
         boolean hasChildren = false;
         boolean hasConstructor = false;
 
-        com.flatfisk.gnomp.engine.constructors.Constructor constructor;
+        Constructor constructor;
 
-        for (SortedIntList.Node<com.flatfisk.gnomp.engine.constructors.Constructor> constructorNode : constructors) {
+        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             constructor = constructorNode.value;
             if(!(constructor instanceof SpatialConstructor)) {
                 hasChildren = constructor.relationshipMapper.has(entity);
@@ -106,8 +106,8 @@ public class ConstructorManager {
 
     public Entity dismantleEntity(Entity constructorEntity){
 
-        for (SortedIntList.Node<com.flatfisk.gnomp.engine.constructors.Constructor> constructorNode : constructors) {
-            com.flatfisk.gnomp.engine.constructors.Constructor constructor = constructorNode.value;
+        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
+            Constructor constructor = constructorNode.value;
             if(constructorEntity!=null) {
                 parentRemoved(constructor, constructorEntity);
             }
@@ -115,7 +115,7 @@ public class ConstructorManager {
         return constructorEntity;
     }
 
-    private void parentRemoved(com.flatfisk.gnomp.engine.constructors.Constructor constructor, Entity entity){
+    private void parentRemoved(Constructor constructor, Entity entity){
         LOG.info("Parent removed for constructor:"+constructor.getClass());
         Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
@@ -125,7 +125,7 @@ public class ConstructorManager {
     }
 
 
-    private void childrenRemoved(Array<Entity> children, com.flatfisk.gnomp.engine.constructors.Constructor constructor){
+    private void childrenRemoved(Array<Entity> children, Constructor constructor){
         for(Entity childWrapper : children) {
             LOG.info("Child for constructor:"+childWrapper);
             if(childWrapper!=null && childWrapper!=null) {

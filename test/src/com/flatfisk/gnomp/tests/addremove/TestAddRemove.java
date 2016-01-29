@@ -7,8 +7,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.*;
-import com.flatfisk.gnomp.engine.shape.CircleShape;
-import com.flatfisk.gnomp.engine.shape.RectangularLineShape;
+import com.flatfisk.gnomp.engine.shape.Circle;
+import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
@@ -116,14 +116,14 @@ public class TestAddRemove extends Test {
 
         PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
+        Shape structure = world.addComponent(Shape.class,e);
 
-        RectangularLineShape rectangularLineShape = new RectangularLineShape(1,4,Color.OLIVE,Color.BLUE);
+        RectangularLine rectangularLineShape = new RectangularLine(1,4,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from = new Vector2(-1.5f,0);
         rectangularLineShape.to = new Vector2(1.5f,0);
         rectangularLineShape.createPolygonVertices();
 
-        structure.shape = rectangularLineShape;
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -162,9 +162,9 @@ public class TestAddRemove extends Test {
         velocityComponent.velocity = velocity;
         world.addComponent(Player.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
-        structure.shape = rectangularLineShape;
+        Shape structure = world.addComponent(Shape.class,e);
+        Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -201,9 +201,9 @@ public class TestAddRemove extends Test {
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        CircleShape rectangularLineShape = new CircleShape(1,5,Color.RED,Color.BLUE);
-        structure.shape = rectangularLineShape;
+        Shape structure = world.addComponent(Shape.class,e);
+        Circle rectangularLineShape = new Circle(1,5,Color.RED,Color.BLUE);
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;
@@ -229,13 +229,13 @@ public class TestAddRemove extends Test {
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,color);
+        Shape structure = world.addComponent(Shape.class,e);
+        RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,color);
         rectangularLineShape.from = new Vector2(-width/2,0);
         rectangularLineShape.to = new Vector2(width/2,0);
         rectangularLineShape.createPolygonVertices();
 
-        structure.shape = rectangularLineShape;
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;

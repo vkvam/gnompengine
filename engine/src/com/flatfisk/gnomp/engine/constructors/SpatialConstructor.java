@@ -1,6 +1,7 @@
 package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Entity;
+import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;

@@ -10,14 +10,14 @@ import com.flatfisk.gnomp.utils.Pools;
  * Time: 12:19 AM
  * Project:Raven
  */
-public class RectangularLineShape extends PolygonShape {
+public class RectangularLine extends Polygon {
     public float rectangleWidth;
     public Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
 
-    public RectangularLineShape(){
+    public RectangularLine(){
         super();
     }
-    public RectangularLineShape(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
+    public RectangularLine(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
         this.rectangleWidth = rectangleWidth;
     }

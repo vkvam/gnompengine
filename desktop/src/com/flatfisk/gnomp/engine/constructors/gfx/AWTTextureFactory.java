@@ -4,13 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.flatfisk.gnomp.engine.components.Geometry;
-import com.flatfisk.gnomp.engine.shape.CircleShape;
-import com.flatfisk.gnomp.engine.shape.LineShape;
-import com.flatfisk.gnomp.engine.shape.PolygonShape;
+import com.flatfisk.gnomp.engine.shape.*;
+import com.flatfisk.gnomp.engine.shape.Polygon;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
@@ -65,31 +62,31 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
         @Override
-        public void draw(Geometry structure, Transform transform){
-            if (structure == null || structure.shape == null) {
+        public void draw(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform){
+            if (structure == null || structure.geometry == null) {
                 return;
             }
 
-            Shape jShape = createAWTShape(structure, transform);
+            java.awt.Shape jShape = createAWTShape(structure, transform);
 
             drawFilled(structure,jShape);
             drawLine(structure, jShape);
         }
 
-        private void drawFilled(Geometry structure, Shape shape){
-            if (structure.shape.fillColor != null) {
-                Color color = gdxToAwtColor(structure.shape.fillColor);
+        private void drawFilled(com.flatfisk.gnomp.engine.components.Shape structure, java.awt.Shape shape){
+            if (structure.geometry.fillColor != null) {
+                Color color = gdxToAwtColor(structure.geometry.fillColor);
                 g2d.setColor(color);
                 g2d.fill(shape);
             }
         }
 
-        private void drawLine(Geometry structure, Shape shape){
-            if (structure.shape.lineColor != null) {
-                Color color = gdxToAwtColor(structure.shape.lineColor);
+        private void drawLine(com.flatfisk.gnomp.engine.components.Shape structure, java.awt.Shape shape){
+            if (structure.geometry.lineColor != null) {
+                Color color = gdxToAwtColor(structure.geometry.lineColor);
                 g2d.setColor(color);
                 g2d.setStroke(new BasicStroke(
-                                structure.shape.lineWidth,
+                                structure.geometry.lineWidth,
                                 BasicStroke.CAP_ROUND,
                                 BasicStroke.JOIN_ROUND)
                 );
@@ -118,7 +115,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
 
-        private Shape createAWTShape(Geometry structure, Transform transform) {
+        private java.awt.Shape createAWTShape(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform) {
 
             Vector2 pos = transform.vector;
             Vector2 offsetPosition = new Vector2(
@@ -128,36 +125,36 @@ public class AWTTextureFactory extends ShapeTextureFactory {
 
             float angle = transform.rotation;
 
-            com.flatfisk.gnomp.engine.shape.Shape geShape = structure.shape;
-            Shape awtShape = null;
-            if (geShape instanceof PolygonShape) {
-                PolygonShape ps = (PolygonShape) structure.shape;
+            AbstractShape geAbstractShape = structure.geometry;
+            java.awt.Shape awtShape = null;
+            if (geAbstractShape instanceof Polygon) {
+                Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.geometry;
                 ps.polygon.setRotation(angle);
                 awtShape = polygonToShape(ps.polygon, offsetPosition);
                 ps.polygon.setRotation(0);
-            }else if (geShape instanceof LineShape) {
-                LineShape c = (LineShape) structure.shape;
+            }else if (geAbstractShape instanceof Line) {
+                Line c = (Line) structure.geometry;
                 c.polyline.setRotation(angle);
                 awtShape = polyLineToShape(c.polyline, offsetPosition);
                 c.polyline.setRotation(0);
-            }else if (geShape instanceof CircleShape) {
-                CircleShape c = (CircleShape) structure.shape;
+            }else if (geAbstractShape instanceof Circle) {
+                Circle c = (Circle) structure.geometry;
                 awtShape = circleToShape(c.circle, offsetPosition);
             }
             return awtShape;
         }
 
-        private Shape polyLineToShape(com.badlogic.gdx.math.Polygon polyline, Vector2 offsetPosition) {
+        private java.awt.Shape polyLineToShape(com.badlogic.gdx.math.Polygon polyline, Vector2 offsetPosition) {
             float[] v = polyline.getTransformedVertices();
             return verticesToGeneralShape(v,offsetPosition,false);
         }
 
-        private Shape polygonToShape(com.badlogic.gdx.math.Polygon polygon, Vector2 offsetPosition) {
+        private java.awt.Shape polygonToShape(com.badlogic.gdx.math.Polygon polygon, Vector2 offsetPosition) {
             float[] v = polygon.getTransformedVertices();
             return verticesToGeneralShape(v,offsetPosition,true);
         }
 
-        private Shape verticesToGeneralShape(float[] v,Vector2 offsetPosition,boolean polygon){
+        private java.awt.Shape verticesToGeneralShape(float[] v,Vector2 offsetPosition,boolean polygon){
             GeneralPath shape = new GeneralPath();
 
             float x0, y0;
@@ -180,7 +177,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             return shape;
         }
 
-        private Shape circleToShape(Circle circle, Vector2 offsetPosition) {
+        private java.awt.Shape circleToShape(com.badlogic.gdx.math.Circle circle, Vector2 offsetPosition) {
             Ellipse2D.Float awtCircle = new Ellipse2D.Float();
             float circleDiam = circle.radius;
             float circleX = circle.x + offsetPosition.x - circleDiam;

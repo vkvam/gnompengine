@@ -1,5 +1,6 @@
 package com.flatfisk.gnomp.engine.shape;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -13,22 +14,22 @@ import com.flatfisk.gnomp.math.Transform;
  * Time: 12:14 AM
  * Project:Raven
  */
-public abstract class Shape implements Pool.Poolable {
+public abstract class AbstractShape implements Pool.Poolable, Component {
     public float lineWidth;
     public Color lineColor;
     public Color fillColor;
 
-    public Shape(float lineWidth, Color lineColor, Color fillColor) {
+    public AbstractShape(float lineWidth, Color lineColor, Color fillColor) {
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.fillColor = fillColor;
     }
 
-    public Shape(){
+    public AbstractShape(){
 
     }
 
-    public abstract Shape getCopy();
+    public abstract AbstractShape getCopy();
 
     public void init(float lineWidth, Color lineColor, Color fillColor){
         this.lineWidth = lineWidth;

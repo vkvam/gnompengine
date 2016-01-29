@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -10,8 +11,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.*;
+import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.engine.shape.Shape;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
@@ -21,7 +22,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<Geometry> structureMapper;
+    private ComponentMapper<Shape> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
     private ComponentMapper<PhysicalProperties> physicalPropertiesMapper;
     private GnompEngine engine;
@@ -30,7 +31,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         super(PhysicsBody.class, PhysicsBody.Node.class);
         this.engine = engine;
         this.box2DWorld = box2DWorld;
-        structureMapper = ComponentMapper.getFor(Geometry.class);
+        structureMapper = ComponentMapper.getFor(Shape.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         physicalPropertiesMapper = ComponentMapper.getFor(PhysicalProperties.class);
     }
@@ -70,9 +71,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDef> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        Geometry geometry = structureMapper.get(entity);
+        Shape shape = structureMapper.get(entity);
         if(relationshipMapper.get(entity).intermediate) {
-            FixtureDef[] fixtures = getFixtures(geometry, transform, physicalPropertiesMapper.get(entity));
+            FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMapper.get(entity));
             if(fixtures!=null){
                 bodyDefContainer.addAll(fixtures);
             }
@@ -102,18 +103,18 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         return body;
     }
 
-    public FixtureDef[] getFixtures(Geometry structure,Transform transform, PhysicalProperties physicalProperties) {
-        if (structure.shape != null) {
-            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.shape, transform,physicalProperties);
+    public FixtureDef[] getFixtures(Shape structure,Transform transform, PhysicalProperties physicalProperties) {
+        if (structure.geometry != null) {
+            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.geometry, transform,physicalProperties);
             return structureFixtureDefs;
         }
         return null;
     }
 
-    private FixtureDef[] getFixtureDefinitions(Shape shape, Transform transform, PhysicalProperties physicalProperties) {
+    private FixtureDef[] getFixtureDefinitions(AbstractShape abstractShape, Transform transform, PhysicalProperties physicalProperties) {
 
-        shape.setRotation(transform.rotation);
-        FixtureDef[] fixtureDefinitions = shape.getFixtureDefinitions(transform.vector);
+        abstractShape.setRotation(transform.rotation);
+        FixtureDef[] fixtureDefinitions = abstractShape.getFixtureDefinitions(transform.vector);
 
         for(FixtureDef fixtureDef:fixtureDefinitions){
 
@@ -124,7 +125,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             fixtureDef.filter.maskBits = physicalProperties.maskBits;
         }
 
-        shape.setRotation(0);
+        abstractShape.setRotation(0);
         return fixtureDefinitions;
     }
 }

@@ -10,7 +10,8 @@ import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
-import com.flatfisk.gnomp.engine.shape.CircleShape;
+import com.flatfisk.gnomp.engine.components.Shape;
+import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.components.Dot;
 import com.flatfisk.gnomp.tests.components.EndPoint;
@@ -112,9 +113,9 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
 
         world.addComponent(Renderable.Node.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        com.flatfisk.gnomp.engine.shape.CircleShape rectangularLineShape = new CircleShape(1,5, Color.GREEN,Color.BLACK);
-        structure.shape = rectangularLineShape;
+        Shape structure = world.addComponent(Shape.class,e);
+        Circle rectangularLineShape = new Circle(1,5, Color.GREEN,Color.BLACK);
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;

@@ -6,9 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
+import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
-import com.flatfisk.gnomp.engine.shape.CircleShape;
-import com.flatfisk.gnomp.engine.shape.RectangularLineShape;
+import com.flatfisk.gnomp.engine.shape.Circle;
+import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
@@ -27,10 +28,10 @@ public class TestPlatformer extends Test {
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
-    private final short CATEGORY_PLATFORM =     0x0001;  // 0000000000000001 in binary
-    private final short CATEGORY_PLAYER =       0x0002; //  0000000000000010 in binary
-    private final short CATEGORY_SENSOR =       0x0004; //  0000000000000100 in binary
-    private final short CATEGORY_ENEMY  =       0x0008; //  0000000000001000 in binary
+    private final static short CATEGORY_PLATFORM =     0x0001;  // 0000000000000001 in binary
+    private final static short CATEGORY_PLAYER =       0x0002; //  0000000000000010 in binary
+    private final static short CATEGORY_SENSOR =       0x0004; //  0000000000000100 in binary
+    private final static short CATEGORY_ENEMY  =       0x0008; //  0000000000001000 in binary
 
     @Override
     public void create () {
@@ -69,7 +70,7 @@ public class TestPlatformer extends Test {
 
         i=0;
         for(;i<10;i++){
-            Entity enemy = createEnemy(new Transform(-250-i*250,250,0));
+            Entity enemy = createEnemy(world,new Transform(-250-i*250,250,0));
             world.addEntity(enemy);
             world.constructEntity(enemy);
         }
@@ -109,13 +110,13 @@ public class TestPlatformer extends Test {
 
 
 
-        Geometry structure = world.addComponent(Geometry.class,e);
+        Shape structure = world.addComponent(Shape.class,e);
 
-        RectangularLineShape rectangularLineShape = new RectangularLineShape(1,6,Color.OLIVE,Color.BLUE);
+        RectangularLine rectangularLineShape = new RectangularLine(1,6,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from = new Vector2(-7.5f,0);
         rectangularLineShape.to = new Vector2(7.5f,0);
         rectangularLineShape.createPolygonVertices();
-        structure.shape = rectangularLineShape;
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -138,7 +139,7 @@ public class TestPlatformer extends Test {
         return e;
     }
 
-    protected Entity createEnemy(Transform translation){
+    public static Entity createEnemy(GnompEngine world, Transform translation){
         Entity e = world.createEntity();
 
         world.addComponent(Renderable.Node.class,e);
@@ -150,13 +151,13 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,Color.RED);
+        Shape structure = world.addComponent(Shape.class,e);
+        RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,Color.RED);
         rectangularLineShape.from = new Vector2(0,-10);
         rectangularLineShape.to = new Vector2(0,10);
         rectangularLineShape.createPolygonVertices();
 
-        structure.shape = rectangularLineShape;
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
@@ -186,9 +187,9 @@ public class TestPlatformer extends Test {
         velocityComponent.velocity = velocity;
         world.addComponent(Player.class,e);
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
-        structure.shape = rectangularLineShape;
+        Shape structure = world.addComponent(Shape.class,e);
+        Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
+        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -216,12 +217,11 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Geometry structure = world.addComponent(Geometry.class,e);
-        RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,color);
-        rectangularLineShape.from = new Vector2(-width/2,0);
-        rectangularLineShape.to = new Vector2(width/2,0);
-        rectangularLineShape.createPolygonVertices();
-        structure.shape = rectangularLineShape;
+        Shape<RectangularLine> shape = world.addComponent(Shape.class,e);
+        shape.geometry = new RectangularLine(1,(float) 5,Color.WHITE,color);
+        shape.geometry.from = new Vector2(-width/2,0);
+        shape.geometry.to = new Vector2(width/2,0);
+        shape.geometry.createPolygonVertices();
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;

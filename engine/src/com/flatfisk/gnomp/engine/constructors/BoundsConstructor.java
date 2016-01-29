@@ -3,7 +3,8 @@ package com.flatfisk.gnomp.engine.constructors;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Geometry;
+import com.flatfisk.gnomp.engine.Constructor;
+import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.components.Renderable;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
@@ -16,11 +17,11 @@ import com.flatfisk.gnomp.utils.Pools;
  */
 public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, TextureCoordinates> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private ComponentMapper<Geometry> structureNodeComponentMapper;
+    private ComponentMapper<Shape> structureNodeComponentMapper;
 
     public BoundsConstructor() {
         super(Renderable.class,Renderable.Node.class);
-        structureNodeComponentMapper = ComponentMapper.getFor(Geometry.class);
+        structureNodeComponentMapper = ComponentMapper.getFor(Shape.class);
     }
 
     @Override
@@ -33,14 +34,14 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, T
 
     @Override
     public TextureCoordinates parentAdded(Entity entity, Spatial.Node structureOrientation) {
-        Geometry structure = structureNodeComponentMapper.get(entity);
+        Shape structure = structureNodeComponentMapper.get(entity);
         Renderable.Node renderableNode = relationshipMapper.get(entity);
 
         Transform transform = Pools.obtainSpatial();
         TextureCoordinates textureCoordinates = null;
 
-        if (structure.shape != null && renderableNode!=null && !renderableNode.intermediate) {
-            textureCoordinates = structure.shape.getTextureCoordinates(null, transform);
+        if (structure.geometry != null && renderableNode!=null && !renderableNode.intermediate) {
+            textureCoordinates = structure.geometry.getTextureCoordinates(null, transform);
         }
 
         return textureCoordinates;
@@ -48,13 +49,13 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, T
 
     @Override
     public TextureCoordinates insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, TextureCoordinates textureCoordinates) {
-        Geometry geometry = structureNodeComponentMapper.get(entity);
+        Shape shape = structureNodeComponentMapper.get(entity);
         Renderable.Node renderableNode = relationshipMapper.get(entity);
 
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
 
-        if(geometry.shape !=null &&! renderableNode.intermediate){
-            textureCoordinates = geometry.shape.getTextureCoordinates(textureCoordinates, transform);
+        if(shape.geometry !=null &&! renderableNode.intermediate){
+            textureCoordinates = shape.geometry.getTextureCoordinates(textureCoordinates, transform);
         }
 
         return textureCoordinates;

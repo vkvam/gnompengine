@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.engine.constructors;
+package com.flatfisk.gnomp.engine;
 
 /**
  * Created by Vemund Kvam on 06/12/15.

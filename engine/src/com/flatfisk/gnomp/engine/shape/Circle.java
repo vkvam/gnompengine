@@ -1,7 +1,6 @@
 package com.flatfisk.gnomp.engine.shape;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Logger;
@@ -17,23 +16,23 @@ import com.flatfisk.gnomp.utils.Pools;
  * Time: 12:19 AM
  * Project:Raven
  */
-public class CircleShape extends Shape{
+public class Circle extends AbstractShape {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    public Circle circle = new Circle();
+    public com.badlogic.gdx.math.Circle circle = new com.badlogic.gdx.math.Circle();
     private Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
 
-    public CircleShape(float lineWidth, float radius, Color lineColor, Color fillColor) {
+    public Circle(float lineWidth, float radius, Color lineColor, Color fillColor) {
         super(lineWidth, lineColor, fillColor);
-        this.circle = new Circle(0, 0, radius);
+        this.circle = new com.badlogic.gdx.math.Circle(0, 0, radius);
     }
-    public CircleShape(){
+    public Circle(){
         super();
-        this.circle = new Circle(0, 0, 0);
+        this.circle = new com.badlogic.gdx.math.Circle(0, 0, 0);
     }
 
     @Override
-    public CircleShape getCopy(){
-        CircleShape circleShape = com.badlogic.gdx.utils.Pools.obtain(CircleShape.class);
+    public Circle getCopy(){
+        Circle circleShape = com.badlogic.gdx.utils.Pools.obtain(Circle.class);
         circleShape.circle.set(circle.x,circle.y,circle.radius);
         return circleShape;
     }
@@ -56,7 +55,7 @@ public class CircleShape extends Shape{
     @Override
     public void init(float lineWidth, Color lineColor, Color fillColor){
         super.init(lineWidth,lineColor,fillColor);
-        this.circle = new Circle(0,0,1);
+        this.circle = new com.badlogic.gdx.math.Circle(0,0,1);
     }
 
     @Override

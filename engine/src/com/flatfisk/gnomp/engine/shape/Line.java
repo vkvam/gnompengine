@@ -15,21 +15,21 @@ import com.flatfisk.gnomp.math.Transform;
  * Time: 9:22 PM
  * Project:Raven
  */
-public class LineShape extends Shape {
+public class Line extends AbstractShape {
     public Polygon polyline;
 
-    public LineShape(Polygon polyline, float lineWidth, Color color) {
+    public Line(Polygon polyline, float lineWidth, Color color) {
         super(lineWidth, color, null);
         this.polyline = polyline;
     }
-    public LineShape(){
+    public Line(){
         super(1,Color.BLACK,null);
         this.polyline = new Polygon();
     }
 
     @Override
-    public LineShape getCopy(){
-        LineShape lineShape = Pools.obtain(LineShape.class);
+    public Line getCopy(){
+        Line lineShape = Pools.obtain(Line.class);
 
         Polygon polyline = Pools.obtain(Polygon.class);
         polyline.setVertices(this.polyline.getVertices());

@@ -2,14 +2,15 @@ package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Geometry;
+import com.flatfisk.gnomp.engine.Constructor;
+import com.flatfisk.gnomp.engine.GnompEngine;
+import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.components.Renderable;
 import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
@@ -19,13 +20,13 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
-    private ComponentMapper<Geometry> structureRelativeComponentMapper;
+    private ComponentMapper<Shape> structureRelativeComponentMapper;
     private GnompEngine engine;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
         super(Renderable.class,Renderable.Node.class);
         this.engine = engine;
-        structureRelativeComponentMapper = ComponentMapper.getFor(Geometry.class);
+        structureRelativeComponentMapper = ComponentMapper.getFor(Shape.class);
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
@@ -44,12 +45,12 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     @Override
     public ShapeTexture parentAdded(Entity entity, Spatial.Node constructorOrientation) {
         Renderable geometry = constructorMapper.get(entity);
-        Geometry structure = structureRelativeComponentMapper.get(entity);
+        Shape structure = structureRelativeComponentMapper.get(entity);
         ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
 
-        // If the constructor has a shape, the shape should be drawn at origin.
+        // If the constructor has a geometry, the geometry should be drawn at origin.
         Transform transform = Pools.obtainSpatial();
-        if (structure.shape != null && !relationshipMapper.get(entity).intermediate) {
+        if (structure.geometry != null && !relationshipMapper.get(entity).intermediate) {
             px.draw(structure, transform);
         }
         return px;
@@ -62,10 +63,10 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
-        Geometry geometry = structureRelativeComponentMapper.get(entity);
+        Shape shape = structureRelativeComponentMapper.get(entity);
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        if(geometry.shape != null && !relationshipMapper.get(entity).intermediate) {
-            constructorDTO.draw(geometry, transform);
+        if(shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
+            constructorDTO.draw(shape, transform);
         }
         return constructorDTO;
     }

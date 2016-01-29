@@ -2,7 +2,6 @@ package com.flatfisk.gnomp.engine.shape;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Pools;
@@ -17,28 +16,28 @@ import com.flatfisk.gnomp.PhysicsConstants;
  * Time: 12:19 AM
  * Project:Raven
  */
-public class PolygonShape extends Shape {
-    public Polygon polygon;
+public class Polygon extends AbstractShape {
+    public com.badlogic.gdx.math.Polygon polygon;
 
-    public PolygonShape(){
+    public Polygon(){
         super();
     }
-    public PolygonShape(float[] vertices, float lineWidth, Color color, Color fillColor) {
+    public Polygon(float[] vertices, float lineWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
-        this.polygon = new Polygon(vertices);
+        this.polygon = new com.badlogic.gdx.math.Polygon(vertices);
         this.lineColor = color;
     }
 
-    public PolygonShape(float lineWidth, Color color, Color fillColor) {
+    public Polygon(float lineWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
         this.lineColor = color;
     }
 
     @Override
-    public PolygonShape getCopy() {
-        PolygonShape lineShape = Pools.obtain(PolygonShape.class);
+    public Polygon getCopy() {
+        Polygon lineShape = Pools.obtain(Polygon.class);
 
-        Polygon polygon = Pools.obtain(Polygon.class);
+        com.badlogic.gdx.math.Polygon polygon = Pools.obtain(com.badlogic.gdx.math.Polygon.class);
         polygon.setVertices(this.polygon.getVertices());
         polygon.setPosition(this.polygon.getX(), this.polygon.getY());
         polygon.setOrigin(this.polygon.getOriginX(), this.polygon.getOriginY());
@@ -70,12 +69,12 @@ public class PolygonShape extends Shape {
         polygon.setPosition(scaledOffset.x, scaledOffset.y);
         polygon.setScale(PhysicsConstants.METERS_PER_PIXEL, PhysicsConstants.METERS_PER_PIXEL);
 
-        Polygon transformedPolygon = new Polygon(polygon.getTransformedVertices());
-        Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
+        com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(polygon.getTransformedVertices());
+        com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
 
         FixtureDef[] fixtureDefs = new FixtureDef[polygons.length];
         int i = 0;
-        for (Polygon p : polygons) {
+        for (com.badlogic.gdx.math.Polygon p : polygons) {
             fixtureDefs[i++] = getFixtureDef(p);
         }
         polygon.setScale(1, 1);
@@ -88,7 +87,7 @@ public class PolygonShape extends Shape {
         this.polygon.setRotation(angle);
     }
 
-    private FixtureDef getFixtureDef(Polygon polygon) {
+    private FixtureDef getFixtureDef(com.badlogic.gdx.math.Polygon polygon) {
         FixtureDef fixtureDef = new FixtureDef();
         com.badlogic.gdx.physics.box2d.PolygonShape shape = new com.badlogic.gdx.physics.box2d.PolygonShape();
         shape.set(polygon.getVertices());
@@ -99,7 +98,7 @@ public class PolygonShape extends Shape {
         return fixtureDef;
     }
 
-    public Polygon getPolygon() {
+    public com.badlogic.gdx.math.Polygon getPolygon() {
         return polygon;
     }
 
@@ -107,7 +106,7 @@ public class PolygonShape extends Shape {
         if (polygon != null) {
             polygon.setVertices(vertices);
         } else {
-            polygon = new Polygon(vertices);
+            polygon = new com.badlogic.gdx.math.Polygon(vertices);
         }
 
     }
