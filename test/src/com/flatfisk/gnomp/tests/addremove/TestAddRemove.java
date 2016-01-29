@@ -116,7 +116,7 @@ public class TestAddRemove extends Test {
 
         PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
 
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,4,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from = new Vector2(-1.5f,0);
@@ -139,7 +139,6 @@ public class TestAddRemove extends Test {
 
         world.addComponent(PlayerSensor.class,e);
         world.addComponent(Scenegraph.Node.class,e);
-        world.addComponent(Geometry.class,e);
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -163,7 +162,7 @@ public class TestAddRemove extends Test {
         velocityComponent.velocity = velocity;
         world.addComponent(Player.class,e);
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
         structure.shape = rectangularLineShape;
 
@@ -174,7 +173,6 @@ public class TestAddRemove extends Test {
         physicalProperties.maskBits = CATEGORY_PLATFORM;
 
         world.addComponent(Renderable.class,e);
-        world.addComponent(Geometry.class,e);
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -203,7 +201,7 @@ public class TestAddRemove extends Test {
 
         Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,5,Color.RED,Color.BLUE);
         structure.shape = rectangularLineShape;
 
@@ -227,13 +225,11 @@ public class TestAddRemove extends Test {
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
-        //orientationRelative.relativeType = Relative.PARENT;
 
-        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        world.addComponent(Renderable.Node.class,e);
+        world.addComponent(PhysicsBody.Node.class,e);
 
-        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
-
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,color);
         rectangularLineShape.from = new Vector2(-width/2,0);
         rectangularLineShape.to = new Vector2(width/2,0);
@@ -248,7 +244,6 @@ public class TestAddRemove extends Test {
         physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR;
 
         world.addComponent(Renderable.class,e);
-        world.addComponent(Geometry.class,e);
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {

@@ -21,7 +21,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<Geometry.Node> structureMapper;
+    private ComponentMapper<Geometry> structureMapper;
     private ComponentMapper<Velocity> velocityMapper;
     private ComponentMapper<PhysicalProperties> physicalPropertiesMapper;
     private GnompEngine engine;
@@ -30,7 +30,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         super(PhysicsBody.class, PhysicsBody.Node.class);
         this.engine = engine;
         this.box2DWorld = box2DWorld;
-        structureMapper = ComponentMapper.getFor(Geometry.Node.class);
+        structureMapper = ComponentMapper.getFor(Geometry.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
         physicalPropertiesMapper = ComponentMapper.getFor(PhysicalProperties.class);
     }
@@ -70,8 +70,8 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDef> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        Geometry.Node geometry = structureMapper.get(entity);
-        if(!geometry.intermediate && relationshipMapper.get(entity).intermediate) {
+        Geometry geometry = structureMapper.get(entity);
+        if(relationshipMapper.get(entity).intermediate) {
             FixtureDef[] fixtures = getFixtures(geometry, transform, physicalPropertiesMapper.get(entity));
             if(fixtures!=null){
                 bodyDefContainer.addAll(fixtures);
@@ -102,7 +102,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         return body;
     }
 
-    public FixtureDef[] getFixtures(Geometry.Node structure,Transform transform, PhysicalProperties physicalProperties) {
+    public FixtureDef[] getFixtures(Geometry structure,Transform transform, PhysicalProperties physicalProperties) {
         if (structure.shape != null) {
             FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.shape, transform,physicalProperties);
             return structureFixtureDefs;

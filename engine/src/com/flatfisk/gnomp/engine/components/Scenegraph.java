@@ -8,7 +8,7 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISpatialController;
 
 /**
- * Created by Vemund Kvam on 22/12/15.
+ * Root node for a scenegraph hierarchy
  */
 public class Scenegraph implements ISerializable<Scenegraph>,Pool.Poolable {
 
@@ -23,7 +23,7 @@ public class Scenegraph implements ISerializable<Scenegraph>,Pool.Poolable {
     }
 
     /**
-     * Created by Vemund Kvam on 22/12/15.
+     * A scenegraph node
      */
     public static class Node extends AbstractNode implements ISpatialController, ISerializable<Node> {
 

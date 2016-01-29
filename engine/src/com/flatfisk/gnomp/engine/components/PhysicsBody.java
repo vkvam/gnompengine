@@ -14,6 +14,9 @@ import com.flatfisk.gnomp.engine.components.abstracts.ISpatialController;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
+/**
+ * Root node for constructing a PhysicsBody
+ */
 public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
     public BodyDef bodyDef;
     public PhysicsBody() {
@@ -44,7 +47,9 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         return physicsBodyDef;
     }
 
-
+    /**
+     * PhysicsBody node for constructing a Fixture.
+     */
     public static class Node implements ISerializable<Node> {
         public boolean intermediate = false;
 

@@ -16,7 +16,7 @@ public class Test extends DefaultGnompApplicationListener {
         // Runs before all systems
         initializeConstructorManager(physicsWorld);
 
-        CameraSystem cameraSystem = addCameraSystem(0);
+        CameraSystem cameraSystem = addCameraSystem(45);
         addScenegraphSystem(25);
         RenderSystem renderSystem = addRenderSystem(50);
         addPhysicsTrackerSystem(400);

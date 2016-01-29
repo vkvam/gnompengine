@@ -32,7 +32,7 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
-        public void draw(Geometry.Node structure,Transform orientation) {
+        public void draw(Geometry structure,Transform orientation) {
             Vector2 pos = orientation.vector;
             Shape shape = structure.shape;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);

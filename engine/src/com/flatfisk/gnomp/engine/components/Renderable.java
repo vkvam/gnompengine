@@ -8,10 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
+import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
 
 
 public class Renderable implements ISerializable<Renderable>,Pool.Poolable {
     public int zIndex=0;
+    public TextureCoordinates.BoundingRectangle boundingRectangle;
 
     @Override
     public void reset() {

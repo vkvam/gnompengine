@@ -1,10 +1,10 @@
 package com.flatfisk.gnomp.gdx;
 
 import com.badlogic.gdx.physics.box2d.World;
+import com.flatfisk.gnomp.engine.constructors.BoundsConstructor;
 import com.flatfisk.gnomp.engine.constructors.SpatialConstructor;
 import com.flatfisk.gnomp.engine.constructors.PhysicsConstructor;
 import com.flatfisk.gnomp.engine.constructors.RenderableConstructor;
-import com.flatfisk.gnomp.engine.constructors.StructureConstructor;
 import com.flatfisk.gnomp.engine.ConstructorManager;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.*;
@@ -28,7 +28,7 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
     protected void initializeConstructorManager(World physicsWorld){
         ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
         constructorManager.addConstructor(new SpatialConstructor(),0);
-        constructorManager.addConstructor(new StructureConstructor(),1);
+        constructorManager.addConstructor(new BoundsConstructor(),1);
         constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
         constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),3);
     }

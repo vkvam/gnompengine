@@ -112,7 +112,7 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
 
         world.addComponent(Renderable.Node.class,e);
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         com.flatfisk.gnomp.engine.shape.CircleShape rectangularLineShape = new CircleShape(1,5, Color.GREEN,Color.BLACK);
         structure.shape = rectangularLineShape;
 

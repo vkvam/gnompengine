@@ -19,13 +19,13 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
-    private ComponentMapper<Geometry.Node> structureRelativeComponentMapper;
+    private ComponentMapper<Geometry> structureRelativeComponentMapper;
     private GnompEngine engine;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
         super(Renderable.class,Renderable.Node.class);
         this.engine = engine;
-        structureRelativeComponentMapper = ComponentMapper.getFor(Geometry.Node.class);
+        structureRelativeComponentMapper = ComponentMapper.getFor(Geometry.class);
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
@@ -39,23 +39,19 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();
         renderable.zIndex = renderableDef.zIndex;
-
-        LOG.info("Inserting parent final:"+ renderable);
     }
 
     @Override
     public ShapeTexture parentAdded(Entity entity, Spatial.Node constructorOrientation) {
-        Geometry.Node structure = structureRelativeComponentMapper.get(entity);
-        ShapeTexture px = shapeTextureFactory.createShapeTexture(structure.boundingRectangle);
+        Renderable geometry = constructorMapper.get(entity);
+        Geometry structure = structureRelativeComponentMapper.get(entity);
+        ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
 
         // If the constructor has a shape, the shape should be drawn at origin.
         Transform transform = Pools.obtainSpatial();
-        if (structure.shape != null) {
+        if (structure.shape != null && !relationshipMapper.get(entity).intermediate) {
             px.draw(structure, transform);
         }
-
-        LOG.info("Inserting parent at vector:"+ transform.vector);
-
         return px;
     }
 
@@ -66,14 +62,9 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
-        Geometry.Node geometry = structureRelativeComponentMapper.get(entity);
-
-
-        // Use vector relativeType to constructor.
+        Geometry geometry = structureRelativeComponentMapper.get(entity);
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
-        LOG.info("Inserting child at vector:"+ transform.vector);
-
-        if(!geometry.intermediate && !relationshipMapper.get(entity).intermediate && geometry.shape != null) {
+        if(geometry.shape != null && !relationshipMapper.get(entity).intermediate) {
             constructorDTO.draw(geometry, transform);
         }
         return constructorDTO;

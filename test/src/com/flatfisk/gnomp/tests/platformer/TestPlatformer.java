@@ -102,7 +102,6 @@ public class TestPlatformer extends Test {
         world.addComponent(Scenegraph.Node.class,e);
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
-        world.addComponent(Geometry.class,e);
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
@@ -110,7 +109,7 @@ public class TestPlatformer extends Test {
 
 
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
 
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,6,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from = new Vector2(-7.5f,0);
@@ -145,14 +144,13 @@ public class TestPlatformer extends Test {
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
         world.addComponent(Renderable.class,e);
-        world.addComponent(Geometry.class,e);
         world.addComponent(Enemy.class,e);
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,Color.RED);
         rectangularLineShape.from = new Vector2(0,-10);
         rectangularLineShape.to = new Vector2(0,10);
@@ -177,7 +175,6 @@ public class TestPlatformer extends Test {
 
         world.addComponent(Renderable.class,e);
         world.addComponent(Renderable.Node.class,e);
-        world.addComponent(Geometry.class,e);
         world.addComponent(Scenegraph.class,e);
         world.addComponent(Scenegraph.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
@@ -189,7 +186,7 @@ public class TestPlatformer extends Test {
         velocityComponent.velocity = velocity;
         world.addComponent(Player.class,e);
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         CircleShape rectangularLineShape = new CircleShape(1,11,Color.WHITE,Color.FIREBRICK);
         structure.shape = rectangularLineShape;
 
@@ -214,13 +211,12 @@ public class TestPlatformer extends Test {
         world.addComponent(Renderable.class,e);
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
-        world.addComponent(Geometry.class,e);
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Geometry.Node structure = world.addComponent(Geometry.Node.class,e);
+        Geometry structure = world.addComponent(Geometry.class,e);
         RectangularLineShape rectangularLineShape = new RectangularLineShape(1,(float) 5,Color.WHITE,color);
         rectangularLineShape.from = new Vector2(-width/2,0);
         rectangularLineShape.to = new Vector2(width/2,0);

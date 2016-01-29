@@ -10,7 +10,7 @@ import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
- * Root node where construction of entities is started.
+ * Root node for entity-construction hierarchies
  */
 public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool.Poolable{
 
@@ -25,7 +25,7 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
     }
 
     /**
-     * Defines the position of all entities constructed.
+     * Transform node for constructed entities
      */
     public static class Node extends AbstractNode implements ISerializable<Node> {
         public Transform local = Pools.obtainSpatial();

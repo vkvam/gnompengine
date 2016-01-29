@@ -65,7 +65,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
         @Override
-        public void draw(Geometry.Node structure, Transform transform){
+        public void draw(Geometry structure, Transform transform){
             if (structure == null || structure.shape == null) {
                 return;
             }
@@ -76,7 +76,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             drawLine(structure, jShape);
         }
 
-        private void drawFilled(Geometry.Node structure, Shape shape){
+        private void drawFilled(Geometry structure, Shape shape){
             if (structure.shape.fillColor != null) {
                 Color color = gdxToAwtColor(structure.shape.fillColor);
                 g2d.setColor(color);
@@ -84,7 +84,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             }
         }
 
-        private void drawLine(Geometry.Node structure, Shape shape){
+        private void drawLine(Geometry structure, Shape shape){
             if (structure.shape.lineColor != null) {
                 Color color = gdxToAwtColor(structure.shape.lineColor);
                 g2d.setColor(color);
@@ -118,7 +118,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
 
-        private Shape createAWTShape(Geometry.Node structure, Transform transform) {
+        private Shape createAWTShape(Geometry structure, Transform transform) {
 
             Vector2 pos = transform.vector;
             Vector2 offsetPosition = new Vector2(
