@@ -33,27 +33,34 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         return family;
     }
 
-    boolean bonusJump = false;
+    int enemiesKilled = 0;
 
     @Override
     public void beginContact(Contact contact) {
         Entity entityA = (Entity) contact.getFixtureA().getBody().getUserData();
         Entity entityB = (Entity) contact.getFixtureB().getBody().getUserData();
 
+
+        if((entityA.equals(player) && enemyComponentMapper.has(entityB) || entityB.equals(player) && enemyComponentMapper.has(entityA) )){
+            if(playerComponent.touchedPlatformTimes>0) {
+                player.getComponent(Spatial.Node.class).world.vector.setZero();
+                PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
+                body.positionChanged = true;
+            }
+        }
+
         if( entityA.equals(sensor) || entityB.equals(sensor) ){
-            playerComponent.touchedPlatformTimes++;
+
             if(enemyComponentMapper.has(entityA)){
                 getEngine().removeEntity(entityA);
-                bonusJump=true;
+                enemiesKilled++;
             }else if(enemyComponentMapper.has(entityB)){
                 getEngine().removeEntity(entityB);
-                bonusJump=true;
+                enemiesKilled++;
+            }else{
+                playerComponent.touchedPlatformTimes++;
             }
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
-        }else if(entityA.equals(player) && enemyComponentMapper.has(entityB) || entityB.equals(player) && enemyComponentMapper.has(entityA) ){
-            player.getComponent(Spatial.Node.class).world.vector.setZero();
-            PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
-            body.positionChanged = true;
         }
 
         if(sensor !=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
@@ -109,12 +116,16 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 float y;
                 Body b = physicsBody.body;
                 if(b!=null) {
-                    if(bonusJump && Gdx.input.isKeyPressed(Input.Keys.UP)){
+                    if(enemiesKilled >0){
+                        playerComponent.touchedPlatformTimes += enemiesKilled;
+                        LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
+                    }
+                    if(enemiesKilled >0 && Gdx.input.isKeyPressed(Input.Keys.UP)){
                         y = 600f* PhysicsConstants.METERS_PER_PIXEL;
-                        bonusJump=false;
-                    } else if (bonusJump || Gdx.input.isKeyPressed(Input.Keys.UP) && (playerComponent.touchedPlatformTimes > 0) ) {
+                        enemiesKilled =0;
+                    } else if (enemiesKilled >0 || Gdx.input.isKeyPressed(Input.Keys.UP) && (playerComponent.touchedPlatformTimes > 0) ) {
                         y = 400f* PhysicsConstants.METERS_PER_PIXEL;
-                        bonusJump=false;
+                        enemiesKilled =0;
                     } else {
                         y = b.getLinearVelocity().y;
                     }
@@ -129,14 +140,11 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
     public void entityAdded(Entity entity) {
         LOG.info("GET SOME");
         if(entity.getComponent(Player.class)!=null){
-            LOG.info("PLAYER");
             player = entity;
             playerComponent = entity.getComponent(Player.class);
         }else if(entity.getComponent(PlayerSensor.class)!=null){
-            LOG.info("PLAYERSENSOR");
             sensor = entity;
         }else if(entity.getComponent(EndPoint.class)!=null){
-            LOG.info("ENDPOINT");
             endpoint = entity;
         }
     }
