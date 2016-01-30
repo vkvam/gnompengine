@@ -41,18 +41,26 @@ public class ConstructorManager {
             Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
             for (SortedIntList.Node<Constructor> constructorNode : constructors) {
                 Constructor constructor = constructorNode.value;
-                parentAdded(constructor, entity, constructorOrientation);
+                constructEntityForConstructor(constructor, entity, constructorOrientation);
             }
     }
 
-    private void parentAdded(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
-        LOG.info("Parent added for constructor:"+constructor.getClass());
+    private void constructEntityForConstructor(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
         Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
-        Object iterateDTO = constructor.parentAdded(entity, constructorOrientation);
+        boolean isParent = constructor.isParent(entity);
+
+        if(isParent){
+            LOG.info("Constructing entity for constructor:"+constructor.getClass());
+        }
+
+        Object iterateDTO = isParent?constructor.parentAdded(entity, constructorOrientation):null;
         childrenAdded(children, constructor, rootOrientation, constructorOrientation, constructorOrientation, iterateDTO);
-        constructor.parentAddedFinal(entity, constructorOrientation, iterateDTO);
+
+        if(isParent) {
+            constructor.parentAddedFinal(entity, constructorOrientation, iterateDTO);
+        }
     }
 
     private void childrenAdded(Array<Entity> children, Constructor constructor, Spatial.Node rootOrientation, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Object iterateDTO){
@@ -68,10 +76,10 @@ public class ConstructorManager {
                     childrenAdded(orientation.children, constructor, rootOrientation, constructorOrientation, orientation, iterateDTO);
 
                 } else if (constructor.isParent(child)) {
-                    LOG.info("RECONSTRUCT: "+rootOrientation/*.reconstruct*/);
+                    LOG.info("RECONSTRUCT: "+rootOrientation);
                     LOG.info("Parent added for constructor through child:" + constructor.getClass());
 
-                    parentAdded(constructor, child, rootOrientation);
+                    constructEntityForConstructor(constructor, child, rootOrientation);
 
                 }
             }

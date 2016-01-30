@@ -45,27 +45,28 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         bodyDef.position.set(worldTransform.vector);
         bodyDef.angle = worldTransform.rotation;
 
-        PhysicsBody.Container bodyContainer = engine.addComponent(PhysicsBody.Container.class,entity);
-        bodyContainer.body = createBody(bodyDef,physicsBodyDef);
+        PhysicsBody.Container bodyContainer = engine.addComponent(PhysicsBody.Container.class, entity);
+        bodyContainer.body = createBody(bodyDef, physicsBodyDef);
         bodyContainer.body.setUserData(entity);
 
         Velocity velocity = velocityMapper.get(entity);
-        if(velocity!=null && velocity.velocity != null){
+        if (velocity != null && velocity.velocity != null) {
             Transform velocityTransform = velocity.velocity.getCopy().toBox2D();
             bodyContainer.body.setLinearVelocity(velocityTransform.vector);
             bodyContainer.body.setAngularVelocity(velocityTransform.rotation);
         }
-
     }
 
     @Override
     public Array<FixtureDef> parentAdded(Entity entity, Spatial.Node constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
-        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity),Pools.obtainSpatial(), physicalPropertiesMapper.get(entity));
-        if(fixtures!=null){
+        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), Pools.obtainSpatial(), physicalPropertiesMapper.get(entity));
+        if (fixtures != null) {
             fixtureDefs.addAll(fixtures);
         }
+
         return fixtureDefs;
+
     }
 
     @Override

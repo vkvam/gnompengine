@@ -16,7 +16,7 @@ import com.flatfisk.gnomp.PhysicsConstants;
  * Time: 12:19 AM
  */
 public class Polygon extends AbstractShape {
-    private com.badlogic.gdx.math.Polygon polygon;
+    protected com.badlogic.gdx.math.Polygon polygon;
 
     public Polygon(float lineWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
@@ -55,7 +55,7 @@ public class Polygon extends AbstractShape {
         physicsPolygon.setPosition(scaledOffset.x, scaledOffset.y);
         physicsPolygon.setScale(PhysicsConstants.METERS_PER_PIXEL, PhysicsConstants.METERS_PER_PIXEL);
 
-        com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(polygon.getTransformedVertices());
+        com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(physicsPolygon.getTransformedVertices());
         com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
 
         FixtureDef[] fixtureDefs = new FixtureDef[polygons.length];

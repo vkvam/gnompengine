@@ -47,6 +47,7 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
 
     protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){
         PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(cameraSystem.getCamera(),physicsWorld,priority);
+
         world.addSystem(debugRenderer);
         return debugRenderer;
     }

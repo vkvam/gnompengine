@@ -3,11 +3,11 @@ package com.flatfisk.gnomp.tests.launchers;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.flatfisk.gnomp.engine.constructors.gfx.AWTTextureFactory;
-import com.flatfisk.gnomp.tests.TestPlatformer;
+import com.flatfisk.gnomp.tests.TestCatmullRender;
 
-public class TestPlatformerLauncher {
+public class TestCatmullRenderLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new TestPlatformer(new AWTTextureFactory()), config);
+		new LwjglApplication(new TestCatmullRender(new AWTTextureFactory()), config);
 	}
 }

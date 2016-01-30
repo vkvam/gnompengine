@@ -27,7 +27,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, T
     @Override
     public void parentAddedFinal(Entity entity,Spatial.Node constructorOrientation,TextureCoordinates textureCoordinates){
         Renderable renderable = constructorMapper.get(entity);
-        if(textureCoordinates!=null) {
+        if (textureCoordinates != null) {
             renderable.boundingRectangle = textureCoordinates.getBoundingRectangle();
         }
     }
@@ -40,7 +40,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, T
         Transform transform = Pools.obtainSpatial();
         TextureCoordinates textureCoordinates = null;
 
-        if (structure.geometry != null && renderableNode!=null && !renderableNode.intermediate) {
+        if (structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {
             textureCoordinates = structure.geometry.getTextureCoordinates(null, transform);
         }
 

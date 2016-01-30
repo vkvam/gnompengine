@@ -33,9 +33,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
 
     @Override
     public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, ShapeTexture shapeTexture) {
-
         Renderable renderableDef = constructorMapper.get(entity);
-
         Renderable.Constructed renderable = engine.addComponent(Renderable.Constructed.class, entity);
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();

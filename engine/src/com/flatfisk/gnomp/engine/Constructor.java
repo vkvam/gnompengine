@@ -20,13 +20,12 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
 
     //public GnompEngine engine;
 
-    public Constructor(/*GnompEngine engine, */Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
+    public Constructor(Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship) {
         this.constructor = constructor;
         this.relationship = relationship;
 
         constructorMapper = ComponentMapper.getFor(this.constructor);
         relationshipMapper = ComponentMapper.getFor(this.relationship);
-        //this.engine = engine;
     }
 
     public boolean isParent(Entity entity){

@@ -1,4 +1,4 @@
-package com.flatfisk.gnomp.tests.addremove;
+package com.flatfisk.gnomp.tests;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
@@ -13,7 +13,7 @@ import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.tests.Test;
+import com.flatfisk.gnomp.tests.addremove.AddRemoveInputSystem;
 import com.flatfisk.gnomp.tests.components.Dot;
 import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
@@ -36,7 +36,7 @@ public class TestAddRemove extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL));
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
 
         world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
 
