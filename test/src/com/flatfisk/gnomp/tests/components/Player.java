@@ -11,6 +11,7 @@ import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
  */
 public class Player implements ISerializable<Player>, Component, Pool.Poolable {
     public int touchedPlatformTimes = 0;
+    public boolean wasKilled = true;
 
     @Override
     public void reset() {

@@ -46,6 +46,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 player.getComponent(Spatial.Node.class).world.vector.setZero();
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
                 body.positionChanged = true;
+                player.getComponent(Player.class).wasKilled = true;
             }
         }
 
@@ -116,21 +117,25 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 float y;
                 Body b = physicsBody.body;
                 if(b!=null) {
-                    if(enemiesKilled >0){
-                        playerComponent.touchedPlatformTimes += enemiesKilled;
-                        LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
-                    }
-                    if(enemiesKilled >0 && Gdx.input.isKeyPressed(Input.Keys.UP)){
-                        y = 600f* PhysicsConstants.METERS_PER_PIXEL;
-                        enemiesKilled =0;
-                    } else if (enemiesKilled >0 || Gdx.input.isKeyPressed(Input.Keys.UP) && (playerComponent.touchedPlatformTimes > 0) ) {
-                        y = 400f* PhysicsConstants.METERS_PER_PIXEL;
-                        enemiesKilled =0;
-                    } else {
-                        y = b.getLinearVelocity().y;
-                    }
+                    if(!playerComponent.wasKilled) {
+                        if (enemiesKilled > 0) {
+                            playerComponent.touchedPlatformTimes += enemiesKilled;
+                            LOG.info("TOUCH:" + playerComponent.touchedPlatformTimes);
+                        }
+                        if (enemiesKilled > 0 && Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                            y = 600f * PhysicsConstants.METERS_PER_PIXEL;
+                            enemiesKilled = 0;
+                        } else if (enemiesKilled > 0 || Gdx.input.isKeyPressed(Input.Keys.UP) && (playerComponent.touchedPlatformTimes > 0)) {
+                            y = 400f * PhysicsConstants.METERS_PER_PIXEL;
+                            enemiesKilled = 0;
+                        } else {
+                            y = b.getLinearVelocity().y;
+                        }
 
-                    b.setLinearVelocity(speed* PhysicsConstants.METERS_PER_PIXEL, y);
+                        b.setLinearVelocity(speed * PhysicsConstants.METERS_PER_PIXEL, y);
+                    }else {
+                        playerComponent.wasKilled = false;
+                    }
                 }
             }
         }

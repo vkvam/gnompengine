@@ -22,10 +22,6 @@ public class Line extends AbstractShape {
         super(lineWidth, color, null);
         this.polyline = polyline;
     }
-    public Line(){
-        super(1,Color.BLACK,null);
-        this.polyline = new Polygon();
-    }
 
     @Override
     public Line getCopy(){
@@ -43,23 +39,7 @@ public class Line extends AbstractShape {
     }
 
     @Override
-    public void drawFrom(Vector2 vector) {
-
-    }
-
-    @Override
-    public void drawVia(Vector2 vector) {
-
-    }
-
-    @Override
-    public void drawTo(Vector2 vector) {
-
-    }
-
-    @Override
     public FixtureDef[] getFixtureDefinitions(Vector2 offset) {
-        // TODO: Add proper if this is to be used.
         return new FixtureDef[0];
     }
 

@@ -36,12 +36,12 @@ public abstract class AbstractShape implements Pool.Poolable, Component {
         this.lineColor = lineColor;
         this.fillColor = fillColor;
     }
-
+/*
     public abstract void drawFrom(Vector2 vector);
     public abstract void drawVia(Vector2 vector);
     public abstract void drawTo(Vector2 vector);
-
-    public abstract void setRotation(float angle);
+*/
+    public void setRotation(float angle){};
 
     public void reset() {
         lineColor = null;

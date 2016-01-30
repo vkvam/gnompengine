@@ -14,9 +14,6 @@ public class RectangularLine extends Polygon {
     public float rectangleWidth;
     public Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
 
-    public RectangularLine(){
-        super();
-    }
     public RectangularLine(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
         this.rectangleWidth = rectangleWidth;

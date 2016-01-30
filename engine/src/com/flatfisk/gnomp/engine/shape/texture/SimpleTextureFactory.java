@@ -55,18 +55,18 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
                 if (structure.geometry.fillColor != null) {
                     setColor(structure.geometry.fillColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
-                    ls.getPolygon().rotate(orientation.rotation);
-                    float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.rotation);
+                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    float[] vertices = ls.getRenderPolygon().getTransformedVertices();
+                    ls.getRenderPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.geometry.lineColor != null) {
                     setColor(structure.geometry.lineColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
-                    ls.getPolygon().rotate(orientation.rotation);
-                    float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.rotation);
+                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    float[] vertices = ls.getRenderPolygon().getTransformedVertices();
+                    ls.getRenderPolygon().rotate(-orientation.rotation);
 
                     drawPolygon(vertices, centerX, centerY);
                 }
@@ -74,18 +74,18 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
                 if (structure.geometry.fillColor != null) {
                     setColor(structure.geometry.fillColor);
                     Polygon ls = (Polygon) abstractShape;
-                    ls.getPolygon().rotate(orientation.rotation);
-                    float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.rotation);
+                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    float[] vertices = ls.getRenderPolygon().getTransformedVertices();
+                    ls.getRenderPolygon().rotate(-orientation.rotation);
 
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.geometry.lineColor != null) {
                     setColor(structure.geometry.lineColor);
                     Polygon ls = (Polygon) abstractShape;
-                    ls.getPolygon().rotate(orientation.rotation);
-                    float[] vertices = ls.getPolygon().getTransformedVertices();
-                    ls.getPolygon().rotate(-orientation.rotation);
+                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    float[] vertices = ls.getRenderPolygon().getTransformedVertices();
+                    ls.getRenderPolygon().rotate(-orientation.rotation);
 
                     drawPolygon(vertices, centerX, centerY);
                 }

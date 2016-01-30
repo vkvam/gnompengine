@@ -36,10 +36,10 @@ public class EnemyMoverSystem extends IteratingSystem {
     public void update(float f){
         super.update(f);
         c+=f;
-        if(c>.5f){
+        if(c>5.5f){
             GnompEngine world= (GnompEngine) getEngine();
             Transform t = getEngine().getEntitiesFor(player).get(0).getComponent(Spatial.Node.class).world;
-            Entity e = TestPlatformer.createEnemy(world,new Transform((float) Math.random()*1000-500+t.vector.x,-150,0));
+            Entity e = TestPlatformer.createEnemy(world,new Transform((float) Math.random()*1000-500+t.vector.x,-190,0));
             world.addEntity(e);
             world.constructEntity(e);
             c=0;
@@ -61,7 +61,6 @@ public class EnemyMoverSystem extends IteratingSystem {
         }
 
         if(getEngine().getEntitiesFor(player).get(0).getComponent(PhysicsBody.Container.class).body.getPosition().x<physicsBody.body.getPosition().x){
-            //physicsBody.body.setLinearVelocity(enemy.movingLeft?-.5f:.5f,physicsBody.body.getLinearVelocity().y);
             physicsBody.body.setLinearVelocity(-(float) Math.random(),physicsBody.body.getLinearVelocity().y);
         }else{
             physicsBody.body.setLinearVelocity((float) Math.random(),physicsBody.body.getLinearVelocity().y);

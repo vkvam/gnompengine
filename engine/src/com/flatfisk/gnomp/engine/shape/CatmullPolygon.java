@@ -5,35 +5,36 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Pools;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.math.GeometryUtils;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.PhysicsConstants;
 
 /**
  * Created by: Vemund Kvam 004213
  * Date: 10/5/13
  * Time: 12:19 AM
  */
-public class Polygon extends AbstractShape {
-    private com.badlogic.gdx.math.Polygon polygon;
+public class CatmullPolygon extends AbstractShape {
+    public com.badlogic.gdx.math.Polygon polygon;
 
-    public Polygon(float lineWidth, Color color, Color fillColor) {
+    public CatmullPolygon(){
+        super();
+    }
+    public CatmullPolygon(float[] vertices, float lineWidth, Color color, Color fillColor) {
+        super(lineWidth, color, fillColor);
+        this.polygon = new com.badlogic.gdx.math.Polygon(vertices);
+        this.lineColor = color;
+    }
+
+    public CatmullPolygon(float lineWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
         this.lineColor = color;
     }
 
-    public com.badlogic.gdx.math.Polygon getRenderPolygon() {
-        return polygon;
-    }
-
-    public com.badlogic.gdx.math.Polygon getPhysicsPolygon() {
-        return polygon;
-    }
-
     @Override
-    public Polygon getCopy() {
-        Polygon lineShape = Pools.obtain(Polygon.class);
+    public CatmullPolygon getCopy() {
+        CatmullPolygon lineShape = Pools.obtain(CatmullPolygon.class);
 
         com.badlogic.gdx.math.Polygon polygon = Pools.obtain(com.badlogic.gdx.math.Polygon.class);
         polygon.setVertices(this.polygon.getVertices());
@@ -49,11 +50,8 @@ public class Polygon extends AbstractShape {
     @Override
     public FixtureDef[] getFixtureDefinitions(Vector2 offset) {
         Vector2 scaledOffset = offset.cpy().scl(PhysicsConstants.METERS_PER_PIXEL);
-
-        com.badlogic.gdx.math.Polygon physicsPolygon = getPhysicsPolygon();
-
-        physicsPolygon.setPosition(scaledOffset.x, scaledOffset.y);
-        physicsPolygon.setScale(PhysicsConstants.METERS_PER_PIXEL, PhysicsConstants.METERS_PER_PIXEL);
+        polygon.setPosition(scaledOffset.x, scaledOffset.y);
+        polygon.setScale(PhysicsConstants.METERS_PER_PIXEL, PhysicsConstants.METERS_PER_PIXEL);
 
         com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(polygon.getTransformedVertices());
         com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
@@ -63,8 +61,8 @@ public class Polygon extends AbstractShape {
         for (com.badlogic.gdx.math.Polygon p : polygons) {
             fixtureDefs[i++] = getFixtureDef(p);
         }
-        physicsPolygon.setScale(1, 1);
-        physicsPolygon.setPosition(0, 0);
+        polygon.setScale(1, 1);
+        polygon.setPosition(0, 0);
         return fixtureDefs;
     }
 
@@ -81,6 +79,10 @@ public class Polygon extends AbstractShape {
         return fixtureDef;
     }
 
+    public com.badlogic.gdx.math.Polygon getPolygon() {
+        return polygon;
+    }
+
     public void setVertices(float[] vertices) {
         if (polygon != null) {
             polygon.setVertices(vertices);
@@ -93,14 +95,11 @@ public class Polygon extends AbstractShape {
     @Override
     public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Transform transform) {
         Gdx.app.log(getClass().getName(), transform.toString());
-
         setRotation(transform.rotation);
-        com.badlogic.gdx.math.Polygon renderPolygon = getRenderPolygon();
-        float[] v = renderPolygon.getTransformedVertices();
+        float[] v = this.polygon.getTransformedVertices();
         setRotation(-transform.rotation);
         float centerX = transform.vector.x;
         float centerY = transform.vector.y;
-
         return getTextureCoordinatesFromVertices(textureCoordinates, v, centerX, centerY);
     }
 

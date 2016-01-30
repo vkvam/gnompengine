@@ -129,9 +129,13 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             java.awt.Shape awtShape = null;
             if (geAbstractShape instanceof Polygon) {
                 Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.geometry;
-                ps.polygon.setRotation(angle);
-                awtShape = polygonToShape(ps.polygon, offsetPosition);
-                ps.polygon.setRotation(0);
+
+                com.badlogic.gdx.math.Polygon poly = ps.getRenderPolygon();
+
+                poly.setRotation(angle);
+                awtShape = polygonToShape(poly, offsetPosition);
+                poly.setRotation(0);
+
             }else if (geAbstractShape instanceof Line) {
                 Line c = (Line) structure.geometry;
                 c.polyline.setRotation(angle);
@@ -168,7 +172,6 @@ public class AWTTextureFactory extends ShapeTextureFactory {
                 shape.lineTo(x0, y0);
             }
 
-            // If polygon
             if(polygon)
             {
                 shape.lineTo(v[0] + offsetPosition.x, v[1] + offsetPosition.y);

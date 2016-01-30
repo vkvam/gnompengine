@@ -19,15 +19,12 @@ import com.flatfisk.gnomp.utils.Pools;
 public class Circle extends AbstractShape {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public com.badlogic.gdx.math.Circle circle = new com.badlogic.gdx.math.Circle();
-    private Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
+    private Vector2 from = Pools.obtainVector(),
+            to=Pools.obtainVector();
 
     public Circle(float lineWidth, float radius, Color lineColor, Color fillColor) {
         super(lineWidth, lineColor, fillColor);
         this.circle = new com.badlogic.gdx.math.Circle(0, 0, radius);
-    }
-    public Circle(){
-        super();
-        this.circle = new com.badlogic.gdx.math.Circle(0, 0, 0);
     }
 
     @Override
@@ -35,21 +32,6 @@ public class Circle extends AbstractShape {
         Circle circleShape = com.badlogic.gdx.utils.Pools.obtain(Circle.class);
         circleShape.circle.set(circle.x,circle.y,circle.radius);
         return circleShape;
-    }
-
-    @Override
-    public void drawFrom(Vector2 vector) {
-        from = vector;
-    }
-
-    @Override
-    public void drawVia(Vector2 vector) {
-        circle.radius = from.dst(vector);
-    }
-
-    @Override
-    public void drawTo(Vector2 vector) {
-        circle.radius = from.dst(vector);
     }
 
     @Override
@@ -65,14 +47,7 @@ public class Circle extends AbstractShape {
         circleShape.setRadius(circle.radius * PhysicsConstants.METERS_PER_PIXEL);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        //TODO: set correct density!
-        fixtureDef.density = 1;
         return new FixtureDef[]{fixtureDef};
-    }
-
-    @Override
-    public void setRotation(float angle) {
-        // No point in rotating a circle.
     }
 
 
