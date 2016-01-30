@@ -60,6 +60,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDef> parentAdded(Entity entity, Spatial.Node constructor) {
         Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
+
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), Pools.obtainSpatial(), physicalPropertiesMapper.get(entity));
         if (fixtures != null) {
             fixtureDefs.addAll(fixtures);

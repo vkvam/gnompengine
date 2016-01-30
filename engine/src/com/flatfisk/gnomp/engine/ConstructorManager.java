@@ -37,12 +37,12 @@ public class ConstructorManager {
     }
 
     public void constructEntity(Entity entity) {
-
-            Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
-            for (SortedIntList.Node<Constructor> constructorNode : constructors) {
-                Constructor constructor = constructorNode.value;
-                constructEntityForConstructor(constructor, entity, constructorOrientation);
-            }
+        dismantleEntity(entity);
+        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
+            Constructor constructor = constructorNode.value;
+            constructEntityForConstructor(constructor, entity, constructorOrientation);
+        }
     }
 
     private void constructEntityForConstructor(Constructor constructor, Entity entity, Spatial.Node rootOrientation){

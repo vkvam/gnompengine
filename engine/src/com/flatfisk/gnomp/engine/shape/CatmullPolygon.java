@@ -60,6 +60,7 @@ public class CatmullPolygon extends Polygon {
         // TODO: Create better pool.
         com.badlogic.gdx.math.Polygon returnPolygon = com.badlogic.gdx.utils.Pools.obtain(com.badlogic.gdx.math.Polygon.class);
         returnPolygon.setVertices(newVertices);
+        returnPolygon.setScale(polygon.getScaleX(),polygon.getScaleY());
         return returnPolygon;
     }
 
