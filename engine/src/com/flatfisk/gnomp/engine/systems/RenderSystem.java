@@ -22,9 +22,9 @@ import java.util.Comparator;
 public class RenderSystem extends IteratingSystem implements ApplicationListener {
     private static float ROOT2 = (float) Math.sqrt(2);
 
+    public SpriteBatch batch;
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private SpriteBatch batch;
     private Array<Entity> renderQueue = new Array<Entity>();
 
     public ComponentMapper<Renderable.Constructed> renderableMapper;
@@ -83,9 +83,10 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                 float tHDiv2 = ((float) tH) / 2 - offset.y;
                 float xCenter = x - tWDiv2, yCenter = y - tHDiv2;
 
+                // TODO: Very large Rectangular lines, get cut off to early.
+                
                 // The idea for this check is that a texture's rotated bounding-box never will be larger than root(2) of half of longest side.
                 float longestSide = Math.max(tW, tH) * 0.5f * ROOT2;
-
                 if (orthographicCamera.frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
                     batch.draw(
                             texture,                            // Texture texture
@@ -111,7 +112,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
             }
         }
         renderQueue.clear();
-        batch.end();
+        //batch.end();
     }
 
     @Override

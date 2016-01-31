@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
@@ -12,6 +13,7 @@ import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
+import com.flatfisk.gnomp.engine.systems.LightSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.components.EndPoint;
@@ -41,9 +43,13 @@ public class TestPlatformer extends Test {
         PhysicsConstants.setPixelsPerMeter(100);
         createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
 
-        world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        World w = world.getSystem(PhysicsSystem.class).getBox2DWorld();
 
-        PlatformerInputSystem inputSystem = new PlatformerInputSystem(0,world.getSystem(PhysicsSystem.class).getBox2DWorld());
+        LightSystem lightSystem = new LightSystem(650,w);
+        world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        world.addSystem(lightSystem);
+
+        PlatformerInputSystem inputSystem = new PlatformerInputSystem(0,w);
         world.addSystem(inputSystem);
         world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
