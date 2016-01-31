@@ -45,6 +45,12 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         return renderer;
     }
 
+    protected RenderFinalizeSystem addRenderFinalizeSystem(int priority){
+        RenderFinalizeSystem renderFinalizeSystem = new RenderFinalizeSystem(300);
+        world.addSystem(renderFinalizeSystem);
+        return renderFinalizeSystem;
+    }
+
     protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){
         PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(cameraSystem.getCamera(),physicsWorld,priority);
 

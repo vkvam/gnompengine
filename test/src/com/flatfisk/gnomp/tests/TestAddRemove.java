@@ -196,15 +196,13 @@ public class TestAddRemove extends Test {
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
-        //orientationRelative.relativeType = Relative.CHILD;
-        orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION_ANGLE;
 
-        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        world.addComponent(Renderable.Node.class,e);
 
         Shape structure = world.addComponent(Shape.class,e);
         Circle rectangularLineShape = new Circle(1,5,Color.RED,Color.BLUE);
         structure.geometry = rectangularLineShape;
-
+/*
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;
         physicalProperties.friction = 5f;
@@ -214,7 +212,7 @@ public class TestAddRemove extends Test {
         if(Math.random()>0.9) {
             rel.intermediate = true;
         }
-
+*/
         return e;
     }
 

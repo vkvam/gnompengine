@@ -2,15 +2,13 @@ package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.flatfisk.gnomp.engine.Constructor;
-import com.flatfisk.gnomp.engine.GnompEngine;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.engine.Constructor;
+import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
+import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.utils.Pools;
@@ -18,7 +16,7 @@ import com.flatfisk.gnomp.utils.Pools;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,Array<FixtureDef>> {
+public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,Array<PhysicsConstructor.FixtureDefWrapper>> {
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
@@ -37,7 +35,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, Array<FixtureDef> physicsBodyDef) {
+    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, Array<FixtureDefWrapper> fixtureDefs) {
 
         Transform worldTransform = constructorOrientation.world.getCopy().toBox2D();
 
@@ -46,7 +44,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         bodyDef.angle = worldTransform.rotation;
 
         PhysicsBody.Container bodyContainer = engine.addComponent(PhysicsBody.Container.class, entity);
-        bodyContainer.body = createBody(bodyDef, physicsBodyDef);
+        bodyContainer.body = createBody(bodyDef, fixtureDefs);
         bodyContainer.body.setUserData(entity);
 
         Velocity velocity = velocityMapper.get(entity);
@@ -58,12 +56,15 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public Array<FixtureDef> parentAdded(Entity entity, Spatial.Node constructor) {
-        Array<FixtureDef> fixtureDefs = new Array<FixtureDef>();
+    public Array<FixtureDefWrapper> parentAdded(Entity entity, Spatial.Node constructor) {
+        Array<FixtureDefWrapper> fixtureDefs = new Array<FixtureDefWrapper>();
+        Transform t = Pools.obtainSpatial();
 
-        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), Pools.obtainSpatial(), physicalPropertiesMapper.get(entity));
+        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), t, physicalPropertiesMapper.get(entity));
         if (fixtures != null) {
-            fixtureDefs.addAll(fixtures);
+            for(FixtureDef f:fixtures){
+                fixtureDefs.add(new FixtureDefWrapper(entity,f, t));
+            }
         }
 
         return fixtureDefs;
@@ -71,16 +72,18 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     @Override
-    public Array<FixtureDef> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDef> bodyDefContainer) {
+    public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefs) {
         Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
         Shape shape = structureMapper.get(entity);
         if(relationshipMapper.get(entity).intermediate) {
             FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMapper.get(entity));
             if(fixtures!=null){
-                bodyDefContainer.addAll(fixtures);
+                for(FixtureDef f:fixtures){
+                    fixtureDefs.add(new FixtureDefWrapper(entity, f, transform));
+                }
             }
         }
-        return bodyDefContainer;
+        return fixtureDefs;
     }
 
     @Override
@@ -93,13 +96,15 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
     }
 
-    private Body createBody(BodyDef bodyDef, Array<FixtureDef> fixtureDefs) {
+    private Body createBody(BodyDef bodyDef, Array<FixtureDefWrapper> fixtureDefs) {
         LOG.info("Create physics body of type:"+bodyDef.type);
         Body body = box2DWorld.createBody(bodyDef);
         LOG.info("Adding "+fixtureDefs.size+" fixtures");
-        for (FixtureDef fixture : fixtureDefs) {
-            body.createFixture(fixture);
-            fixture.shape.dispose();
+        for (FixtureDefWrapper fixture : fixtureDefs) {
+            Fixture f = body.createFixture(fixture.fixtureDef);
+            fixture.fixtureDef.shape.dispose();
+            // Use the entity used for construction and it's relative position to the parent body as userdata.
+            f.setUserData(new FixtureUserData(fixture.owner,fixture.transform));
         }
         LOG.info("Total mass:"+body.getMass());
         return body;
@@ -107,7 +112,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
     public FixtureDef[] getFixtures(Shape structure,Transform transform, PhysicalProperties physicalProperties) {
         if (structure.geometry != null) {
-            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.geometry, transform,physicalProperties);
+            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.geometry, transform, physicalProperties);
             return structureFixtureDefs;
         }
         return null;
@@ -129,5 +134,27 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
         abstractShape.setRotation(0);
         return fixtureDefinitions;
+    }
+
+    protected static class FixtureUserData{
+        public final Transform transformRelativeToBody;
+        public final Entity owner;
+
+        public FixtureUserData(Entity owner, Transform transformRelativeToBody) {
+            this.owner = owner;
+            this.transformRelativeToBody = transformRelativeToBody;
+        }
+    }
+
+    protected static class FixtureDefWrapper{
+        public Entity owner;
+        public FixtureDef fixtureDef;
+        public final Transform transform;
+
+        public FixtureDefWrapper(Entity owner, FixtureDef fixtureDef, Transform transform) {
+            this.owner = owner;
+            this.fixtureDef = fixtureDef;
+            this.transform = transform;
+        }
     }
 }
