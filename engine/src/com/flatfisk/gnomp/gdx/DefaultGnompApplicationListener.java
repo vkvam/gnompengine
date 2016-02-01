@@ -1,11 +1,9 @@
 package com.flatfisk.gnomp.gdx;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.physics.box2d.World;
-import com.flatfisk.gnomp.engine.constructors.BoundsConstructor;
-import com.flatfisk.gnomp.engine.constructors.SpatialConstructor;
-import com.flatfisk.gnomp.engine.constructors.PhysicsConstructor;
-import com.flatfisk.gnomp.engine.constructors.RenderableConstructor;
 import com.flatfisk.gnomp.engine.ConstructorManager;
+import com.flatfisk.gnomp.engine.constructors.*;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.*;
 
@@ -25,12 +23,14 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         return scenegraphSystem;
     }
 
-    protected void initializeConstructorManager(World physicsWorld){
-        ConstructorManager constructorManager = world.getConstructorManager();//;new ConstructorManager(world);
+    protected void initializeConstructorManager(World physicsWorld, RayHandler rayHandler){
+        ConstructorManager constructorManager = world.getConstructorManager();
+
         constructorManager.addConstructor(new SpatialConstructor(),0);
         constructorManager.addConstructor(new BoundsConstructor(),1);
         constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
-        constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),3);
+        constructorManager.addConstructor(new LightConstructor(rayHandler,world),3);
+        constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),4);
     }
 
     protected CameraSystem addCameraSystem(int priority){
@@ -65,8 +65,8 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         return physicsSystem;
     }
 
-    protected PositionPhysicsScenegraphSystem addPhysicsTrackerSystem(int priority){
-        PositionPhysicsScenegraphSystem physicsSystem = new PositionPhysicsScenegraphSystem(priority);
+    protected PhysicsScenegraphSystem addPhysicsTrackerSystem(int priority){
+        PhysicsScenegraphSystem physicsSystem = new PhysicsScenegraphSystem(priority);
         world.addSystem(physicsSystem);
         return physicsSystem;
     }

@@ -47,7 +47,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
 
         // If the constructor has a geometry, the geometry should be drawn at origin.
-        Transform transform = Pools.obtainSpatial();
+        Transform transform = Pools.obtainTransform();
         if (structure.geometry != null && !relationshipMapper.get(entity).intermediate) {
             px.draw(structure, transform);
         }

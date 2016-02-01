@@ -11,7 +11,7 @@ public class Pools {
     private static Vector2PoolProvider vector2Pool = new Vector2PoolProvider();
     private static SpatialPoolProvider spatialPool = new SpatialPoolProvider();
 
-    public static Transform obtainSpatial(){
+    public static Transform obtainTransform(){
         return spatialPool.obtain();
     }
     public static Vector2 obtainVector(){

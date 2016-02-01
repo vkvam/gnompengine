@@ -58,7 +58,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDefWrapper> parentAdded(Entity entity, Spatial.Node constructor) {
         Array<FixtureDefWrapper> fixtureDefs = new Array<FixtureDefWrapper>();
-        Transform t = Pools.obtainSpatial();
+        Transform t = Pools.obtainTransform();
 
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), t, physicalPropertiesMapper.get(entity));
         if (fixtures != null) {
@@ -104,7 +104,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             Fixture f = body.createFixture(fixture.fixtureDef);
             fixture.fixtureDef.shape.dispose();
             // Use the entity used for construction and it's relative position to the parent body as userdata.
-            f.setUserData(new FixtureUserData(fixture.owner,fixture.transform));
+            f.setUserData(new FixtureUserData(fixture.owner,fixture.transformRelativeToBody));
         }
         LOG.info("Total mass:"+body.getMass());
         return body;
@@ -149,12 +149,12 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     protected static class FixtureDefWrapper{
         public Entity owner;
         public FixtureDef fixtureDef;
-        public final Transform transform;
+        public final Transform transformRelativeToBody;
 
-        public FixtureDefWrapper(Entity owner, FixtureDef fixtureDef, Transform transform) {
+        public FixtureDefWrapper(Entity owner, FixtureDef fixtureDef, Transform transformRelativeToBody) {
             this.owner = owner;
             this.fixtureDef = fixtureDef;
-            this.transform = transform;
+            this.transformRelativeToBody = transformRelativeToBody;
         }
     }
 }

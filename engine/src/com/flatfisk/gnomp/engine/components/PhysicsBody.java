@@ -3,12 +3,13 @@ package com.flatfisk.gnomp.engine.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
+import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 import com.flatfisk.gnomp.engine.components.abstracts.ISpatialController;
 import com.flatfisk.gnomp.math.Transform;
@@ -76,7 +77,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
             return new Transform(getPosition(),getAngle());
         }
         public Transform getVelocity(){
-            Transform spat = Pools.obtainSpatial();
+            Transform spat = Pools.obtainTransform();
             spat.set(getLinearVelocity(),getAngularVelocity());
             return spat;
         }
@@ -97,10 +98,15 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
 
         @Override
         public void reset() {
-            LOG.info("Removing body, " + body);
+            LOG.info("Removing userdata for body");
             body.setUserData(null);
-            body.getWorld().destroyBody(body);
 
+            LOG.info("Removing userdata for fixtures");
+            for(Fixture f : body.getFixtureList()){
+                f.setUserData(null);
+            }
+            LOG.info("Destroying body");
+            body.getWorld().destroyBody(body);
             body = null;
             positionChanged = false;
         }

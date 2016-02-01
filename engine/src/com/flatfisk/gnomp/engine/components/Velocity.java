@@ -12,7 +12,7 @@ import com.flatfisk.gnomp.utils.Pools;
  * Created by Vemund Kvam on 05/12/15.
  */
 public class Velocity implements ISerializable<Velocity>, Component, Pool.Poolable {
-    public Transform velocity = Pools.obtainSpatial();
+    public Transform velocity = Pools.obtainTransform();
     @Override
     public void reset() {
         velocity.vector.setZero();

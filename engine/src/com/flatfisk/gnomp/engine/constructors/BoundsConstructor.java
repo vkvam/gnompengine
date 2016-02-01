@@ -37,7 +37,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, T
         Shape structure = structureNodeComponentMapper.get(entity);
         Renderable.Node renderableNode = relationshipMapper.get(entity);
 
-        Transform transform = Pools.obtainSpatial();
+        Transform transform = Pools.obtainTransform();
         TextureCoordinates textureCoordinates = null;
 
         if (structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {

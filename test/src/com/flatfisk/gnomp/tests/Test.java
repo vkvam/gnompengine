@@ -1,8 +1,10 @@
 package com.flatfisk.gnomp.tests;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
+import com.flatfisk.gnomp.engine.systems.LightSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
 import com.flatfisk.gnomp.engine.systems.RenderSystem;
 import com.flatfisk.gnomp.gdx.DefaultGnompApplicationListener;
@@ -12,8 +14,11 @@ public class Test extends DefaultGnompApplicationListener {
     public void createSystems(Vector2 gravity, boolean physicsDebug){
         World physicsWorld = new World(gravity,true);
 
-        // Runs before all systems
-        initializeConstructorManager(physicsWorld);
+        RayHandler rayHandler = new RayHandler(physicsWorld);
+        initializeConstructorManager(physicsWorld,rayHandler);
+
+        LightSystem lightSystem = new LightSystem(650,rayHandler);
+        world.addSystem(lightSystem);
 
         addScenegraphSystem(5);
         CameraSystem cameraSystem = addCameraSystem(100);

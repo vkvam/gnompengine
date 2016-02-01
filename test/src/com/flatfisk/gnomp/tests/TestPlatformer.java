@@ -9,20 +9,22 @@ import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
+import com.flatfisk.gnomp.engine.components.light.LightDef;
 import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
-import com.flatfisk.gnomp.engine.systems.LightSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
+import com.flatfisk.gnomp.tests.components.PlayerLight;
 import com.flatfisk.gnomp.tests.components.PlayerSensor;
 import com.flatfisk.gnomp.tests.platformer.Enemy;
 import com.flatfisk.gnomp.tests.platformer.EnemyMoverSystem;
 import com.flatfisk.gnomp.tests.platformer.PlatformerInputSystem;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
+import com.flatfisk.gnomp.utils.Pools;
 
 public class TestPlatformer extends Test {
 
@@ -36,6 +38,7 @@ public class TestPlatformer extends Test {
     private final static short CATEGORY_PLAYER =       0x0002; //  0000000000000010 in binary
     private final static short CATEGORY_SENSOR =       0x0004; //  0000000000000100 in binary
     private final static short CATEGORY_ENEMY  =       0x0008; //  0000000000001000 in binary
+    private final static short CATEGORY_LIGHT =        0x0010; //  0000000000010000 in binary
 
     @Override
     public void create () {
@@ -45,9 +48,8 @@ public class TestPlatformer extends Test {
 
         World w = world.getSystem(PhysicsSystem.class).getBox2DWorld();
 
-        LightSystem lightSystem = new LightSystem(650,w);
+
         world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
-        world.addSystem(lightSystem);
 
         PlatformerInputSystem inputSystem = new PlatformerInputSystem(0,w);
         world.addSystem(inputSystem);
@@ -97,7 +99,19 @@ public class TestPlatformer extends Test {
         character.getComponent(Spatial.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
+        Entity flashLight = createLight(new Transform(0, 10, 0),false);
+        world.addComponent(PlayerLight.class,flashLight);
+        character.getComponent(Spatial.Node.class).addChild(flashLight);
+        character.getComponent(Scenegraph.Node.class).addChild(flashLight);
+
+        Entity ambientCharacterLight = createLight(new Transform(0, 0, 0),true);
+        character.getComponent(Spatial.Node.class).addChild(ambientCharacterLight);
+        character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
+
+        world.addEntity(ambientCharacterLight);
+        world.addEntity(flashLight);
         world.addEntity(sensor);
+
         world.addEntity(character);
         world.addEntity(platform);
 
@@ -112,11 +126,10 @@ public class TestPlatformer extends Test {
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
 
+
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
-
-
 
         Shape structure = world.addComponent(Shape.class,e);
 
@@ -127,13 +140,9 @@ public class TestPlatformer extends Test {
         structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
-        physicalProperties.density = 1;
-        physicalProperties.friction = 5f;
         physicalProperties.isSensor = true;
         physicalProperties.categoryBits = CATEGORY_SENSOR;
         physicalProperties.maskBits = CATEGORY_PLATFORM|CATEGORY_ENEMY;
-
-
 
         Renderable renderableDef = world.addComponent(Renderable.class,e);
         renderableDef.zIndex = -1;
@@ -143,6 +152,47 @@ public class TestPlatformer extends Test {
         physicsBodyDef.bodyDef.fixedRotation=true;
         physicsBodyDef.bodyDef.angularDamping=.03f;
         physicsBodyDef.bodyDef.bullet=true;
+
+        return e;
+    }
+
+    protected Entity createLight(Transform translation, boolean ambient){
+        Entity e = world.createEntity();
+
+        world.addComponent(Scenegraph.Node.class,e);
+
+        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        orientationRelative.local = translation;
+        orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
+
+        LightDef light;
+
+        if(ambient) {
+            LightDef.Point pointDef = new LightDef.Point();
+            pointDef.color = new Color(1, 1, 1f, 0.3f);
+            pointDef.distance = 800;
+            pointDef.staticLight=true;
+            pointDef.offset = Pools.obtainTransform();
+            pointDef.group = 0;
+            light = pointDef;
+        }else{
+            LightDef.Cone coneDef = new LightDef.Cone();
+            coneDef.color = new Color(0.9f, 0.9f, .8f, 0.9f);
+            coneDef.softShadowLength = 80;
+            coneDef.coneAngle = 30;
+            coneDef.distance = 300;
+            coneDef.rayNum = 150;
+            coneDef.offset = Pools.obtainTransform();
+            coneDef.offset.vector.x = -20;
+            coneDef.offset.rotation = 180;
+            coneDef.group = 0;
+            coneDef.categoryBits = CATEGORY_LIGHT;
+            coneDef.maskBits = CATEGORY_ENEMY | CATEGORY_PLATFORM;
+            light = coneDef;
+        }
+
+        Light l = world.addComponent(Light.class, e);
+        l.lightDef = light;
 
         return e;
     }
@@ -171,7 +221,7 @@ public class TestPlatformer extends Test {
         physicalProperties.density = 0;
         physicalProperties.friction = 1;
         physicalProperties.categoryBits = CATEGORY_ENEMY;
-        physicalProperties.maskBits = CATEGORY_PLATFORM|CATEGORY_PLAYER|CATEGORY_ENEMY|CATEGORY_SENSOR;
+        physicalProperties.maskBits = CATEGORY_PLATFORM|CATEGORY_PLAYER|CATEGORY_ENEMY|CATEGORY_SENSOR|CATEGORY_LIGHT;
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -235,7 +285,7 @@ public class TestPlatformer extends Test {
         physicalProperties.density = 0;
         physicalProperties.friction = 1;
         physicalProperties.categoryBits = CATEGORY_PLATFORM;
-        physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR|CATEGORY_ENEMY;
+        physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR|CATEGORY_ENEMY|CATEGORY_LIGHT;
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {

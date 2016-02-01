@@ -1,25 +1,36 @@
 package com.flatfisk.gnomp.engine.systems;
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Spatial;
+import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
+import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
-
-public class PositionPhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
+/**
+Acts on entities with physics-components and a Scenegraph parent,
+PhysicsBody.Container and Light.Container
+ */
+public class PhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
+    private ComponentMapper<Light.Container> lightMapper;
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
     private ComponentMapper<Spatial.Node> orientationMapper;
 
-    public PositionPhysicsScenegraphSystem(int priority) {
-        super(Family.all(PhysicsBody.Container.class, Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
+    public PhysicsScenegraphSystem(int priority) {
+
+        super(Family.all(PhysicsBody.Container.class,Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
+        lightMapper = ComponentMapper.getFor(Light.Container.class);
         orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
@@ -39,27 +50,26 @@ public class PositionPhysicsScenegraphSystem extends IteratingSystem implements 
     @Override
     public void processEntity(Entity entity, float f) throws UnsupportedOperationException{
 
+        Spatial.Node entitySpatial = orientationMapper.get(entity);
+
+        verifyPositionTransfer(entitySpatial);
+
+        Scenegraph.Node node = scenegraphNodeComponentMapper.get(entity);
+        Entity parent = node.parent;
+
+
         PhysicsBody.Container body = physicsBodyMapper.get(entity);
+        Transform entityOrientation = entitySpatial.world.getCopy().toBox2D();
 
         if(body.body!=null) {
-            Spatial.Node orientation = orientationMapper.get(entity);
+            PhysicsBody.Container parentBody = physicsBodyMapper.get(parent);
 
-            verifyPositionTransfer(orientation);
-
-            Scenegraph.Node node = scenegraphNodeComponentMapper.get(entity);
-            Entity parent = node.parent;
-            if(parent!=null) {
-                PhysicsBody.Container parentBody = physicsBodyMapper.get(parent);
+            if (parentBody != null) {
                 Body b = body.body;
-                if(b!=null && parentBody!=null) {
-                    Transform t = orientation.world.getCopy().toBox2D();
-                    com.badlogic.gdx.physics.box2d.Transform t2 = b.getTransform();
-
-                    float xDiff = (t.vector.x - (t2.getPosition().x)) / f;
-                    float yDiff = (t.vector.y - (t2.getPosition().y)) / f;
-
-                    b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff, yDiff));
-                }
+                com.badlogic.gdx.physics.box2d.Transform t2 = b.getTransform();
+                float xDiff = (entityOrientation.vector.x - (t2.getPosition().x)) / f;
+                float yDiff = (entityOrientation.vector.y - (t2.getPosition().y)) / f;
+                b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff, yDiff));
             }
         }
     }

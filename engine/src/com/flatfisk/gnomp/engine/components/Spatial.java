@@ -28,8 +28,8 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
      * Transform node for constructed entities
      */
     public static class Node extends AbstractNode implements ISerializable<Node> {
-        public Transform local = Pools.obtainSpatial();
-        public Transform world = Pools.obtainSpatial();
+        public Transform local = Pools.obtainTransform();
+        public Transform world = Pools.obtainTransform();
         public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
 
         public Node() {

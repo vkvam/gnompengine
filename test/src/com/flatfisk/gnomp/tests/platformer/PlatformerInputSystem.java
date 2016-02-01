@@ -3,28 +3,32 @@ package com.flatfisk.gnomp.tests.platformer;
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.engine.components.Spatial;
+import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
+import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
+import com.flatfisk.gnomp.tests.components.PlayerLight;
 import com.flatfisk.gnomp.tests.components.PlayerSensor;
+import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
  */
 public class PlatformerInputSystem extends EntitySystem implements ContactListener, EntityListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private Entity player,sensor,endpoint;
+    private Entity player,sensor,endpoint, playerLight;
     private Player playerComponent;
     private Family family;
 
     ComponentMapper<Enemy> enemyComponentMapper = ComponentMapper.getFor(Enemy.class);
 
     public PlatformerInputSystem(int priority, World physicsWorld) {
-        family = Family.one(Player.class, PlayerSensor.class, EndPoint.class).get();
+        family = Family.one(PlayerLight.class,Player.class, PlayerSensor.class, EndPoint.class).get();
         this.priority = priority;
         physicsWorld.setContactListener(this);
     }
@@ -97,16 +101,26 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     float speed = 0, timer=0;
 
+    Vector2 lookAt = Pools.obtainVector();
+
     public void update (float deltaTime) {
         if(player!=null) {
+
             PhysicsBody.Container physicsBody = player.getComponent(PhysicsBody.Container.class);
             if(physicsBody!=null) {
                 timer += deltaTime;
 
+                Light.Container light = playerLight.getComponent(Light.Container.class);
+                com.flatfisk.gnomp.math.Transform lightOffset = light.offset;
+
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     speed = -150f;
+                    lookAt.x=-2.4f;
+                    lookAt.y=0;
                 } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     speed = 150f;
+                    lookAt.x=2.4f;
+                    lookAt.y=0;
                 } else {
                     speed += speed > 0 ? -deltaTime * 400 : deltaTime * 400;
                     if (Math.abs(speed) < 150f) {
@@ -136,6 +150,11 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                     }else {
                         playerComponent.wasKilled = false;
                     }
+
+                    lightOffset.vector.x = lookAt.x;
+                    lightOffset.vector.y = lookAt.y;
+                    lightOffset.vector.add(b.getLinearVelocity().x,b.getLinearVelocity().y+(float) Math.sin(timer*(b.getLinearVelocity().x*5+.8f))*0.5f);
+                    lightOffset.rotation = lightOffset.vector.angle();
                 }
             }
         }
@@ -151,6 +170,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
             sensor = entity;
         }else if(entity.getComponent(EndPoint.class)!=null){
             endpoint = entity;
+        }else if(entity.getComponent(PlayerLight.class)!=null){
+            playerLight = entity;
         }
     }
 

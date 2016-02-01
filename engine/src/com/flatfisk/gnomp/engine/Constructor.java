@@ -10,7 +10,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Spatial;
 
-public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends Component/*IRelative*/, CONSTRUCTION_DTO>{
+public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends Component, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public Class<CONSTRUCTOR_ROOT> constructor;
     public Class<RELATIONSHIP> relationship;
@@ -43,8 +43,10 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
      * @return
      */
     public abstract CONSTRUCTION_DTO parentAdded(Entity entity, Spatial.Node constructorOrientation);
-    public abstract CONSTRUCTION_DTO insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, CONSTRUCTION_DTO constructorDTO);
-    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){};
+    public CONSTRUCTION_DTO insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, CONSTRUCTION_DTO constructorDTO){
+        return null;
+    }
+    public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, CONSTRUCTION_DTO construction_dto){}
 
     public abstract void parentRemoved(Entity entity);
     public abstract void childRemoved(Entity entity);
