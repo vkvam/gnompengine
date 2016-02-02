@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.tests.components.Player;
 
+import java.util.Random;
+
 /**
  * Created by Vemund Kvam on 22/12/15.
  */
@@ -19,6 +21,8 @@ public class CameraTrackerSystem extends IteratingSystem{
     private Camera camera;
     private ComponentMapper<Spatial.Node> orientationRelativeComponentMapper;
     private boolean trackX,trackY;
+    private float shakeTime = 0, shakePower=0;
+    private Random random = new Random();
 
     public CameraTrackerSystem(int priority, Camera camera, boolean trackX, boolean trackY) {
         super(Family.all(Player.class).get(),priority);
@@ -29,14 +33,28 @@ public class CameraTrackerSystem extends IteratingSystem{
         this.trackY = trackY;
     }
 
+    public void shake(float time,float power){
+        shakeTime = random.nextFloat()*0.5f*time+time*0.5f;
+        shakePower = power;
+    }
+
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Vector2 t = orientationRelativeComponentMapper.get(entity).world.vector;
+        if(shakeTime>0){
+            shakeTime-=deltaTime;
+        }
         if(trackX){
             camera.position.x = t.x;
+            if(shakeTime>0){
+                camera.position.x+=random.nextFloat()*shakePower-shakePower*0.5;
+            }
         }
         if(trackY){
             camera.position.y = t.y;
+            if(shakeTime>0){
+                camera.position.y+=random.nextFloat()*shakePower-shakePower*0.5;
+            }
         }
     }
 }

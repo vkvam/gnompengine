@@ -67,7 +67,8 @@ public class CameraSystem extends EntitySystem implements ApplicationListener {
     public void resize(final int w, final int h) {
         LOG.info("Resizing render system: w="+w+"h="+h);
 
-        Gdx.graphics.setDisplayMode(w, h, false);
+        //Gdx.graphics.setDisplayMode(w, h, false);
+        Gdx.graphics.setWindowedMode(w,h);
         orthographicCamera.update();
         orthographicCamera.viewportWidth = w;
         orthographicCamera.viewportHeight = h;

@@ -109,6 +109,7 @@ public class TestPlatformer extends Test {
         character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
 
         world.addEntity(ambientCharacterLight);
+
         world.addEntity(flashLight);
         world.addEntity(sensor);
 
@@ -169,18 +170,18 @@ public class TestPlatformer extends Test {
 
         if(ambient) {
             LightDef.Point pointDef = new LightDef.Point();
-            pointDef.color = new Color(1, 1, 1f, 0.3f);
-            pointDef.distance = 800;
+            pointDef.color = new Color(1, 1, 1f, 0.30f);
+            pointDef.distance = 500;
             pointDef.staticLight=true;
             pointDef.offset = Pools.obtainTransform();
             pointDef.group = 0;
             light = pointDef;
         }else{
             LightDef.Cone coneDef = new LightDef.Cone();
-            coneDef.color = new Color(0.9f, 0.9f, .8f, 0.9f);
+            coneDef.color = new Color(0.9f, 0.9f, .8f, 0.8f);
             coneDef.softShadowLength = 80;
             coneDef.coneAngle = 30;
-            coneDef.distance = 300;
+            coneDef.distance = 400;
             coneDef.rayNum = 150;
             coneDef.offset = Pools.obtainTransform();
             coneDef.offset.vector.x = -20;

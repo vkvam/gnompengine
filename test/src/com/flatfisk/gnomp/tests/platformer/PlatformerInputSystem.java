@@ -10,10 +10,12 @@ import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Spatial;
+import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
 import com.flatfisk.gnomp.tests.components.PlayerLight;
 import com.flatfisk.gnomp.tests.components.PlayerSensor;
+import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
 import com.flatfisk.gnomp.utils.Pools;
 
 /**
@@ -64,6 +66,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 enemiesKilled++;
             }else{
                 playerComponent.touchedPlatformTimes++;
+                PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
+                getEngine().getSystem(CameraTrackerSystem.class).shake(Math.abs(body.getVelocity().vector.y)*0.05f,body.getVelocity().vector.y);
             }
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
         }
@@ -99,9 +103,10 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     }
 
-    float speed = 0, timer=0;
+    float speed = 0, timer=0, flickerTimer=0;
 
-    Vector2 lookAt = Pools.obtainVector();
+    private Vector2 lookAt = Pools.obtainVector(),
+            output = Pools.obtainVector();
 
     public void update (float deltaTime) {
         if(player!=null) {
@@ -116,11 +121,11 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     speed = -150f;
                     lookAt.x=-2.4f;
-                    lookAt.y=0;
+                    lookAt.y=-0.4f;
                 } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     speed = 150f;
                     lookAt.x=2.4f;
-                    lookAt.y=0;
+                    lookAt.y=-0.4f;
                 } else {
                     speed += speed > 0 ? -deltaTime * 400 : deltaTime * 400;
                     if (Math.abs(speed) < 150f) {
@@ -134,7 +139,6 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                     if(!playerComponent.wasKilled) {
                         if (enemiesKilled > 0) {
                             playerComponent.touchedPlatformTimes += enemiesKilled;
-                            LOG.info("TOUCH:" + playerComponent.touchedPlatformTimes);
                         }
                         if (enemiesKilled > 0 && Gdx.input.isKeyPressed(Input.Keys.UP)) {
                             y = 600f * PhysicsConstants.METERS_PER_PIXEL;
@@ -151,13 +155,41 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                         playerComponent.wasKilled = false;
                     }
 
-                    lightOffset.vector.x = lookAt.x;
-                    lightOffset.vector.y = lookAt.y;
-                    lightOffset.vector.add(b.getLinearVelocity().x,b.getLinearVelocity().y+(float) Math.sin(timer*(b.getLinearVelocity().x*5+.8f))*0.5f);
-                    lightOffset.rotation = lightOffset.vector.angle();
+
+                    output.x = lookAt.x+b.getLinearVelocity().x;
+                    output.y = lookAt.y+b.getLinearVelocity().y;
+
+                    output.y+=(float) Math.sin(timer*(.4f+Math.abs(b.getLinearVelocity().x*8)))*0.6;
+
+                    interpolate(lightOffset, output, deltaTime * 5);
+
+                    if(Math.random()>0.99f){
+                        flickerTimer=(float) Math.random()*0.4f;
+                    }
+
+                    if(flickerTimer>0) {
+                        flickerTimer-=deltaTime;
+                        light.light.getColor().a = (float) Math.random()*0.2f+0.7f;
+                        light.light.setColor(light.light.getColor());
+                    }else{
+                        flickerTimer=0;
+                        light.light.getColor().a = 0.9f;
+                        light.light.setColor(light.light.getColor());
+                    }
+
                 }
             }
         }
+    }
+
+    public Transform interpolate(Transform in, Vector2 vector2,float amount){
+        float xDiff = vector2.x-in.vector.x;
+        float yDiff = vector2.y-in.vector.y;
+
+        in.vector.x+=xDiff*amount;
+        in.vector.y+=yDiff*amount;
+        in.rotation=in.vector.angle();
+        return in;
     }
 
     @Override
