@@ -17,9 +17,6 @@ public class Test extends DefaultGnompApplicationListener {
         RayHandler rayHandler = new RayHandler(physicsWorld);
         initializeConstructorManager(physicsWorld,rayHandler);
 
-        LightSystem lightSystem = new LightSystem(650,rayHandler);
-        world.addSystem(lightSystem);
-
         addScenegraphSystem(5);
         CameraSystem cameraSystem = addCameraSystem(100);
         RenderSystem renderSystem = addRenderSystem(200);
@@ -31,6 +28,9 @@ public class Test extends DefaultGnompApplicationListener {
             addDebugRenderer(500, physicsWorld, cameraSystem);
         }
         PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
+
+        LightSystem lightSystem = new LightSystem(650,rayHandler);
+        world.addSystem(lightSystem);
 
         renderSystem.setProcessing(true);
         physicsSystem.setFixedStep(false);

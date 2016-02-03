@@ -7,6 +7,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
@@ -38,7 +39,8 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        debugMatrix = new Matrix4(getEngine().getSystem(CameraSystem.class).getCamera().combined);
+        CameraSystem system = getEngine().getSystem(CameraSystem.class);
+        debugMatrix = new Matrix4(system.getCamera().combined);
         debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
 
         rayHandler.setCombinedMatrix(debugMatrix);
@@ -69,7 +71,9 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
 
     @Override
     public void resize(int width, int height) {
-        rayHandler.useCustomViewport(0,0,width,height);
+        CameraSystem system = getEngine().getSystem(CameraSystem.class);
+        Rectangle rect = system.viewport;
+        rayHandler.useCustomViewport((int)rect.x,(int)rect.y,(int)rect.width,(int)rect.height);
     }
 
     @Override

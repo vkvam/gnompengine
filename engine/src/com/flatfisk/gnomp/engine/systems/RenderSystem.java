@@ -62,9 +62,13 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public void update(float f) {
         super.update(f);
 
-        OrthographicCamera orthographicCamera = getEngine().getSystem(CameraSystem.class).getCamera();
+        CameraSystem cameraSystem = getEngine().getSystem(CameraSystem.class);
+        OrthographicCamera orthographicCamera = cameraSystem.getCamera();
+
+
 
         batch.setProjectionMatrix(orthographicCamera.combined);
+
         batch.begin();
         renderQueue.sort(comperator);
 

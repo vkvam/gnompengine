@@ -34,7 +34,7 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
     }
 
     protected CameraSystem addCameraSystem(int priority){
-        CameraSystem cameraSystem = new CameraSystem(priority);
+        CameraSystem cameraSystem = new CameraSystem(priority, 640, 480);
         world.addSystem(cameraSystem);
         return cameraSystem;
     }

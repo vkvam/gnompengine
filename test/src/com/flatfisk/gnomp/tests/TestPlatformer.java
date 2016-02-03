@@ -181,7 +181,7 @@ public class TestPlatformer extends Test {
             coneDef.color = new Color(0.9f, 0.9f, .8f, 0.8f);
             coneDef.softShadowLength = 80;
             coneDef.coneAngle = 30;
-            coneDef.distance = 400;
+            coneDef.distance = 1200;
             coneDef.rayNum = 150;
             coneDef.offset = Pools.obtainTransform();
             coneDef.offset.vector.x = -20;
