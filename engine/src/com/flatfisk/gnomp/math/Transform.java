@@ -3,8 +3,9 @@ package com.flatfisk.gnomp.math;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.utils.Pools;
+//import com.flatfisk.gnomp.utils.Pools;
 
 /**
 * A vector and a rotation.
@@ -29,7 +30,6 @@ public class Transform implements Pool.Poolable {
 
     public Transform subtractedCopy(Transform subtractor){
         Transform copy = this.getCopy();
-
         copy.vector.sub(subtractor.vector);
         copy.vector.rotate(-subtractor.rotation);
         copy.rotation -=subtractor.rotation;
@@ -37,11 +37,16 @@ public class Transform implements Pool.Poolable {
     }
 
     public Transform getCopy() {
-        return Pools.obtainSpatialFromCopy(this);
+        Transform t = Pools.obtain(Transform.class);
+        t.vector.x = vector.x;
+        t.vector.y = vector.y;
+        t.rotation = rotation;
+        return t;
     }
 
     public void setCopy(Transform t) {
-        this.vector = Pools.obtainVector2FromCopy(t.vector);
+        this.vector.x = t.vector.x;
+        this.vector.y = t.vector.y;
         this.rotation = t.rotation;
     }
 

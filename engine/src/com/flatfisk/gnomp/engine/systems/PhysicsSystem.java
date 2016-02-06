@@ -3,14 +3,14 @@ package com.flatfisk.gnomp.engine.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.engine.components.PhysicsBody;
+import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.Velocity;
-import com.flatfisk.gnomp.engine.components.Scenegraph;
-import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
 
 public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
@@ -71,11 +71,19 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 Velocity velocity = velocityMapper.get(entity);
 
                 if (velocity != null) {
-                    velocity.velocity = Pools.obtainSpatialFromCopy(body.getVelocity().toWorld());
+                    velocity.velocity.vector.x = body.getLinearVelocity().x;
+                    velocity.velocity.vector.y = body.getLinearVelocity().y;
+                    velocity.velocity.rotation = body.getAngularVelocity();
+                    velocity.velocity.toWorld();
                 }
 
                 Spatial.Node orientation = orientationMapper.get(entity);
-                orientation.world = body.getTranslation().getCopy().toWorld();
+                Vector2 position = body.getPosition();
+                Transform world = orientation.world;
+                world.vector.x = position.x;
+                world.vector.y = position.y;
+                world.rotation = body.getAngle();
+                world.toWorld();
             }
         }
     }

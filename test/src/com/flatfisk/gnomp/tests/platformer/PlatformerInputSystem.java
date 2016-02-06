@@ -3,41 +3,46 @@ package com.flatfisk.gnomp.tests.platformer;
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Queue;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.engine.components.Light;
-import com.flatfisk.gnomp.engine.components.PhysicsBody;
-import com.flatfisk.gnomp.engine.components.Spatial;
+import com.flatfisk.gnomp.engine.GnompEngine;
+import com.flatfisk.gnomp.engine.components.*;
+import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.tests.components.EndPoint;
-import com.flatfisk.gnomp.tests.components.Player;
-import com.flatfisk.gnomp.tests.components.PlayerLight;
-import com.flatfisk.gnomp.tests.components.PlayerSensor;
+import com.flatfisk.gnomp.tests.components.*;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
 import com.flatfisk.gnomp.utils.Pools;
+
+import java.util.Iterator;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
  */
 public class PlatformerInputSystem extends EntitySystem implements ContactListener, EntityListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private Entity player,sensor,endpoint, playerLight;
+    private Entity player,sensor,endpoint, playerLight,gun;
     private Player playerComponent;
     private Family family;
 
     ComponentMapper<Enemy> enemyComponentMapper = ComponentMapper.getFor(Enemy.class);
+    ComponentMapper<Bullet> bulletComponentMapper = ComponentMapper.getFor(Bullet.class);
 
+    private Queue<Entity> bullets;
     public PlatformerInputSystem(int priority, World physicsWorld) {
-        family = Family.one(PlayerLight.class,Player.class, PlayerSensor.class, EndPoint.class).get();
+        family = Family.one(PlayerLight.class,Player.class, PlayerSensor.class, EndPoint.class, Gun.class).get();
         this.priority = priority;
         physicsWorld.setContactListener(this);
+        bullets = new Queue<Entity>(10);
     }
 
     public Family getFamily() {
         return family;
     }
+
 
     int enemiesKilled = 0;
 
@@ -56,21 +61,47 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
             }
         }
 
+        Entity enemyKilled = null;
+
         if( entityA.equals(sensor) || entityB.equals(sensor) ){
 
             if(enemyComponentMapper.has(entityA)){
-                getEngine().removeEntity(entityA);
+                enemyKilled = entityA;
                 enemiesKilled++;
             }else if(enemyComponentMapper.has(entityB)){
-                getEngine().removeEntity(entityB);
+                enemyKilled = entityB;
                 enemiesKilled++;
             }else{
                 playerComponent.touchedPlatformTimes++;
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
-                getEngine().getSystem(CameraTrackerSystem.class).shake(Math.abs(body.getVelocity().vector.y)*0.05f,body.getVelocity().vector.y);
+                getEngine().getSystem(CameraTrackerSystem.class).shake(Math.abs(body.getLinearVelocity().y)*0.1f,body.getLinearVelocity().y);
             }
             LOG.info("TOUCH:"+playerComponent.touchedPlatformTimes);
         }
+
+        if(enemyKilled==null && ( bulletComponentMapper.has(entityA) || bulletComponentMapper.has(entityB) )){
+            Enemy e = null;
+            if(enemyComponentMapper.has(entityA)){
+                enemyKilled = entityA;
+                e = enemyComponentMapper.get(entityA);
+                getEngine().removeEntity(entityB);
+
+            }else if(enemyComponentMapper.has(entityB)){
+                enemyKilled = entityB;
+                e = enemyComponentMapper.get(entityB);
+                getEngine().removeEntity(entityA);
+            }
+
+            if(e!=null && e.shotTimes++<3){
+                enemyKilled = null;
+            }
+        }
+
+        if(enemyKilled!=null){
+            getEngine().removeEntity(enemyKilled);
+        }
+
+
 
         if(sensor !=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
@@ -103,12 +134,29 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     }
 
-    float speed = 0, timer=0, flickerTimer=0;
+    float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.2f, shotCounter = 0f;
 
     private Vector2 lookAt = Pools.obtainVector(),
             output = Pools.obtainVector();
 
     public void update (float deltaTime) {
+
+
+
+        Iterator<Entity> it=bullets.iterator();
+        while(it.hasNext()){
+            Entity e = it.next();
+            if(e!=null){
+                Bullet bullet = bulletComponentMapper.get(e);
+                if (bullet != null && (bullet.lifeTime -= deltaTime) < 0) {
+                    getEngine().removeEntity(e);
+                    it.remove();
+                }
+            }else{
+                it.remove();
+            }
+        }
+
         if(player!=null) {
 
             PhysicsBody.Container physicsBody = player.getComponent(PhysicsBody.Container.class);
@@ -159,6 +207,16 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                     output.x = lookAt.x+b.getLinearVelocity().x;
                     output.y = lookAt.y+b.getLinearVelocity().y;
 
+
+                    Vector2 p = output.cpy().add(0,0.4f).nor();
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && ((shotCounter+=deltaTime)>shotInterval)) {
+                        shoot(player.getComponent(Spatial.Node.class).world.getCopy(),p);
+                        shotCounter = 0;
+                    }
+
+                    gun.getComponent(Spatial.Node.class).local.vector.set(p.scl(10));
+                    gun.getComponent(Spatial.Node.class).local.rotation = p.angle();
+
                     output.y+=(float) Math.sin(timer*(.4f+Math.abs(b.getLinearVelocity().x*8)))*0.6;
 
                     interpolate(lightOffset, output, deltaTime * 5);
@@ -182,6 +240,55 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         }
     }
 
+    private void shoot(Transform t, Vector2 direction){
+        t.vector.add(direction.cpy().scl(20));
+        getEngine().getSystem(CameraTrackerSystem.class).shake(.05f,5);
+        Entity e = createBullet(t,direction);
+    }
+
+    protected Entity createBullet(Transform translation,Vector2 direction){
+        GnompEngine world = (GnompEngine) getEngine();
+        Entity e = world.createEntity();
+        e.removeAll();
+
+
+        world.addComponent(Bullet.class,e);
+        world.addComponent(Renderable.class,e);
+        world.addComponent(Renderable.Node.class,e);
+        world.addComponent(PhysicsBody.Node.class,e);
+
+        PhysicsBody b = world.addComponent(PhysicsBody.class,e);
+        b.bodyDef.type= BodyDef.BodyType.DynamicBody;
+        b.bodyDef.bullet = true;
+        b.bodyDef.gravityScale=0;
+
+
+        PhysicalProperties p = world.addComponent(PhysicalProperties.class,e);
+        p.categoryBits=127;
+        p.maskBits=127;
+        p.density=100;
+
+        Velocity v = world.addComponent(Velocity.class,e);
+        v.velocity = new Transform(direction.scl(400),0);
+
+        world.addComponent(Spatial.class,e);
+        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        orientationRelative.local = translation;
+        orientationRelative.world = translation;
+        orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
+
+
+        com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class,e);
+        Circle circle = new Circle(1,3, Color.WHITE,Color.RED);
+        structure.geometry = circle;
+
+        bullets.addFirst(e);
+        world.addEntity(e);
+        world.constructEntity(e);
+
+        return e;
+    }
+
     public Transform interpolate(Transform in, Vector2 vector2,float amount){
         float xDiff = vector2.x-in.vector.x;
         float yDiff = vector2.y-in.vector.y;
@@ -194,6 +301,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     @Override
     public void entityAdded(Entity entity) {
+        // TODO: Use groups?
         LOG.info("GET SOME");
         if(entity.getComponent(Player.class)!=null){
             player = entity;
@@ -204,6 +312,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
             endpoint = entity;
         }else if(entity.getComponent(PlayerLight.class)!=null){
             playerLight = entity;
+        }else if(entity.getComponent(Gun.class)!=null){
+            gun = entity;
         }
     }
 

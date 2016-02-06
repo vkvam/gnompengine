@@ -12,8 +12,6 @@ import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 import com.flatfisk.gnomp.engine.components.abstracts.ISpatialController;
-import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Root node for constructing a PhysicsBody
@@ -73,26 +71,24 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         public Container() {
         }
 
+        /*
         public Transform getTranslation(){
             return new Transform(getPosition(),getAngle());
         }
-        public Transform getVelocity(){
-            Transform spat = Pools.obtainTransform();
-            spat.set(getLinearVelocity(),getAngularVelocity());
-            return spat;
-        }
+        */
 
-        private Vector2 getLinearVelocity(){
+        public Vector2 getLinearVelocity(){
             return body.getLinearVelocity();
         }
-        private float getAngularVelocity(){
+
+        public float getAngularVelocity(){
             return body.getAngularVelocity();
         }
 
-        private Vector2 getPosition(){
+        public Vector2 getPosition(){
             return body.getPosition();
         }
-        private float getAngle(){
+        public float getAngle(){
             return body.getAngle();
         }
 

@@ -6,13 +6,14 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.math.Transform;
 /**
 Acts on entities with physics-components and a Scenegraph parent,
 PhysicsBody.Container and Light.Container
@@ -50,26 +51,31 @@ public class PhysicsScenegraphSystem extends IteratingSystem implements Applicat
     @Override
     public void processEntity(Entity entity, float f) throws UnsupportedOperationException{
 
-        Spatial.Node entitySpatial = orientationMapper.get(entity);
+        Spatial.Node childSpatial = orientationMapper.get(entity);
 
-        verifyPositionTransfer(entitySpatial);
+        verifyPositionTransfer(childSpatial);
 
-        Scenegraph.Node node = scenegraphNodeComponentMapper.get(entity);
-        Entity parent = node.parent;
+        Scenegraph.Node childNode = scenegraphNodeComponentMapper.get(entity);
+        Entity parent = childNode.parent;
+        PhysicsBody.Container childBodyContainer = physicsBodyMapper.get(entity);
+        Body childBody = childBodyContainer.body;
 
+        if(childBody!=null) {
+            PhysicsBody.Container parentBodyContainer = physicsBodyMapper.get(parent);
 
-        PhysicsBody.Container body = physicsBodyMapper.get(entity);
-        Transform entityOrientation = entitySpatial.world.getCopy().toBox2D();
+            if (parentBodyContainer != null) {
+                Vector2 childScenegraphPosition = childSpatial.world.vector;
+                Vector2 childPhysicsPosition = childBody.getPosition();
+                Vector2 childPhysicsLinearVelocity = childBody.getLinearVelocity();
+                Vector2 parentVelocity = parentBodyContainer.body.getLinearVelocity();
 
-        if(body.body!=null) {
-            PhysicsBody.Container parentBody = physicsBodyMapper.get(parent);
+                float xDiff = (childScenegraphPosition.x * PhysicsConstants.METERS_PER_PIXEL - (childPhysicsPosition.x)) / f;
+                float yDiff = (childScenegraphPosition.y * PhysicsConstants.METERS_PER_PIXEL - (childPhysicsPosition.y)) / f;
 
-            if (parentBody != null) {
-                Body b = body.body;
-                com.badlogic.gdx.physics.box2d.Transform t2 = b.getTransform();
-                float xDiff = (entityOrientation.vector.x - (t2.getPosition().x)) / f;
-                float yDiff = (entityOrientation.vector.y - (t2.getPosition().y)) / f;
-                b.setLinearVelocity(parentBody.body.getLinearVelocity().cpy().add(xDiff, yDiff));
+                childPhysicsLinearVelocity.x = parentVelocity.x+xDiff;
+                childPhysicsLinearVelocity.y = parentVelocity.y+yDiff;
+
+                childBody.setLinearVelocity(childPhysicsLinearVelocity);
             }
         }
     }

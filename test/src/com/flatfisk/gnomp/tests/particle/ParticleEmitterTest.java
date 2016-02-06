@@ -38,6 +38,9 @@ public class ParticleEmitterTest extends GdxTest {
     float fpsCounter;
     InputProcessor inputProcessor;
 
+    /*
+    */
+
     @Override
     public void create () {
         spriteBatch = new SpriteBatch();
@@ -50,6 +53,7 @@ public class ParticleEmitterTest extends GdxTest {
 
         effect.getEmitters().clear();
         effect.getEmitters().add(emitters.get(0));
+        effect.scaleEffect( 0.7f);
 
         inputProcessor = new InputProcessor() {
             public boolean touchUp (int x, int y, int pointer, int button) {
@@ -84,6 +88,7 @@ public class ParticleEmitterTest extends GdxTest {
 
             public boolean keyDown (int keycode) {
                 ParticleEmitter emitter = emitters.get(emitterIndex);
+
                 if (keycode == Input.Keys.DPAD_UP)
                     particleCount += 5;
                 else if (keycode == Input.Keys.DPAD_DOWN)
@@ -91,7 +96,6 @@ public class ParticleEmitterTest extends GdxTest {
                 else if (keycode == Input.Keys.SPACE) {
                     emitterIndex = (emitterIndex + 1) % emitters.size;
                     emitter = emitters.get(emitterIndex);
-
                     // if we've previously stopped the emitter reset it
                     if (emitter.isComplete()) emitter.reset();
                     particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax() / 1000f);
@@ -108,6 +112,7 @@ public class ParticleEmitterTest extends GdxTest {
                 emitter.getEmission().setHigh(particleCount / emitter.getLife().getHighMax() * 1000);
                 effect.getEmitters().clear();
                 effect.getEmitters().add(emitter);
+
                 return false;
             }
 
@@ -131,11 +136,14 @@ public class ParticleEmitterTest extends GdxTest {
         effect.dispose();
     }
 
+    float x;
     public void render () {
         spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         float delta = Gdx.graphics.getDeltaTime();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         spriteBatch.begin();
+        x+=0.07f;
+        effect.setPosition((float)Math.cos(x)*140+320,(float)Math.sin(x)*140+240);
         effect.draw(spriteBatch, delta);
         spriteBatch.end();
         fpsCounter += delta;

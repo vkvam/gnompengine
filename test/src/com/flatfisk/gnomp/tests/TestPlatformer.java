@@ -16,10 +16,7 @@ import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
 import com.flatfisk.gnomp.engine.systems.PhysicsSystem;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.tests.components.EndPoint;
-import com.flatfisk.gnomp.tests.components.Player;
-import com.flatfisk.gnomp.tests.components.PlayerLight;
-import com.flatfisk.gnomp.tests.components.PlayerSensor;
+import com.flatfisk.gnomp.tests.components.*;
 import com.flatfisk.gnomp.tests.platformer.Enemy;
 import com.flatfisk.gnomp.tests.platformer.EnemyMoverSystem;
 import com.flatfisk.gnomp.tests.platformer.PlatformerInputSystem;
@@ -44,7 +41,7 @@ public class TestPlatformer extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true);
 
         World w = world.getSystem(PhysicsSystem.class).getBox2DWorld();
 
@@ -104,10 +101,17 @@ public class TestPlatformer extends Test {
         character.getComponent(Spatial.Node.class).addChild(flashLight);
         character.getComponent(Scenegraph.Node.class).addChild(flashLight);
 
+
+        Entity gun = createGun(new Transform(50, 0, 0));
+        character.getComponent(Spatial.Node.class).addChild(gun);
+        character.getComponent(Scenegraph.Node.class).addChild(gun);
+
+
         Entity ambientCharacterLight = createLight(new Transform(0, 0, 0),true);
         character.getComponent(Spatial.Node.class).addChild(ambientCharacterLight);
         character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
 
+        world.addEntity(gun);
         world.addEntity(ambientCharacterLight);
 
         world.addEntity(flashLight);
@@ -157,6 +161,30 @@ public class TestPlatformer extends Test {
         return e;
     }
 
+    protected Entity createGun(Transform translation){
+        Entity e = world.createEntity();
+
+        world.addComponent(Renderable.class,e);
+        world.addComponent(Renderable.Node.class,e);
+        world.addComponent(Scenegraph.Node.class,e);
+        world.addComponent(Gun.class,e);
+
+        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        orientationRelative.local = translation;
+        orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
+
+
+        Shape structure = world.addComponent(Shape.class,e);
+        RectangularLine circle = new RectangularLine(3,3,Color.WHITE,Color.BLACK);
+        circle.from = new Vector2(-10,0);
+        circle.to = new Vector2(10,0);
+        circle.createPolygonVertices();
+        structure.geometry = circle;
+
+
+        return e;
+    }
+
     protected Entity createLight(Transform translation, boolean ambient){
         Entity e = world.createEntity();
 
@@ -181,7 +209,7 @@ public class TestPlatformer extends Test {
             coneDef.color = new Color(0.9f, 0.9f, .8f, 0.8f);
             coneDef.softShadowLength = 80;
             coneDef.coneAngle = 30;
-            coneDef.distance = 1200;
+            coneDef.distance = 400;
             coneDef.rayNum = 150;
             coneDef.offset = Pools.obtainTransform();
             coneDef.offset.vector.x = -20;
@@ -201,6 +229,7 @@ public class TestPlatformer extends Test {
     public static Entity createEnemy(GnompEngine world, Transform translation){
         Entity e = world.createEntity();
 
+        world.addComponent(Spatial.class,e);
         world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
         world.addComponent(Renderable.class,e);

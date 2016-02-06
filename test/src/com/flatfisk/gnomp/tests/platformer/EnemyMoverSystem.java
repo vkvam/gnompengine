@@ -37,10 +37,11 @@ public class EnemyMoverSystem extends IteratingSystem {
     public void update(float f){
         super.update(f);
         c+=f;
-        if(c>1000.1f){
+        if(c>0.5f){
             GnompEngine world= (GnompEngine) getEngine();
+
             Transform t = getEngine().getEntitiesFor(player).get(0).getComponent(Spatial.Node.class).world;
-            Entity e = TestPlatformer.createEnemy(world, new Transform((float) Math.random() * 1000 - 500 + t.vector.x, -190, 0));
+            Entity e = TestPlatformer.createEnemy(world, new Transform(t.vector.x+(Math.random()>0.5?(200+(float)Math.random()*1000):(-200-(float)Math.random()*1000)), -190, 0));
             world.addEntity(e);
             world.constructEntity(e);
             c=0;

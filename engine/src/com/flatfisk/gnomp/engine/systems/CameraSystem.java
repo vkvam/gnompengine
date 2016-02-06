@@ -17,7 +17,7 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
 
     private float virtualWidth,
             virtualHeight;
-    private float setAspectRatio;
+    private float virtualAspectRatio;
     public Rectangle viewport = new Rectangle();
 
     public CameraSystem(int priority, int width, int height) {
@@ -26,7 +26,7 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
         orthographicCamera = new OrthographicCamera(width, height);
         virtualWidth = width;
         virtualHeight = height;
-        setAspectRatio = virtualWidth/virtualHeight;
+        virtualAspectRatio = virtualWidth/virtualHeight;
 
     }
 
@@ -41,15 +41,9 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
 
     @Override
     public void update(float f) {
-
-        // update camera
-        orthographicCamera.update();
-
-        // set viewport
-        Gdx.gl.glViewport((int) viewport.x,(int) viewport.y, (int) viewport.width, (int) viewport.height);
-        // clear previous frame
+        Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        orthographicCamera.update();
 
     }
 
@@ -83,16 +77,16 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
     public void resize(int width, int height)
     {
         // calculate new viewport
-        float aspectRatio = (float)width/(float)height;
+        float screenAspectRatio = (float)width/(float)height;
         float scale;
         Vector2 crop = new Vector2(0f, 0f);
 
-        if(aspectRatio > setAspectRatio)
+        if(screenAspectRatio > virtualAspectRatio)
         {
             scale = (float)height/virtualHeight;
             crop.x = (width - virtualWidth*scale)/2f;
         }
-        else if(aspectRatio < setAspectRatio)
+        else if(screenAspectRatio < virtualAspectRatio)
         {
             scale = (float)width/virtualWidth;
             crop.y = (height - virtualHeight*scale)/2f;

@@ -29,11 +29,9 @@ public class GnompEngine extends PooledEngine {
         constructorManager  = new ConstructorManager(this);
     }
 
-
     public ConstructorManager getConstructorManager() {
         return constructorManager;
     }
-
 
     public void addEntity(Entity entity){
         super.addEntity(entity);
