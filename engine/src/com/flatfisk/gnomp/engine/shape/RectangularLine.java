@@ -2,7 +2,7 @@ package com.flatfisk.gnomp.engine.shape;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.flatfisk.gnomp.utils.Pools;
+import com.badlogic.gdx.utils.Pools;
 
 /**
  * Created by: Vemund Kvam 004213
@@ -12,7 +12,8 @@ import com.flatfisk.gnomp.utils.Pools;
  */
 public class RectangularLine extends Polygon {
     public float rectangleWidth;
-    public Vector2 from = Pools.obtainVector(),to=Pools.obtainVector();
+    public final Vector2 from = new Vector2(),
+            to=new Vector2();
 
     public RectangularLine(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
@@ -21,13 +22,13 @@ public class RectangularLine extends Polygon {
 
     public void reset() {
         super.reset();
-        from = Pools.obtainVector();
-        to =  Pools.obtainVector();
+        from.setZero();
+        to.setZero();
     }
 
     public void createPolygonVertices() {
-        Vector2 angle = to.cpy().sub(from);
-        angle.rotate(90).nor().scl(rectangleWidth);
+        Vector2 angle = Pools.obtain(Vector2.class);
+        angle.set(to).sub(from).rotate(90).nor().scl(rectangleWidth);
 
         float[] vertices = new float[8];
         vertices[0] = from.x + angle.x;
@@ -43,5 +44,6 @@ public class RectangularLine extends Polygon {
         vertices[7] = to.y + angle.y;
 
         setVertices(vertices);
+        Pools.free(angle);
     }
 }

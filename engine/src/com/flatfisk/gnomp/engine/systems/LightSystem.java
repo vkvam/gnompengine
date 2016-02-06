@@ -8,13 +8,14 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
 
-;
 
 /**
  * Created by Vemund Kvam on 31/01/16.
@@ -52,16 +53,20 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         Light.Container container = lightMapper.get(entity);
         box2dLight.Light light = container.light;
 
-        // TODO: reuse more
-        Transform parentTransform = spatialMapper.get(entity).world.getCopy();
-        parentTransform.vector.add(com.flatfisk.gnomp.utils.Pools.obtainVector2FromCopy(container.offset.vector).rotate(parentTransform.rotation));
+        Transform parentTransform = Pools.obtain(Transform.class).set(spatialMapper.get(entity).world);
+        Vector2 offset = Pools.obtain(Vector2.class).set(container.offset.vector).rotate(parentTransform.rotation);
+
+        parentTransform.vector.add(offset);
         parentTransform.rotation+=container.offset.rotation;
 
-        // Lights use angle instead of radians for rotation,...
+
         light.setDirection(parentTransform.rotation);
         parentTransform.toBox2D();
-        // but position is in box2d units.
         light.setPosition(parentTransform.vector);
+
+        Pools.free(offset);
+        // Not sure
+        Pools.free(parentTransform);
     }
 
     @Override

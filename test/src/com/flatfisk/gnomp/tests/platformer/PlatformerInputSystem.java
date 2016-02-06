@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pools;
 import com.badlogic.gdx.utils.Queue;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
@@ -15,7 +16,6 @@ import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.components.*;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
-import com.flatfisk.gnomp.utils.Pools;
 
 import java.util.Iterator;
 
@@ -136,8 +136,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.2f, shotCounter = 0f;
 
-    private Vector2 lookAt = Pools.obtainVector(),
-            output = Pools.obtainVector();
+    private Vector2 lookAt = new Vector2(),
+            output = new Vector2();
 
     public void update (float deltaTime) {
 
@@ -210,7 +210,9 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
                     Vector2 p = output.cpy().add(0,0.4f).nor();
                     if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && ((shotCounter+=deltaTime)>shotInterval)) {
-                        shoot(player.getComponent(Spatial.Node.class).world.getCopy(),p);
+                        Transform t = Pools.obtain(Transform.class);
+                        t.set(player.getComponent(Spatial.Node.class).world);
+                        shoot(t, p);
                         shotCounter = 0;
                     }
 

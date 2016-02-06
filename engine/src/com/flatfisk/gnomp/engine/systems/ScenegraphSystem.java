@@ -4,11 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
+import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 22/12/15.
@@ -46,8 +46,12 @@ public class ScenegraphSystem extends IteratingSystem {
                 Transform childLocal = childOrientation.local;
                 Transform childWorld = childOrientation.world;
 
-                childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector), transferAngle ? parentWorld.rotation : 0);
-                childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
+                childWorld.set(parentWorld.vector, transferAngle ? parentWorld.rotation : 0);
+
+                Vector2 localVectorWorldRotated = com.badlogic.gdx.utils.Pools.obtain(Vector2.class);
+                localVectorWorldRotated.set(childLocal.vector);
+                localVectorWorldRotated.rotate(childWorld.rotation);
+                childWorld.vector.add(localVectorWorldRotated);
                 childWorld.rotation += childLocal.rotation;
 
                 for (Entity child : scenegraphNode.children) {

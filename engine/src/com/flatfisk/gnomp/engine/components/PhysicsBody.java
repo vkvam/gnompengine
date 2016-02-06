@@ -41,9 +41,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
 
     @Override
     public PhysicsBody addCopy(GnompEngine gnompEngine, Entity entity) {
-        PhysicsBody physicsBodyDef = gnompEngine.addComponent(getClass(),entity);
-        physicsBodyDef.bodyDef = bodyDef;
-        return physicsBodyDef;
+        return null;
     }
 
     /**
@@ -58,8 +56,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         }
 
         public Node addCopy(GnompEngine gnompEngine,Entity entity){
-            Node relative = gnompEngine.addComponent(getClass(),entity);
-            return relative;
+            return null;
         }
     }
 

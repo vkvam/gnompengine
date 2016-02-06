@@ -1,10 +1,11 @@
 package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
@@ -17,7 +18,7 @@ public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Spatial
     @Override
     public Spatial.Node parentAdded(Entity entity,
                                        Spatial.Node constructorOrientation) {
-        constructorOrientation.local.setCopy(constructorOrientation.world);
+        constructorOrientation.local.set(constructorOrientation.world);
         return constructorOrientation;
     }
 
@@ -35,9 +36,16 @@ public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Spatial
 
         boolean transferAngle = childOrientation.inheritFromParentType.equals(Spatial.Node.SpatialInheritType.POSITION_ANGLE);
 
-        childWorld.set(Pools.obtainVector2FromCopy(parentWorld.vector),transferAngle?parentWorld.rotation:0);
-        childWorld.vector.add(Pools.obtainVector2FromCopy(childLocal.vector).rotate(childWorld.rotation));
+        childWorld.set(parentWorld.vector, transferAngle ? parentWorld.rotation : 0);
+
+        Vector2 localVectorWorldRotated = Pools.obtain(Vector2.class);
+
+        localVectorWorldRotated.set(childLocal.vector);
+        localVectorWorldRotated.rotate(childWorld.rotation);
+        childWorld.vector.add(localVectorWorldRotated);
         childWorld.rotation += childLocal.rotation;
+
+        Pools.free(localVectorWorldRotated);
 
         return constructorOrientation;
     }

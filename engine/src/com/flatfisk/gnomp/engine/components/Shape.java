@@ -24,13 +24,6 @@ public class Shape<SHAPETYPE extends AbstractShape> implements ISerializable<Sha
     }
 
     public Shape addCopy(GnompEngine gnompEngine,Entity entity){
-        Shape relative = gnompEngine.addComponent(getClass(),entity);
-
-        relative.geometry = geometry.getCopy();
-        relative.geometry.fillColor = geometry.fillColor.cpy();
-        relative.geometry.lineColor = geometry.lineColor.cpy();
-        relative.geometry.lineWidth = geometry.lineWidth;
-
-        return relative;
+        return null;
     }
 }

@@ -3,9 +3,7 @@ package com.flatfisk.gnomp.math;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.PhysicsConstants;
-//import com.flatfisk.gnomp.utils.Pools;
 
 /**
 * A vector and a rotation.
@@ -28,31 +26,23 @@ public class Transform implements Pool.Poolable {
         this.rotation = rotation;
     }
 
-    public Transform subtractedCopy(Transform subtractor){
-        Transform copy = this.getCopy();
-        copy.vector.sub(subtractor.vector);
-        copy.vector.rotate(-subtractor.rotation);
-        copy.rotation -=subtractor.rotation;
-        return copy;
+    public Transform subtract(Transform subtractor){
+        this.vector.sub(subtractor.vector);
+        this.vector.rotate(-subtractor.rotation);
+        this.rotation -=subtractor.rotation;
+        return this;
     }
 
-    public Transform getCopy() {
-        Transform t = Pools.obtain(Transform.class);
-        t.vector.x = vector.x;
-        t.vector.y = vector.y;
-        t.rotation = rotation;
-        return t;
-    }
-
-    public void setCopy(Transform t) {
-        this.vector.x = t.vector.x;
-        this.vector.y = t.vector.y;
+    public Transform set(Transform t) {
+        this.vector.set(t.vector);
         this.rotation = t.rotation;
+        return this;
     }
 
-    public void set(Vector2 position, float angle) {
-        this.vector = position;
+    public Transform set(Vector2 position, float angle) {
+        this.vector.set(position);
         this.rotation = angle;
+        return this;
     }
 
     public Transform toBox2D(){

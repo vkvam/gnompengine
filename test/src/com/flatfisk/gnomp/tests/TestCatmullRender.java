@@ -112,8 +112,8 @@ public class TestCatmullRender extends Test {
 
         Shape<RectangularLine> shape = world.addComponent(Shape.class,e);
         shape.geometry = new RectangularLine(1,200,Color.WHITE,Color.WHITE);
-        shape.geometry.from = new Vector2(500,0);
-        shape.geometry.to = new Vector2(-15500,0);
+        shape.geometry.from.set(500,0);
+        shape.geometry.to.set(-15500,0);
         shape.geometry.createPolygonVertices();
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);

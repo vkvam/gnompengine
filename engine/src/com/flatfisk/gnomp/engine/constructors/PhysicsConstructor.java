@@ -5,13 +5,13 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
@@ -37,11 +37,13 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, Array<FixtureDefWrapper> fixtureDefs) {
 
-        Transform worldTransform = constructorOrientation.world.getCopy().toBox2D();
+        Transform worldTransform = Pools.obtain(Transform.class).set(constructorOrientation.world).toBox2D();
 
         BodyDef bodyDef = constructorMapper.get(entity).bodyDef;
         bodyDef.position.set(worldTransform.vector);
         bodyDef.angle = worldTransform.rotation;
+
+        Pools.free(worldTransform);
 
         PhysicsBody.Container bodyContainer = engine.addComponent(PhysicsBody.Container.class, entity);
         bodyContainer.body = createBody(bodyDef, fixtureDefs);
@@ -49,16 +51,17 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
         Velocity velocity = velocityMapper.get(entity);
         if (velocity != null && velocity.velocity != null) {
-            Transform velocityTransform = velocity.velocity.getCopy().toBox2D();
+            Transform velocityTransform = Pools.obtain(Transform.class).set(velocity.velocity).toBox2D();
             bodyContainer.body.setLinearVelocity(velocityTransform.vector);
             bodyContainer.body.setAngularVelocity(velocityTransform.rotation);
+            Pools.free(velocityTransform);
         }
     }
 
     @Override
     public Array<FixtureDefWrapper> parentAdded(Entity entity, Spatial.Node constructor) {
         Array<FixtureDefWrapper> fixtureDefs = new Array<FixtureDefWrapper>();
-        Transform t = Pools.obtainTransform();
+        Transform t = Pools.obtain(Transform.class);
 
         FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), t, physicalPropertiesMapper.get(entity));
         if (fixtures != null) {
@@ -67,13 +70,14 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             }
         }
 
+        Pools.free(t);
         return fixtureDefs;
 
     }
 
     @Override
     public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefs) {
-        Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
+        Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         Shape shape = structureMapper.get(entity);
         if(relationshipMapper.get(entity).intermediate) {
             FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMapper.get(entity));
@@ -83,6 +87,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
                 }
             }
         }
+        Pools.free(transform);
         return fixtureDefs;
     }
 

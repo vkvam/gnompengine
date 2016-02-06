@@ -43,7 +43,7 @@ public class PhysicsJointConstructionSystem implements EntityListener {
                 SpatialNode anchorStructureNode = orientationMapper.get(jointComponent.anchor);
                 //Orientation anchorOrientation = anchorStructureNode;//spatialRelativeComponentMapper.get(anchorStructureNode.scenegraphRoot);
 
-                Spatial anchor = anchorStructureNode.world.getCopy();//anchorOrientation.localTranslation.getCopy();
+                Spatial anchor = anchorStructureNode.world.getPooledCopy();//anchorOrientation.localTranslation.getPooledCopy();
 
                 //anchor.vector.add(anchorOrientation.worldTranslation.vector);
                 anchor.vector.add(jointComponent.anchorOffset.vector);

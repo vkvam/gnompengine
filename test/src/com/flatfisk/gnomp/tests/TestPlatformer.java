@@ -139,8 +139,8 @@ public class TestPlatformer extends Test {
         Shape structure = world.addComponent(Shape.class,e);
 
         RectangularLine rectangularLineShape = new RectangularLine(1,6,Color.OLIVE,Color.BLUE);
-        rectangularLineShape.from = new Vector2(-7.5f,0);
-        rectangularLineShape.to = new Vector2(7.5f,0);
+        rectangularLineShape.from.set(-7.5f,0);
+        rectangularLineShape.to.set(7.5f,0);
         rectangularLineShape.createPolygonVertices();
         structure.geometry = rectangularLineShape;
 
@@ -176,8 +176,8 @@ public class TestPlatformer extends Test {
 
         Shape structure = world.addComponent(Shape.class,e);
         RectangularLine circle = new RectangularLine(3,3,Color.WHITE,Color.BLACK);
-        circle.from = new Vector2(-10,0);
-        circle.to = new Vector2(10,0);
+        circle.from.set(-10,0);
+        circle.to.set(10,0);
         circle.createPolygonVertices();
         structure.geometry = circle;
 
@@ -241,8 +241,8 @@ public class TestPlatformer extends Test {
 
         Shape structure = world.addComponent(Shape.class,e);
         RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,Color.RED);
-        rectangularLineShape.from = new Vector2(0,-10);
-        rectangularLineShape.to = new Vector2(0,10);
+        rectangularLineShape.from.set(0,-10);
+        rectangularLineShape.to.set(0,10);
         rectangularLineShape.createPolygonVertices();
 
         structure.geometry = rectangularLineShape;
@@ -307,8 +307,8 @@ public class TestPlatformer extends Test {
 
         Shape<RectangularLine> shape = world.addComponent(Shape.class,e);
         shape.geometry = new RectangularLine(1,(float) 5,Color.WHITE,color);
-        shape.geometry.from = new Vector2(-width/2,0);
-        shape.geometry.to = new Vector2(width/2,0);
+        shape.geometry.from.set(-width/2,0);
+        shape.geometry.to.set(width/2,0);
         shape.geometry.createPolygonVertices();
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);

@@ -2,7 +2,6 @@ package com.flatfisk.gnomp.engine.components.light;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.math.Transform;
 
 /**
@@ -24,7 +23,7 @@ public abstract class LightDef {
 
 
     public static class Positional extends LightDef{
-        public Transform offset = Pools.obtain(Transform.class);
+        public Transform offset = new Transform();
     }
 
     public static class Cone extends Positional{
@@ -32,12 +31,11 @@ public abstract class LightDef {
     }
 
     public static class Point extends Positional{
-
     }
 
     public static class Chain extends LightDef{
         int rayDirection;
-        Vector2 position = Pools.obtain(Vector2.class);
+        Vector2 position = new Vector2();
     }
     
     public static class Directional extends LightDef{

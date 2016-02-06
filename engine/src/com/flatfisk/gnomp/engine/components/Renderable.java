@@ -21,9 +21,7 @@ public class Renderable implements ISerializable<Renderable>,Pool.Poolable {
 
     @Override
     public Renderable addCopy(GnompEngine gnompEngine, Entity entity) {
-        Renderable renderableDef = gnompEngine.addComponent(getClass(),entity);
-        renderableDef.zIndex = zIndex;
-        return renderableDef;
+        return null;
     }
 
     /**
@@ -38,8 +36,7 @@ public class Renderable implements ISerializable<Renderable>,Pool.Poolable {
         }
 
         public Node addCopy(GnompEngine gnompEngine,Entity entity){
-            Node relative = gnompEngine.addComponent(getClass(),entity);
-            return relative;
+            return null;
         }
     }
 

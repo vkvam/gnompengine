@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.utils.Pools;
+import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.math.GeometryUtils;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.PhysicsConstants;
 
 /**
  * Created by: Vemund Kvam 004213
@@ -16,7 +15,7 @@ import com.flatfisk.gnomp.PhysicsConstants;
  * Time: 12:19 AM
  */
 public class Polygon extends AbstractShape {
-    public com.badlogic.gdx.math.Polygon polygon;
+    public com.badlogic.gdx.math.Polygon polygon = new com.badlogic.gdx.math.Polygon();
 
     public Polygon(float lineWidth, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
@@ -33,26 +32,14 @@ public class Polygon extends AbstractShape {
 
     @Override
     public Polygon getCopy() {
-        Polygon lineShape = Pools.obtain(Polygon.class);
-
-        com.badlogic.gdx.math.Polygon polygon = Pools.obtain(com.badlogic.gdx.math.Polygon.class);
-        polygon.setVertices(this.polygon.getVertices());
-        polygon.setPosition(this.polygon.getX(), this.polygon.getY());
-        polygon.setOrigin(this.polygon.getOriginX(), this.polygon.getOriginY());
-        polygon.setRotation(this.polygon.getRotation());
-        polygon.setScale(this.polygon.getScaleX(), this.polygon.getScaleY());
-
-        lineShape.polygon = polygon;
-        return lineShape;
+        return null;
     }
 
     @Override
     public FixtureDef[] getFixtureDefinitions(Vector2 offset) {
-        Vector2 scaledOffset = offset.cpy().scl(PhysicsConstants.METERS_PER_PIXEL);
-
         com.badlogic.gdx.math.Polygon physicsPolygon = getPhysicsPolygon();
 
-        physicsPolygon.setPosition(scaledOffset.x, scaledOffset.y);
+        physicsPolygon.setPosition(offset.x*PhysicsConstants.METERS_PER_PIXEL, offset.y*PhysicsConstants.METERS_PER_PIXEL);
         physicsPolygon.setScale(physicsPolygon.getScaleX()*PhysicsConstants.METERS_PER_PIXEL, physicsPolygon.getScaleX()*PhysicsConstants.METERS_PER_PIXEL);
 
         com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(physicsPolygon.getTransformedVertices());
@@ -82,12 +69,7 @@ public class Polygon extends AbstractShape {
     }
 
     public void setVertices(float[] vertices) {
-        if (polygon != null) {
-            polygon.setVertices(vertices);
-        } else {
-            polygon = new com.badlogic.gdx.math.Polygon(vertices);
-        }
-
+        polygon.setVertices(vertices);
     }
 
     @Override

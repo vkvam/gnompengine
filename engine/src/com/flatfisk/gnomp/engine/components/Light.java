@@ -18,7 +18,7 @@ public class Light implements ISerializable<Light>, Pool.Poolable  {
 
     @Override
     public Light addCopy(GnompEngine gnompEngine, Entity entity) {
-        return new Light();
+        return null;
     }
 
     @Override
@@ -29,11 +29,11 @@ public class Light implements ISerializable<Light>, Pool.Poolable  {
     public static class Container implements Component, Pool.Poolable {
         private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
         public box2dLight.Light light;
-        public Transform offset;
+        public Transform offset = new Transform();
 
         @Override
         public void reset() {
-            //light.remove();
+            offset.reset();
         }
 
     }

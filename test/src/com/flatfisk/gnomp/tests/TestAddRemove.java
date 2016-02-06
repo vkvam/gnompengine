@@ -119,8 +119,8 @@ public class TestAddRemove extends Test {
         Shape structure = world.addComponent(Shape.class,e);
 
         RectangularLine rectangularLineShape = new RectangularLine(1,4,Color.OLIVE,Color.BLUE);
-        rectangularLineShape.from = new Vector2(-1.5f,0);
-        rectangularLineShape.to = new Vector2(1.5f,0);
+        rectangularLineShape.from.set(-1.5f,0);
+        rectangularLineShape.to.set(1.5f,0);
         rectangularLineShape.createPolygonVertices();
 
         structure.geometry = rectangularLineShape;
@@ -229,8 +229,8 @@ public class TestAddRemove extends Test {
 
         Shape structure = world.addComponent(Shape.class,e);
         RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,color);
-        rectangularLineShape.from = new Vector2(-width/2,0);
-        rectangularLineShape.to = new Vector2(width/2,0);
+        rectangularLineShape.from.set(-width/2,0);
+        rectangularLineShape.to.set(width/2,0);
         rectangularLineShape.createPolygonVertices();
 
         structure.geometry = rectangularLineShape;

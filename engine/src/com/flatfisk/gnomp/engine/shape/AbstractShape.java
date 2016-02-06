@@ -16,17 +16,13 @@ import com.flatfisk.gnomp.math.Transform;
  */
 public abstract class AbstractShape implements Pool.Poolable, Component {
     public float lineWidth;
-    public Color lineColor;
-    public Color fillColor;
+    public Color lineColor=Color.WHITE.cpy();
+    public Color fillColor=Color.BLACK.cpy();
 
     public AbstractShape(float lineWidth, Color lineColor, Color fillColor) {
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.fillColor = fillColor;
-    }
-
-    public AbstractShape(){
-
     }
 
     public abstract AbstractShape getCopy();
@@ -36,11 +32,7 @@ public abstract class AbstractShape implements Pool.Poolable, Component {
         this.lineColor = lineColor;
         this.fillColor = fillColor;
     }
-/*
-    public abstract void drawFrom(Vector2 vector);
-    public abstract void drawVia(Vector2 vector);
-    public abstract void drawTo(Vector2 vector);
-*/
+
     public void setRotation(float angle){};
 
     public void reset() {

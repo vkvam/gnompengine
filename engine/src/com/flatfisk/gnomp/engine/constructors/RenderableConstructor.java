@@ -3,6 +3,7 @@ package com.flatfisk.gnomp.engine.constructors;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.Shape;
@@ -11,7 +12,7 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.utils.Pools;
+
 
 /**
  * Created by Vemund Kvam on 06/12/15.
@@ -47,10 +48,11 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
 
         // If the constructor has a geometry, the geometry should be drawn at origin.
-        Transform transform = Pools.obtainTransform();
+        Transform transform = Pools.obtain(Transform.class);
         if (structure.geometry != null && !relationshipMapper.get(entity).intermediate) {
             px.draw(structure, transform);
         }
+        Pools.free(transform);
         return px;
     }
 
@@ -62,10 +64,14 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       ShapeTexture constructorDTO) {
 
         Shape shape = structureRelativeComponentMapper.get(entity);
-        Transform transform = childOrientation.world.subtractedCopy(constructorOrientation.world);
+
+        Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
+
         if(shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
             constructorDTO.draw(shape, transform);
         }
+
+        Pools.free(transform);
         return constructorDTO;
     }
 

@@ -53,12 +53,7 @@ public abstract class AbstractNode implements Component, Pool.Poolable{
     }
 
     public AbstractNode addCopy(GnompEngine gnompEngine, Entity entity) {
-        AbstractNode node = gnompEngine.addComponent(this.getClass(),entity);
-        node.children.addAll(children);
-        node.owner = owner;
-        node.parent = parent;
-
-        return node;
+        return null;
     }
 
 }

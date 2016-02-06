@@ -19,7 +19,7 @@ public class Scenegraph implements ISerializable<Scenegraph>,Pool.Poolable {
 
     @Override
     public Scenegraph addCopy(GnompEngine gnompEngine, Entity entity) {
-        return gnompEngine.addComponent(getClass(),entity);
+        return null;
     }
 
     /**
@@ -33,8 +33,7 @@ public class Scenegraph implements ISerializable<Scenegraph>,Pool.Poolable {
 
         @Override
         public Node addCopy(GnompEngine gnompEngine, Entity entity) {
-            Node node = ((Node) super.addCopy(gnompEngine,entity));
-            return node;
+            return null;
         }
     }
 }
