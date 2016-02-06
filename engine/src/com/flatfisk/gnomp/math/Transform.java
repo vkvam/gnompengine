@@ -57,11 +57,15 @@ public class Transform implements Pool.Poolable {
         return this;
     }
 
+    public Transform setZero(){
+        vector.setZero();
+        rotation = 0;
+        return this;
+    }
+
     @Override
     public void reset() {
-        vector.x=0;
-        vector.y=0;
-        rotation=0;
+        setZero();
     }
 
 }

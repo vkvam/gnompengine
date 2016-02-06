@@ -14,8 +14,7 @@ public class Velocity implements ISerializable<Velocity>, Component, Pool.Poolab
     public Transform velocity = new Transform();
     @Override
     public void reset() {
-        velocity.vector.setZero();
-        velocity.rotation = 0;
+        velocity.setZero();
     }
 
     @Override

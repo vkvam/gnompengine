@@ -38,10 +38,8 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
         @Override
         public void reset() {
             super.reset();
-            local.vector.setZero();
-            local.rotation = 0;
-            world.vector.setZero();
-            world.rotation = 0;
+            local.setZero();
+            world.setZero();
         }
 
         public Node addCopy(GnompEngine gnompEngine,Entity entity){

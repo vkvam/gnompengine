@@ -34,7 +34,7 @@ public class Light implements ISerializable<Light>, Pool.Poolable  {
         @Override
         public void reset() {
             light.remove();
-            offset.reset();
+            offset.setZero();
         }
 
     }
