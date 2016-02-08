@@ -16,7 +16,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
     private Box2DDebugRenderer debugRenderer;
     private Camera camera;
     private World box2DWorld;
-    private Matrix4 debugMatrix;
+    private Matrix4 debugMatrix = new Matrix4();
 
     public PhysicsDebugRenderer(Camera camera, World box2DWorld, int priority) {
         this.priority = priority;
@@ -25,7 +25,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
     }
 
     private void rescale() {
-        debugMatrix = new Matrix4(camera.combined);
+        debugMatrix.set(camera.combined);
         debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
     }
 

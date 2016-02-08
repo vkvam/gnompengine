@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.engine.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.GnompEngine;
@@ -30,6 +31,9 @@ public class Light implements ISerializable<Light>, Pool.Poolable  {
         private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
         public box2dLight.Light light;
         public Transform offset = new Transform();
+
+        public Transform worldTransform = new Transform();
+        public Vector2 worldRotatedOffset = new Vector2();
 
         @Override
         public void reset() {

@@ -27,23 +27,24 @@ public class RectangularLine extends Polygon {
     }
 
     public void createPolygonVertices() {
-        Vector2 angle = Pools.obtain(Vector2.class);
-        angle.set(to).sub(from).rotate(90).nor().scl(rectangleWidth);
+        Vector2 direction = Pools.obtain(Vector2.class);
+        direction.set(to).sub(from).rotate(90).nor().scl(rectangleWidth);
 
         float[] vertices = new float[8];
-        vertices[0] = from.x + angle.x;
-        vertices[1] = from.y + angle.y;
+        vertices[0] = from.x + direction.x;
+        vertices[1] = from.y + direction.y;
 
-        vertices[2] = from.x - angle.x;
-        vertices[3] = from.y - angle.y;
+        vertices[2] = from.x - direction.x;
+        vertices[3] = from.y - direction.y;
 
-        vertices[4] = to.x - angle.x;
-        vertices[5] = to.y - angle.y;
+        vertices[4] = to.x - direction.x;
+        vertices[5] = to.y - direction.y;
 
-        vertices[6] = to.x + angle.x;
-        vertices[7] = to.y + angle.y;
+        vertices[6] = to.x + direction.x;
+        vertices[7] = to.y + direction.y;
 
         setVertices(vertices);
-        Pools.free(angle);
+        Pools.free(direction);
     }
+
 }

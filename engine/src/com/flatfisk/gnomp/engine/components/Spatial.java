@@ -1,6 +1,7 @@
 package com.flatfisk.gnomp.engine.components;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.AbstractNode;
@@ -29,6 +30,10 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
     public static class Node extends AbstractNode implements ISerializable<Node> {
         public Transform local = new Transform();
         public Transform world = new Transform();
+
+        private final Vector2 tempTransformVector = new Vector2();
+
+
         public SpatialInheritType inheritFromParentType = SpatialInheritType.POSITION_ANGLE;
 
         public Node() {
@@ -50,6 +55,23 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
         public enum SpatialInheritType {
             POSITION,
             POSITION_ANGLE
+        }
+
+        public void addParentWorld(Transform parentWorld){
+            boolean transferAngle = inheritFromParentType.equals(Spatial.Node.SpatialInheritType.POSITION_ANGLE);
+
+
+
+            if(transferAngle) {
+                world.set(parentWorld);
+                tempTransformVector.set(local.vector);
+                tempTransformVector.rotate(parentWorld.rotation);
+                world.add(tempTransformVector,local.rotation);
+            }else{
+                world.set(parentWorld.vector, 0);
+                world.add(local);
+            }
+
         }
 
     }

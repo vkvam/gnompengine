@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.Spatial;
@@ -23,7 +22,7 @@ import com.flatfisk.gnomp.math.Transform;
 public class LightSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     RayHandler rayHandler;
-    Matrix4 debugMatrix;
+    Matrix4 debugMatrix= new Matrix4();
 
     ComponentMapper<Light.Container> lightMapper;
     ComponentMapper<Spatial.Node> spatialMapper;
@@ -41,7 +40,7 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         super.update(deltaTime);
 
         CameraSystem system = getEngine().getSystem(CameraSystem.class);
-        debugMatrix = new Matrix4(system.getCamera().combined);
+        debugMatrix.set(system.getCamera().combined);
         debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
 
         rayHandler.setCombinedMatrix(debugMatrix);
@@ -53,20 +52,14 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         Light.Container container = lightMapper.get(entity);
         box2dLight.Light light = container.light;
 
-        Transform parentTransform = Pools.obtain(Transform.class).set(spatialMapper.get(entity).world);
-        Vector2 offset = Pools.obtain(Vector2.class).set(container.offset.vector).rotate(parentTransform.rotation);
+        Transform lightOffset = container.offset;
 
-        parentTransform.vector.add(offset);
-        parentTransform.rotation+=container.offset.rotation;
+        Transform worldTransform = container.worldTransform.set(spatialMapper.get(entity).world);
+        Vector2 worldRotatedOffset = container.worldRotatedOffset.set(lightOffset.vector).rotate(worldTransform.rotation);
+        worldTransform.add(worldRotatedOffset, lightOffset.rotation);
 
-
-        light.setDirection(parentTransform.rotation);
-        parentTransform.toBox2D();
-        light.setPosition(parentTransform.vector);
-
-        Pools.free(offset);
-        // Not sure
-        Pools.free(parentTransform);
+        light.setDirection(worldTransform.rotation);
+        light.setPosition(worldTransform.vector.scl(PhysicsConstants.METERS_PER_PIXEL));
     }
 
     @Override

@@ -116,7 +116,6 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
             }
         }
         renderQueue.clear();
-        //batch.end();
     }
 
     @Override

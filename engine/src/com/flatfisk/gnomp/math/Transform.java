@@ -33,6 +33,18 @@ public class Transform implements Pool.Poolable {
         return this;
     }
 
+    public Transform add(Transform t){
+        this.vector.add(t.vector);
+        this.rotation+=t.rotation;
+        return this;
+    }
+
+    public Transform add(Vector2 vector, float rotation){
+        this.vector.add(vector);
+        this.rotation+=rotation;
+        return this;
+    }
+
     public Transform set(Transform t) {
         this.vector.set(t.vector);
         this.rotation = t.rotation;
@@ -62,6 +74,8 @@ public class Transform implements Pool.Poolable {
         rotation = 0;
         return this;
     }
+
+
 
     @Override
     public void reset() {
