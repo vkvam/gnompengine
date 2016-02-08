@@ -17,19 +17,18 @@ public class Test extends DefaultGnompApplicationListener {
         RayHandler rayHandler = new RayHandler(physicsWorld);
         initializeConstructorManager(physicsWorld,rayHandler);
 
-        addScenegraphSystem(5);
-        CameraSystem cameraSystem = addCameraSystem(100);
-        RenderSystem renderSystem = addRenderSystem(200);
-        addRenderFinalizeSystem(300);
+        addScenegraphSystem(100);
+        CameraSystem cameraSystem = addCameraSystem(200);
+        RenderSystem renderSystem = addRenderSystem(300,cameraSystem);
 
 
         addPhysicsTrackerSystem(400);
         if(physicsDebug) {
-            addDebugRenderer(500, physicsWorld, cameraSystem);
+            addDebugRenderer(500, physicsWorld,cameraSystem);
         }
         PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
 
-        LightSystem lightSystem = new LightSystem(650,rayHandler);
+        LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
         world.addSystem(lightSystem);
 
         renderSystem.setProcessing(true);

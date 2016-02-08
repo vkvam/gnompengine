@@ -39,28 +39,21 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         return cameraSystem;
     }
 
-    protected RenderSystem addRenderSystem(int priority){
-        RenderSystem renderer = new RenderSystem(priority);
+    protected RenderSystem addRenderSystem(int priority,CameraSystem cameraSystem){
+        RenderSystem renderer = new RenderSystem(priority, cameraSystem);
         world.addSystem(renderer);
         return renderer;
     }
 
-    protected RenderFinalizeSystem addRenderFinalizeSystem(int priority){
-        RenderFinalizeSystem renderFinalizeSystem = new RenderFinalizeSystem(300);
-        world.addSystem(renderFinalizeSystem);
-        return renderFinalizeSystem;
-    }
 
     protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){
-        PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(cameraSystem.getCamera(),physicsWorld,priority);
-
+        PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(physicsWorld,priority,cameraSystem);
         world.addSystem(debugRenderer);
         return debugRenderer;
     }
 
     protected PhysicsSystem addPhysicsSystem(int priority,World physicsWorld){
         PhysicsSystem physicsSystem = new PhysicsSystem(physicsWorld,priority);
-        world.addEntityListener(physicsSystem.getFamily(),priority,physicsSystem);
         world.addSystem(physicsSystem);
         return physicsSystem;
     }

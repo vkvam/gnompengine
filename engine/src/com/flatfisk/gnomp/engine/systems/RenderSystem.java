@@ -30,9 +30,12 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public ComponentMapper<Renderable.Constructed> renderableMapper;
     public ComponentMapper<Spatial.Node> orientationMapper;
     private Comparator comperator;
+    private CameraSystem cameraSystem;
 
-    public RenderSystem(int priority) {
+    public RenderSystem(int priority, CameraSystem cameraSystem) {
         super(Family.all(Renderable.Constructed.class).get(),priority);
+
+        this.cameraSystem = cameraSystem;
 
         batch = new SpriteBatch();
 
@@ -44,6 +47,10 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                 return (renderableA.zIndex - renderableB.zIndex) > 0 ? 1 : -1;
             }
         };
+    }
+
+    public void setCameraSystem(CameraSystem cameraSystem){
+        this.cameraSystem = cameraSystem;
     }
 
     @Override
@@ -61,11 +68,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     @Override
     public void update(float f) {
         super.update(f);
-
-        CameraSystem cameraSystem = getEngine().getSystem(CameraSystem.class);
         OrthographicCamera orthographicCamera = cameraSystem.getCamera();
-
-
 
         batch.setProjectionMatrix(orthographicCamera.combined);
 
@@ -115,6 +118,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                 LOG.info("Texture is null");
             }
         }
+        batch.end();
         renderQueue.clear();
     }
 

@@ -5,8 +5,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
@@ -19,31 +17,33 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 31/01/16.
  */
-public class LightSystem extends IteratingSystem implements ApplicationListener {
+public class LightSystem extends IteratingSystem  {
+    private CameraSystem cameraSystem;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     RayHandler rayHandler;
-    Matrix4 debugMatrix= new Matrix4();
 
     ComponentMapper<Light.Container> lightMapper;
     ComponentMapper<Spatial.Node> spatialMapper;
 
 
-    public LightSystem(int priority, RayHandler rayHandler) {
+    public LightSystem(int priority, RayHandler rayHandler, CameraSystem cameraSystem) {
         super(Family.all(Light.Container.class).get(),priority);
         this.rayHandler = rayHandler;
+        this.cameraSystem = cameraSystem;
         this.lightMapper = ComponentMapper.getFor(Light.Container.class);
         this.spatialMapper = ComponentMapper.getFor(Spatial.Node.class);
+    }
+
+    public void setCameraSystem(CameraSystem cameraSystem){
+        this.cameraSystem = cameraSystem;
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        CameraSystem system = getEngine().getSystem(CameraSystem.class);
-        debugMatrix.set(system.getCamera().combined);
-        debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
-
-        rayHandler.setCombinedMatrix(debugMatrix);
+        Rectangle rect = cameraSystem.viewport;
+        rayHandler.setCombinedMatrix(cameraSystem.getPhysicsMatrix(),rect.x,rect.y,rect.width,rect.height);
         rayHandler.updateAndRender();
     }
 
@@ -62,35 +62,4 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         light.setPosition(worldTransform.vector.scl(PhysicsConstants.METERS_PER_PIXEL));
     }
 
-    @Override
-    public void create() {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        CameraSystem system = getEngine().getSystem(CameraSystem.class);
-        Rectangle rect = system.viewport;
-        rayHandler.useCustomViewport((int)rect.x,(int)rect.y,(int)rect.width,(int)rect.height);
-    }
-
-    @Override
-    public void render() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
-
-    }
 }

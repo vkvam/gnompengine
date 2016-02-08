@@ -7,16 +7,18 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.PhysicsConstants;
 
 public class CameraSystem extends EntitySystem implements ApplicationListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private OrthographicCamera orthographicCamera;
+    private Matrix4 physicsMatrix = new Matrix4();
 
-    private float virtualWidth,
-            virtualHeight;
+    private float virtualWidth, virtualHeight;
     private float virtualAspectRatio;
     public Rectangle viewport = new Rectangle();
 
@@ -28,6 +30,10 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
         virtualHeight = height;
         virtualAspectRatio = virtualWidth/virtualHeight;
 
+    }
+
+    public Matrix4 getPhysicsMatrix() {
+        return physicsMatrix;
     }
 
     @Override
@@ -43,7 +49,10 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
     public void update(float f) {
         Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         orthographicCamera.update();
+        physicsMatrix.set(orthographicCamera.combined);
+        physicsMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
 
     }
 

@@ -1,23 +1,22 @@
 package com.flatfisk.gnomp.engine.systems;
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
-import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.Velocity;
 import com.flatfisk.gnomp.math.Transform;
 
-public class PhysicsSystem extends IteratingSystem implements EntityListener, ApplicationListener {
+public class PhysicsSystem extends IteratingSystem {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private ComponentMapper<PhysicsBody> physicsBodyDefMapper;
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
     private ComponentMapper<Spatial.Node> orientationMapper;
     private ComponentMapper<Velocity> velocityMapper;
-    private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
 
     private World box2DWorld;
     private boolean fixedStep=false;
@@ -44,11 +43,9 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
     public void addedToEngine(Engine engine) {
         LOG.info("System added to engine");
         super.addedToEngine(engine);
-        physicsBodyDefMapper = ComponentMapper.getFor(PhysicsBody.class);
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
         orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         velocityMapper = ComponentMapper.getFor(Velocity.class);
-        scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
     }
 
     @Override
@@ -82,46 +79,6 @@ public class PhysicsSystem extends IteratingSystem implements EntityListener, Ap
                 world.toWorld();
             }
         }
-    }
-
-    @Override
-    public void entityAdded(Entity entity) {
-
-    }
-
-    @Override
-    public void entityRemoved(Entity entity) {
-
-    }
-
-    @Override
-    public void create() {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void render() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void dispose() {
-        box2DWorld.dispose();
     }
 
 }

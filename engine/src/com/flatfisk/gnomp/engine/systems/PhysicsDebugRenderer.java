@@ -3,30 +3,25 @@ package com.flatfisk.gnomp.engine.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.PhysicsConstants;
 
 public class PhysicsDebugRenderer extends EntitySystem implements ApplicationListener {
+    private CameraSystem cameraSystem;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private Box2DDebugRenderer debugRenderer;
-    private Camera camera;
     private World box2DWorld;
-    private Matrix4 debugMatrix = new Matrix4();
 
-    public PhysicsDebugRenderer(Camera camera, World box2DWorld, int priority) {
+    public PhysicsDebugRenderer(World box2DWorld, int priority, CameraSystem cameraSystem) {
         this.priority = priority;
-        this.camera = camera;
         this.box2DWorld = box2DWorld;
+        this.cameraSystem = cameraSystem;
     }
 
-    private void rescale() {
-        debugMatrix.set(camera.combined);
-        debugMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
+    public void setCameraSystem(CameraSystem cameraSystem){
+        this.cameraSystem = cameraSystem;
     }
 
     @Override
@@ -37,13 +32,11 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
         debugRenderer.setDrawContacts(true);
         debugRenderer.setDrawBodies(true);
         debugRenderer.setDrawAABBs(true);
-        rescale();
     }
 
     @Override
     public void update(float f) {
-        rescale();
-        debugRenderer.render(box2DWorld, debugMatrix);
+        debugRenderer.render(box2DWorld, cameraSystem.getPhysicsMatrix());
     }
 
     @Override
@@ -53,7 +46,6 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
 
     @Override
     public void resize(int width, int height) {
-        rescale();
     }
 
     @Override
