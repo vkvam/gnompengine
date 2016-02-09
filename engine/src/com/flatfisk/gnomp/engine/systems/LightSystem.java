@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
@@ -17,7 +18,7 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 31/01/16.
  */
-public class LightSystem extends IteratingSystem  {
+public class LightSystem extends IteratingSystem implements ApplicationListener {
     private CameraSystem cameraSystem;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     RayHandler rayHandler;
@@ -42,8 +43,11 @@ public class LightSystem extends IteratingSystem  {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        Rectangle rect = cameraSystem.viewport;
-        rayHandler.setCombinedMatrix(cameraSystem.getPhysicsMatrix(),rect.x,rect.y,rect.width,rect.height);
+        rayHandler.setCombinedMatrix(cameraSystem.getPhysicsMatrix(),
+                cameraSystem.viewport.x,
+                cameraSystem.viewport.y,
+                cameraSystem.viewport.width*PhysicsConstants.PIXELS_PER_METER,
+                cameraSystem.viewport.height*PhysicsConstants.PIXELS_PER_METER);
         rayHandler.updateAndRender();
     }
 
@@ -62,4 +66,34 @@ public class LightSystem extends IteratingSystem  {
         light.setPosition(worldTransform.vector.scl(PhysicsConstants.METERS_PER_PIXEL));
     }
 
+    @Override
+    public void create() {
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        Rectangle viewport= cameraSystem.viewport;
+        rayHandler.useCustomViewport((int)viewport.x,(int)viewport.y,(int)viewport.width,(int)viewport.height);
+    }
+
+    @Override
+    public void render() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
 }

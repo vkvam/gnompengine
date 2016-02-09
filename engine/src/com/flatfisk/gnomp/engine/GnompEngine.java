@@ -72,29 +72,26 @@ public class GnompEngine extends PooledEngine {
         for(Component c : entity.getComponents()){
             if(c instanceof AbstractNode){
                 AbstractNode node = (AbstractNode) c;
-                Entity parent = node.parent;
-                if(parent!=null){
-                    removeChildren(parent,entity,node.getClass());
-                }
+                removeChildren(node.parent,entity,node.getClass());
             }
         }
     }
 
     private void removeChildren(Entity parent, Entity child, Class<? extends AbstractNode> nodeType){
-        if(parent!=null) {
 
+        if(parent!=null) {
             AbstractNode node = parent.getComponent(nodeType);
             node.removeChild(child);
+        }
 
-            super.removeEntity(child);
+        super.removeEntity(child);
 
-            AbstractNode childNode = child.getComponent(nodeType);
-            if(childNode!=null && childNode.children!=null) {
-                Entity[] children = childNode.children.toArray(Entity.class);
+        AbstractNode childNode = child.getComponent(nodeType);
+        if(childNode!=null && childNode.children!=null) {
+            Entity[] children = childNode.children.toArray(Entity.class);
 
-                for (Entity entity : children) {
-                    removeChildren(child, entity,nodeType);
-                }
+            for (Entity entity : children) {
+                removeChildren(child, entity,nodeType);
             }
         }
     }

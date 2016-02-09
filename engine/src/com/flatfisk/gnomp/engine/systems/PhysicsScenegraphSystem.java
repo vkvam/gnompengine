@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
-import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
@@ -22,7 +21,6 @@ public class PhysicsScenegraphSystem extends IteratingSystem implements Applicat
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
-    private ComponentMapper<Light.Container> lightMapper;
     private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
     private ComponentMapper<Spatial.Node> orientationMapper;
 
@@ -31,7 +29,6 @@ public class PhysicsScenegraphSystem extends IteratingSystem implements Applicat
         super(Family.all(PhysicsBody.Container.class,Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
 
         physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        lightMapper = ComponentMapper.getFor(Light.Container.class);
         orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 

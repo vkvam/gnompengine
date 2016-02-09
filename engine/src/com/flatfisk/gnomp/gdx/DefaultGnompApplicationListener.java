@@ -26,11 +26,11 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
     protected void initializeConstructorManager(World physicsWorld, RayHandler rayHandler){
         ConstructorManager constructorManager = world.getConstructorManager();
 
-        constructorManager.addConstructor(new SpatialConstructor(),0);
-        constructorManager.addConstructor(new BoundsConstructor(),1);
-        constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),2);
-        constructorManager.addConstructor(new LightConstructor(rayHandler,world),3);
-        constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),4);
+        constructorManager.addConstructor(new SpatialConstructor(),10);
+        constructorManager.addConstructor(new BoundsConstructor(),20);
+        constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),30);
+        constructorManager.addConstructor(new LightConstructor(rayHandler,world),40);
+        constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),50);
     }
 
     protected CameraSystem addCameraSystem(int priority){

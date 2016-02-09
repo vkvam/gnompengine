@@ -7,11 +7,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
-import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.tests.TestPlatformer;
 import com.flatfisk.gnomp.tests.components.Player;
 
 public class EnemyMoverSystem extends IteratingSystem {
@@ -38,12 +34,14 @@ public class EnemyMoverSystem extends IteratingSystem {
         super.update(f);
         c+=f;
         if(c>0.5f){
+            /*
             GnompEngine world= (GnompEngine) getEngine();
 
             Transform t = getEngine().getEntitiesFor(player).get(0).getComponent(Spatial.Node.class).world;
             Entity e = TestPlatformer.createEnemy(world, new Transform(t.vector.x+(Math.random()>0.5?(200+(float)Math.random()*1000):(-200-(float)Math.random()*1000)), -190, 0));
             world.addEntity(e);
             world.constructEntity(e);
+            */
             c=0;
         }
     }

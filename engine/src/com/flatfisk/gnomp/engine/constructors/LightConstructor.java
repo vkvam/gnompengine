@@ -53,10 +53,10 @@ public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Conta
             if(lightDef instanceof LightDef.Cone){
                 LightDef.Cone coneDef = (LightDef.Cone) lightDef;
                 box2dLight = new ConeLight(rayHandler,def.rayNum,def.color,def.distance* PhysicsConstants.METERS_PER_PIXEL,worldVector.x,worldVector.y, 0, coneDef.coneAngle);
+                box2dLight.setDirection(def.offset.rotation);
             }
 
             container.offset.set(def.offset);
-            box2dLight.setDirection(def.offset.rotation);
 
             Pools.free(worldTransform);
 

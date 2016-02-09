@@ -90,19 +90,14 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
         float scale;
         Vector2 crop = new Vector2(0f, 0f);
 
-        if(screenAspectRatio > virtualAspectRatio)
-        {
-            scale = (float)height/virtualHeight;
+        if(screenAspectRatio > virtualAspectRatio){
+            scale = (float) height / virtualHeight;
             crop.x = (width - virtualWidth*scale)/2f;
-        }
-        else if(screenAspectRatio < virtualAspectRatio)
-        {
-            scale = (float)width/virtualWidth;
+        }else if(screenAspectRatio < virtualAspectRatio){
+            scale = (float) width / virtualWidth;
             crop.y = (height - virtualHeight*scale)/2f;
-        }
-        else
-        {
-            scale = (float)width/virtualWidth;
+        }else{
+            scale = (float) width / virtualWidth;
         }
 
         float w = virtualWidth*scale;

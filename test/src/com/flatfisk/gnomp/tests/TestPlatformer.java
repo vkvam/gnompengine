@@ -41,7 +41,7 @@ public class TestPlatformer extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
 
         World w = world.getSystem(PhysicsSystem.class).getBox2DWorld();
 
@@ -75,18 +75,18 @@ public class TestPlatformer extends Test {
             world.constructEntity(platform2);
         }
 
+        platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
+        world.addComponent(Spatial.class,platform2);
+        world.addComponent(EndPoint.class,platform2);
+        world.addEntity(platform2);
+        world.constructEntity(platform2);
+
         i=0;
         for(;i<10;i++){
             Entity enemy = createEnemy(world,new Transform(-250-i*250,250,0));
             world.addEntity(enemy);
             world.constructEntity(enemy);
         }
-
-        platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
-        world.addComponent(Spatial.class,platform2);
-        world.addComponent(EndPoint.class,platform2);
-        world.addEntity(platform2);
-        world.constructEntity(platform2);
 
 
         Entity character = createCharacter(new Transform(0,150,0),new Transform(0,0,0));
@@ -96,7 +96,7 @@ public class TestPlatformer extends Test {
         character.getComponent(Spatial.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
-        Entity flashLight = createLight(new Transform(0, 10, 0),false);
+        Entity flashLight = createLight(world,new Transform(0, 10, 0),false);
         world.addComponent(PlayerLight.class,flashLight);
         character.getComponent(Spatial.Node.class).addChild(flashLight);
         character.getComponent(Scenegraph.Node.class).addChild(flashLight);
@@ -107,7 +107,7 @@ public class TestPlatformer extends Test {
         character.getComponent(Scenegraph.Node.class).addChild(gun);
 
 
-        Entity ambientCharacterLight = createLight(new Transform(0, 0, 0),true);
+        Entity ambientCharacterLight = createLight(world,new Transform(0, 0, 0),true);
         character.getComponent(Spatial.Node.class).addChild(ambientCharacterLight);
         character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
 
@@ -185,7 +185,7 @@ public class TestPlatformer extends Test {
         return e;
     }
 
-    protected Entity createLight(Transform translation, boolean ambient){
+    protected static Entity createLight(GnompEngine world, Transform translation, boolean ambient){
         Entity e = world.createEntity();
 
         world.addComponent(Scenegraph.Node.class,e);
@@ -198,10 +198,10 @@ public class TestPlatformer extends Test {
 
         if(ambient) {
             LightDef.Point pointDef = new LightDef.Point();
-            pointDef.color = new Color(1, 1, 1f, 0.30f);
-            pointDef.distance = 500;
+            pointDef.color = new Color(0.6f, 0.6f, 0.4f, 0.8f);
+            pointDef.distance = 30;
             pointDef.staticLight=true;
-            pointDef.offset = Pools.obtainTransform();
+            pointDef.offset.vector.set(0,0);
             pointDef.group = 0;
             light = pointDef;
         }else{
@@ -223,6 +223,7 @@ public class TestPlatformer extends Test {
         Light l = world.addComponent(Light.class, e);
         l.lightDef = light;
 
+
         return e;
     }
 
@@ -230,9 +231,12 @@ public class TestPlatformer extends Test {
         Entity e = world.createEntity();
 
         world.addComponent(Spatial.class,e);
-        world.addComponent(Renderable.Node.class,e);
+        world.addComponent(Scenegraph.class,e);
+        world.addComponent(Scenegraph.Node.class,e);
+
         world.addComponent(PhysicsBody.Node.class,e);
         world.addComponent(Renderable.class,e);
+        world.addComponent(Renderable.Node.class,e);
         world.addComponent(Enemy.class,e);
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
@@ -255,6 +259,13 @@ public class TestPlatformer extends Test {
 
         PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+
+        Entity l = createLight(world,new Transform(0,0,0),true);
+        e.getComponent(Spatial.Node.class).addChild(l);
+        e.getComponent(Scenegraph.Node.class).addChild(l);
+
+        world.addEntity(l);
 
         return e;
     }
