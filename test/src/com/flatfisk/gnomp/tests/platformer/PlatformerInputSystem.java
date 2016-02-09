@@ -271,7 +271,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         p.density=100;
 
         Velocity v = world.addComponent(Velocity.class,e);
-        v.velocity = new Transform(direction.scl(400),0);
+        v.velocity = new Transform(direction.scl(1000),0);
 
         world.addComponent(Spatial.class,e);
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
@@ -284,8 +284,9 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         Circle circle = new Circle(1,3, Color.WHITE,Color.RED);
         structure.geometry = circle;
 
+
         bullets.addFirst(e);
-        world.addEntity(e);
+
         world.constructEntity(e);
 
         return e;

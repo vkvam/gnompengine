@@ -55,21 +55,21 @@ public class TestAddRemove extends Test {
 
         Entity platform2 = createPlatform(new Transform(-1000,-200,0),3000,Color.RED,false);
         world.addComponent(Spatial.class,platform2);
-        world.addEntity(platform2);
+        
         world.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Transform(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
             world.addComponent(Spatial.class,platform2);
-            world.addEntity(platform2);
+            
             world.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
         world.addComponent(Spatial.class,platform2);
         world.addComponent(EndPoint.class,platform2);
-        world.addEntity(platform2);
+        
         world.constructEntity(platform2);
 
 
@@ -86,16 +86,16 @@ public class TestAddRemove extends Test {
 
             dot2 = createCharacterDot(new Transform(7+9*i, -i*i, i));
             character.getComponent(Spatial.Node.class).addChild(dot2);
-            world.addEntity(dot2);
+            
 
             dot2 = createCharacterDot(new Transform(-7+-9*i, i*i, i));
             character.getComponent(Spatial.Node.class).addChild(dot2);
-            world.addEntity(dot2);
+            
         }
 
-        world.addEntity(sensor);
-        world.addEntity(character);
-        world.addEntity(platform);
+        
+        
+        
 
         world.constructEntity(platform);
     }

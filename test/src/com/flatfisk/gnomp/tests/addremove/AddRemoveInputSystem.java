@@ -76,8 +76,8 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
                                 player.getComponent(Spatial.Node.class).addChild(e);
                                 player.getComponent(Spatial.Node.class).addChild(e2);
 
-                                engine.addEntity(e);
-                                engine.addEntity(e2);
+                                
+                                
                                 engine.removeEntity(dot);
                             if(Math.random()>0){
                                 playerComponent.touchedPlatformTimes--;

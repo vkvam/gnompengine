@@ -41,12 +41,12 @@ public class TestCatmullRender extends Test {
     private void createGame(){
 
         Entity oddBall = createOddBall(new Transform(0, -10, 0));
-        world.addEntity(oddBall);
+        
         world.constructEntity(oddBall);
 
         Entity platform = createPlatform(new Transform(50, -270, 10));
         world.addComponent(Spatial.class,platform);
-        world.addEntity(platform);
+        
         world.constructEntity(platform);
 
     }
@@ -93,7 +93,7 @@ public class TestCatmullRender extends Test {
 
         Entity e2 = createDot(world,new Transform(8,0,-90), .1f);
         orientationRelative.addChild(e2);
-        world.addEntity(e2);
+        
 
 
         return e;

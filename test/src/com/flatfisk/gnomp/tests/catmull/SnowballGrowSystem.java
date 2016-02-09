@@ -41,7 +41,6 @@ public class SnowballGrowSystem extends IntervalSystem {
 
             child = TestCatmullRender.createDot((GnompEngine) getEngine(), new Transform(0, 0, 0), w / 300);
             e.getComponent(Spatial.Node.class).addChild(child);
-            getEngine().addEntity(child);
         }
 
         p.polygon.scale(.005f*Math.min(1,length));

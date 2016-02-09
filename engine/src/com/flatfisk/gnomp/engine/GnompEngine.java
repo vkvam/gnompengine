@@ -49,6 +49,12 @@ public class GnompEngine extends PooledEngine {
         }
     }
 
+    public Entity createEntity () {
+        Entity entity = super.createEntity();
+        addEntity(entity);
+        return entity;
+    }
+
     public void removeEntity(Entity entity){
         removeFromParents(entity);
         super.removeEntity(entity);

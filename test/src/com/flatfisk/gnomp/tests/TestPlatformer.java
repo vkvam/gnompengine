@@ -64,27 +64,27 @@ public class TestPlatformer extends Test {
 
         Entity platform2 = createPlatform(new Transform(-1000,-200,0),3000,Color.RED,false);
         world.addComponent(Spatial.class,platform2);
-        world.addEntity(platform2);
+        
         world.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Transform(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
             world.addComponent(Spatial.class,platform2);
-            world.addEntity(platform2);
+            
             world.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
         world.addComponent(Spatial.class,platform2);
         world.addComponent(EndPoint.class,platform2);
-        world.addEntity(platform2);
+        
         world.constructEntity(platform2);
 
         i=0;
         for(;i<10;i++){
             Entity enemy = createEnemy(world,new Transform(-250-i*250,250,0));
-            world.addEntity(enemy);
+            
             world.constructEntity(enemy);
         }
 
@@ -111,14 +111,14 @@ public class TestPlatformer extends Test {
         character.getComponent(Spatial.Node.class).addChild(ambientCharacterLight);
         character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
 
-        world.addEntity(gun);
-        world.addEntity(ambientCharacterLight);
+        
+        
 
-        world.addEntity(flashLight);
-        world.addEntity(sensor);
+        
+        
 
-        world.addEntity(character);
-        world.addEntity(platform);
+        
+        
 
         world.constructEntity(platform);
     }
@@ -265,7 +265,7 @@ public class TestPlatformer extends Test {
         e.getComponent(Spatial.Node.class).addChild(l);
         e.getComponent(Scenegraph.Node.class).addChild(l);
 
-        world.addEntity(l);
+        
 
         return e;
     }
