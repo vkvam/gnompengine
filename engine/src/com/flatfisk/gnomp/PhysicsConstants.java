@@ -6,7 +6,7 @@ public class PhysicsConstants {
     public static float METERS_PER_PIXEL = 0.01f;
 
     /**
-     * Sets the scale of pixels in the game-world to meters in Box2d-world and vice versa
+     * Sets the scale of pixels in the game-engine to meters in Box2d-engine and vice versa
      *
      * @param pixels pr meter
      */

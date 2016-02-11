@@ -36,41 +36,41 @@ public class TestAddRemove extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true);
 
-        world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        engine.getSystem(CameraSystem.class).getCamera().zoom = 1f;
 
-        AddRemoveInputSystem inputSystem = new AddRemoveInputSystem(0,world.getSystem(PhysicsSystem.class).getBox2DWorld());
-        world.addSystem(inputSystem);
-        world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
+        AddRemoveInputSystem inputSystem = new AddRemoveInputSystem(0, engine.getSystem(PhysicsSystem.class).getBox2DWorld());
+        engine.addSystem(inputSystem);
+        engine.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
-        world.addSystem(new CameraTrackerSystem(1,world.getSystem(CameraSystem.class).getCamera(),true,true));
+        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getCamera(),true,true));
         createGame(new Transform(0, -120, 0));
     }
 
     private void createGame(Transform position){
 
         Entity platform = createPlatform(position,90,Color.GREEN,false);
-        world.addComponent(Spatial.class,platform);
+        engine.addComponent(Spatial.class,platform);
 
         Entity platform2 = createPlatform(new Transform(-1000,-200,0),3000,Color.RED,false);
-        world.addComponent(Spatial.class,platform2);
+        engine.addComponent(Spatial.class,platform2);
         
-        world.constructEntity(platform2);
+        engine.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Transform(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
-            world.addComponent(Spatial.class,platform2);
+            engine.addComponent(Spatial.class,platform2);
             
-            world.constructEntity(platform2);
+            engine.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
-        world.addComponent(Spatial.class,platform2);
-        world.addComponent(EndPoint.class,platform2);
+        engine.addComponent(Spatial.class,platform2);
+        engine.addComponent(EndPoint.class,platform2);
         
-        world.constructEntity(platform2);
+        engine.constructEntity(platform2);
 
 
         Entity character = createCharacter(new Transform(0,150,0),new Transform(0,0,0));
@@ -97,26 +97,26 @@ public class TestAddRemove extends Test {
         
         
 
-        world.constructEntity(platform);
+        engine.constructEntity(platform);
     }
 
     protected Entity createSensor(Transform translation){
 
 
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         //orientationRelative.relativeType = Relative.CHILD;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
 
-        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
 
 
-        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
+        PhysicsBody.Node physicsBodyRelative = engine.addComponent(PhysicsBody.Node.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
 
         RectangularLine rectangularLineShape = new RectangularLine(1,4,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from.set(-1.5f,0);
@@ -125,7 +125,7 @@ public class TestAddRemove extends Test {
 
         structure.geometry = rectangularLineShape;
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
         physicalProperties.friction = 5f;
         physicalProperties.isSensor = true;
@@ -133,14 +133,14 @@ public class TestAddRemove extends Test {
         physicalProperties.maskBits = CATEGORY_PLATFORM;
 
 
-        Renderable renderableDef = world.addComponent(Renderable.class,e);
+        Renderable renderableDef = engine.addComponent(Renderable.class,e);
         renderableDef.zIndex = -1;
 
 
-        world.addComponent(PlayerSensor.class,e);
-        world.addComponent(Scenegraph.Node.class,e);
+        engine.addComponent(PlayerSensor.class,e);
+        engine.addComponent(Scenegraph.Node.class,e);
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=true;
         physicsBodyDef.bodyDef.angularDamping=.03f;
@@ -150,64 +150,64 @@ public class TestAddRemove extends Test {
 
     protected Entity createCharacter(Transform translation, Transform velocity){
 
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         //orientationRelative.relativeType = Relative.CHILD;
 
-        Renderable.Node renderableRelative = world.addComponent(Renderable.Node.class,e);
+        Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
 
-        Velocity velocityComponent = world.addComponent(Velocity.class,e);
+        Velocity velocityComponent = engine.addComponent(Velocity.class,e);
         velocityComponent.velocity = velocity;
-        world.addComponent(Player.class,e);
+        engine.addComponent(Player.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
         Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
         structure.geometry = rectangularLineShape;
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
         physicalProperties.friction = 5f;
         physicalProperties.categoryBits = CATEGORY_PLAYER;
         physicalProperties.maskBits = CATEGORY_PLATFORM;
 
-        world.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.class,e);
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=false;
         physicsBodyDef.bodyDef.angularDamping=0.5f;
 
 
-        world.addComponent(Scenegraph.class,e);
-        world.addComponent(Scenegraph.Node.class,e);
+        engine.addComponent(Scenegraph.class,e);
+        engine.addComponent(Scenegraph.Node.class,e);
 
-        PhysicsBody.Node physicsBodyRelative = world.addComponent(PhysicsBody.Node.class,e);
+        PhysicsBody.Node physicsBodyRelative = engine.addComponent(PhysicsBody.Node.class,e);
 
         return e;
     }
 
     protected Entity createCharacterDot(Transform translation){
 
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        world.addComponent(Dot.class,e);
+        engine.addComponent(Dot.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
 
-        world.addComponent(Renderable.Node.class,e);
+        engine.addComponent(Renderable.Node.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
         Circle rectangularLineShape = new Circle(1,5,Color.RED,Color.BLUE);
         structure.geometry = rectangularLineShape;
 /*
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;
         physicalProperties.friction = 5f;
 
-        PhysicsBody.Node rel  = world.addComponent(PhysicsBody.Node.class, e);
+        PhysicsBody.Node rel  = engine.addComponent(PhysicsBody.Node.class, e);
 
         if(Math.random()>0.9) {
             rel.intermediate = true;
@@ -218,16 +218,16 @@ public class TestAddRemove extends Test {
 
     protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
 
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(PhysicsBody.Node.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
         RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,color);
         rectangularLineShape.from.set(-width/2,0);
         rectangularLineShape.to.set(width/2,0);
@@ -235,17 +235,17 @@ public class TestAddRemove extends Test {
 
         structure.geometry = rectangularLineShape;
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
         physicalProperties.friction = 1;
         physicalProperties.categoryBits = CATEGORY_PLATFORM;
         physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR;
 
-        world.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.class,e);
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {
-            Velocity velocity = world.addComponent(Velocity.class,e);
+            Velocity velocity = engine.addComponent(Velocity.class,e);
             velocity.velocity = new Transform(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{

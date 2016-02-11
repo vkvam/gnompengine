@@ -9,16 +9,16 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 
 public class GnompApplicationListener implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    protected GnompEngine world;
+    protected GnompEngine engine;
 
     @Override
     public void create() {
-        world = new GnompEngine();
+        engine = new GnompEngine();
     }
 
     @Override
     public void resize(int width, int height) {
-        for (EntitySystem system : world.getSystems()) {
+        for (EntitySystem system : engine.getSystems()) {
             if (system instanceof ApplicationListener) {
                 ((ApplicationListener) system).resize(width, height);
             }
@@ -27,12 +27,12 @@ public class GnompApplicationListener implements ApplicationListener {
 
     @Override
     public void render() {
-        world.update(Gdx.graphics.getDeltaTime());
+        engine.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override
     public void pause() {
-        for (EntitySystem system : world.getSystems()) {
+        for (EntitySystem system : engine.getSystems()) {
             if (system instanceof ApplicationListener) {
                 ((ApplicationListener) system).pause();
             }
@@ -41,7 +41,7 @@ public class GnompApplicationListener implements ApplicationListener {
 
     @Override
     public void resume() {
-        for (EntitySystem system : world.getSystems()) {
+        for (EntitySystem system : engine.getSystems()) {
             if (system instanceof ApplicationListener) {
                 ((ApplicationListener) system).resume();
             }
@@ -50,11 +50,11 @@ public class GnompApplicationListener implements ApplicationListener {
 
     @Override
     public void dispose() {
-        for (EntitySystem system : world.getSystems()) {
+        for (EntitySystem system : engine.getSystems()) {
             if (system instanceof ApplicationListener) {
                 ((ApplicationListener) system).dispose();
             }
         }
-        world.clearPools();
+        engine.clearPools();
     }
 }

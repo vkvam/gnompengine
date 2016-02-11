@@ -12,10 +12,12 @@ import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 public class Bullet implements ISerializable<Bullet>,Component, Pool.Poolable {
 
     public float lifeTime;
+    public boolean inert = false;
 
     @Override
     public void reset() {
-        lifeTime = 10f;
+        inert = false;
+        lifeTime = 3f;
     }
 
     @Override

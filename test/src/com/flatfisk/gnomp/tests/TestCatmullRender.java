@@ -33,8 +33,8 @@ public class TestCatmullRender extends Test {
         PhysicsConstants.setPixelsPerMeter(100);
         createSystems(new Vector2(0, -10), true);
 
-        world.addSystem(new CameraTrackerSystem(1,world.getSystem(CameraSystem.class).getCamera(),true,true));
-        world.addSystem(new SnowballGrowSystem(.05f,0));
+        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getCamera(),true,true));
+        engine.addSystem(new SnowballGrowSystem(.05f,0));
         createGame();
     }
 
@@ -42,38 +42,38 @@ public class TestCatmullRender extends Test {
 
         Entity oddBall = createOddBall(new Transform(0, -10, 0));
         
-        world.constructEntity(oddBall);
+        engine.constructEntity(oddBall);
 
         Entity platform = createPlatform(new Transform(50, -270, 10));
-        world.addComponent(Spatial.class,platform);
+        engine.addComponent(Spatial.class,platform);
         
-        world.constructEntity(platform);
+        engine.constructEntity(platform);
 
     }
 
 
     protected Entity createOddBall(Transform translation){
 
-        Entity e = world.createEntity();
-        world.addComponent(Spatial.class,e);
+        Entity e = engine.createEntity();
+        engine.addComponent(Spatial.class,e);
 
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Velocity.class,e);
-        world.addComponent(Renderable.Node.class,e);
+        engine.addComponent(Renderable.class,e);
+        engine.addComponent(Velocity.class,e);
+        engine.addComponent(Renderable.Node.class,e);
 
-        world.addComponent(Player.class,e);
+        engine.addComponent(Player.class,e);
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type= BodyDef.BodyType.DynamicBody;
 
-        world.addComponent(PhysicsBody.Node.class,e);
-        world.addComponent(PhysicalProperties.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
+        engine.addComponent(PhysicalProperties.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape<CatmullPolygon> shape = world.addComponent(Shape.class,e);
+        Shape<CatmullPolygon> shape = engine.addComponent(Shape.class,e);
         shape.geometry = new CatmullPolygon(5,Color.WHITE,Color.WHITE);
         shape.geometry.physicsResolution=5;
         shape.geometry.renderResolution=10;
@@ -91,7 +91,7 @@ public class TestCatmullRender extends Test {
         shape.geometry.polygon.setScale(0.2f,0.2f);
 
 
-        Entity e2 = createDot(world,new Transform(8,0,-90), .1f);
+        Entity e2 = createDot(engine,new Transform(8,0,-90), .1f);
         orientationRelative.addChild(e2);
         
 
@@ -101,26 +101,26 @@ public class TestCatmullRender extends Test {
 
     protected Entity createPlatform(Transform translation){
 
-        Entity e = world.createEntity();
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(PhysicsBody.Node.class,e);
+        Entity e = engine.createEntity();
+        engine.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape<RectangularLine> shape = world.addComponent(Shape.class,e);
+        Shape<RectangularLine> shape = engine.addComponent(Shape.class,e);
         shape.geometry = new RectangularLine(1,200,Color.WHITE,Color.WHITE);
         shape.geometry.from.set(500,0);
         shape.geometry.to.set(-15500,0);
         shape.geometry.createPolygonVertices();
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
         physicalProperties.friction = 1;
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type= BodyDef.BodyType.StaticBody;
 
         return e;

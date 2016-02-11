@@ -43,49 +43,49 @@ public class TestPlatformer extends Test {
         PhysicsConstants.setPixelsPerMeter(100);
         createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
 
-        World w = world.getSystem(PhysicsSystem.class).getBox2DWorld();
+        World w = engine.getSystem(PhysicsSystem.class).getBox2DWorld();
 
 
-        world.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        engine.getSystem(CameraSystem.class).getCamera().zoom = 1f;
 
         PlatformerInputSystem inputSystem = new PlatformerInputSystem(0,w);
-        world.addSystem(inputSystem);
-        world.addEntityListener(inputSystem.getFamily(),0,inputSystem);
+        engine.addSystem(inputSystem);
+        engine.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
-        world.addSystem(new EnemyMoverSystem(0));
-        world.addSystem(new CameraTrackerSystem(1,world.getSystem(CameraSystem.class).getCamera(),true,true));
+        engine.addSystem(new EnemyMoverSystem(0));
+        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getCamera(),true,true));
         createGame(new Transform(0, -120, 0));
     }
 
     private void createGame(Transform position){
 
         Entity platform = createPlatform(position,90,Color.GREEN,false);
-        world.addComponent(Spatial.class,platform);
+        engine.addComponent(Spatial.class,platform);
 
         Entity platform2 = createPlatform(new Transform(-1000,-200,0),3000,Color.RED,false);
-        world.addComponent(Spatial.class,platform2);
+        engine.addComponent(Spatial.class,platform2);
         
-        world.constructEntity(platform2);
+        engine.constructEntity(platform2);
 
         int i=1;
         for(;i<10;i++) {
             platform2 = createPlatform(new Transform(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
-            world.addComponent(Spatial.class,platform2);
+            engine.addComponent(Spatial.class,platform2);
             
-            world.constructEntity(platform2);
+            engine.constructEntity(platform2);
         }
 
         platform2 = createPlatform(new Transform(-150*(i-1)-90, -100+i*10+100, 0), 40,Color.RED,false);
-        world.addComponent(Spatial.class,platform2);
-        world.addComponent(EndPoint.class,platform2);
+        engine.addComponent(Spatial.class,platform2);
+        engine.addComponent(EndPoint.class,platform2);
         
-        world.constructEntity(platform2);
+        engine.constructEntity(platform2);
 
         i=0;
         for(;i<10;i++){
-            Entity enemy = createEnemy(world,new Transform(-250-i*250,250,0));
+            Entity enemy = createEnemy(engine,new Transform(-250-i*250,250,0));
             
-            world.constructEntity(enemy);
+            engine.constructEntity(enemy);
         }
 
 
@@ -96,8 +96,8 @@ public class TestPlatformer extends Test {
         character.getComponent(Spatial.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
 
-        Entity flashLight = createLight(world,new Transform(0, 10, 0),false);
-        world.addComponent(PlayerLight.class,flashLight);
+        Entity flashLight = createLight(engine,new Transform(0, 10, 0),false);
+        engine.addComponent(PlayerLight.class,flashLight);
         character.getComponent(Spatial.Node.class).addChild(flashLight);
         character.getComponent(Scenegraph.Node.class).addChild(flashLight);
 
@@ -107,36 +107,28 @@ public class TestPlatformer extends Test {
         character.getComponent(Scenegraph.Node.class).addChild(gun);
 
 
-        Entity ambientCharacterLight = createLight(world,new Transform(0, 0, 0),true);
+        Entity ambientCharacterLight = createLight(engine,new Transform(0, 0, 0),true);
         character.getComponent(Spatial.Node.class).addChild(ambientCharacterLight);
         character.getComponent(Scenegraph.Node.class).addChild(ambientCharacterLight);
-
-        
         
 
-        
-        
-
-        
-        
-
-        world.constructEntity(platform);
+        engine.constructEntity(platform);
     }
 
     protected Entity createSensor(Transform translation){
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        world.addComponent(PlayerSensor.class,e);
-        world.addComponent(Scenegraph.Node.class,e);
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(PhysicsBody.Node.class,e);
+        engine.addComponent(PlayerSensor.class,e);
+        engine.addComponent(Scenegraph.Node.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
 
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
 
         RectangularLine rectangularLineShape = new RectangularLine(1,6,Color.OLIVE,Color.BLUE);
         rectangularLineShape.from.set(-7.5f,0);
@@ -144,38 +136,49 @@ public class TestPlatformer extends Test {
         rectangularLineShape.createPolygonVertices();
         structure.geometry = rectangularLineShape;
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.isSensor = true;
         physicalProperties.categoryBits = CATEGORY_SENSOR;
         physicalProperties.maskBits = CATEGORY_PLATFORM|CATEGORY_ENEMY;
 
-        Renderable renderableDef = world.addComponent(Renderable.class,e);
+        Renderable renderableDef = engine.addComponent(Renderable.class,e);
         renderableDef.zIndex = -1;
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=true;
         physicsBodyDef.bodyDef.angularDamping=.03f;
         physicsBodyDef.bodyDef.bullet=true;
 
+        LightDef.Point pointDef = new LightDef.Point();
+        pointDef.color = new Color(1f, 0.7f, 0.4f, 0.5f);
+        pointDef.distance = 200;
+        pointDef.staticLight=true;
+        pointDef.offset.vector.set(0,50);
+        pointDef.group = 0;
+
+        Light l = engine.addComponent(Light.class, e);
+        l.lightDef = pointDef;
+
+
         return e;
     }
 
     protected Entity createGun(Transform translation){
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(Scenegraph.Node.class,e);
-        world.addComponent(Gun.class,e);
+        engine.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(Scenegraph.Node.class,e);
+        engine.addComponent(Gun.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
 
-        Shape structure = world.addComponent(Shape.class,e);
-        RectangularLine circle = new RectangularLine(3,3,Color.WHITE,Color.BLACK);
+        Shape structure = engine.addComponent(Shape.class,e);
+        RectangularLine circle = new RectangularLine(3,3,Color.DARK_GRAY,Color.GRAY);
         circle.from.set(-10,0);
         circle.to.set(10,0);
         circle.createPolygonVertices();
@@ -198,8 +201,8 @@ public class TestPlatformer extends Test {
 
         if(ambient) {
             LightDef.Point pointDef = new LightDef.Point();
-            pointDef.color = new Color(0.6f, 0.6f, 0.4f, 0.8f);
-            pointDef.distance = 30;
+            pointDef.color = new Color(0.6f, 0.6f, 0.4f, 0.7f);
+            pointDef.distance = 20;
             pointDef.staticLight=true;
             pointDef.offset.vector.set(0,0);
             pointDef.group = 0;
@@ -271,32 +274,33 @@ public class TestPlatformer extends Test {
     }
 
     protected Entity createCharacter(Transform translation, Transform velocity){
-        Entity e = world.createEntity();
+        Entity e = engine.createEntity();
 
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(Scenegraph.class,e);
-        world.addComponent(Scenegraph.Node.class,e);
-        world.addComponent(PhysicsBody.Node.class,e);
+        engine.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(Scenegraph.class,e);
+        engine.addComponent(Scenegraph.Node.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
 
-        Velocity velocityComponent = world.addComponent(Velocity.class,e);
+        Velocity velocityComponent = engine.addComponent(Velocity.class,e);
         velocityComponent.velocity = velocity;
-        world.addComponent(Player.class,e);
+        engine.addComponent(Player.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
+        Shape structure = engine.addComponent(Shape.class,e);
         Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
         structure.geometry = rectangularLineShape;
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
         physicalProperties.friction = 5f;
         physicalProperties.categoryBits = CATEGORY_PLAYER;
         physicalProperties.maskBits = CATEGORY_PLATFORM|CATEGORY_ENEMY;
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         physicsBodyDef.bodyDef.type = BodyDef.BodyType.DynamicBody;
         physicsBodyDef.bodyDef.fixedRotation=false;
         physicsBodyDef.bodyDef.angularDamping=0.5f;
@@ -307,30 +311,30 @@ public class TestPlatformer extends Test {
 
     protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
 
-        Entity e = world.createEntity();
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Renderable.Node.class,e);
-        world.addComponent(PhysicsBody.Node.class,e);
+        Entity e = engine.createEntity();
+        engine.addComponent(Renderable.class,e);
+        engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(PhysicsBody.Node.class,e);
 
-        Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
+        Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape<RectangularLine> shape = world.addComponent(Shape.class,e);
+        Shape<RectangularLine> shape = engine.addComponent(Shape.class,e);
         shape.geometry = new RectangularLine(1,(float) 5,Color.WHITE,color);
         shape.geometry.from.set(-width/2,0);
         shape.geometry.to.set(width/2,0);
         shape.geometry.createPolygonVertices();
 
-        PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
+        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
         physicalProperties.friction = 1;
         physicalProperties.categoryBits = CATEGORY_PLATFORM;
         physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR|CATEGORY_ENEMY|CATEGORY_LIGHT;
 
-        PhysicsBody physicsBodyDef = world.addComponent(PhysicsBody.class,e);
+        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {
-            Velocity velocity = world.addComponent(Velocity.class,e);
+            Velocity velocity = engine.addComponent(Velocity.class,e);
             velocity.velocity = new Transform(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{

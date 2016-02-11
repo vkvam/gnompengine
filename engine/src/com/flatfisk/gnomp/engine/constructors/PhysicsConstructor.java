@@ -16,7 +16,7 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,Array<PhysicsConstructor.FixtureDefWrapper>> {
+public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,PhysicsBody.Container, Array<PhysicsConstructor.FixtureDefWrapper>> {
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
@@ -26,7 +26,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
-        super(PhysicsBody.class, PhysicsBody.Node.class);
+        super(PhysicsBody.class, PhysicsBody.Node.class, PhysicsBody.Container.class);
         this.engine = engine;
         this.box2DWorld = box2DWorld;
         structureMapper = ComponentMapper.getFor(Shape.class);
@@ -51,6 +51,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
         Velocity velocity = velocityMapper.get(entity);
         if (velocity != null && velocity.velocity != null) {
+            LOG.info("VECTOR:"+velocity.velocity.vector);
             Transform velocityTransform = Pools.obtain(Transform.class).set(velocity.velocity).toBox2D();
             bodyContainer.body.setLinearVelocity(velocityTransform.vector);
             bodyContainer.body.setAngularVelocity(velocityTransform.rotation);

@@ -19,48 +19,49 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
 
     protected ScenegraphSystem addScenegraphSystem(int priority){
         ScenegraphSystem scenegraphSystem = new ScenegraphSystem(priority);
-        world.addSystem(scenegraphSystem);
+        engine.addSystem(scenegraphSystem);
         return scenegraphSystem;
     }
 
     protected void initializeConstructorManager(World physicsWorld, RayHandler rayHandler){
-        ConstructorManager constructorManager = world.getConstructorManager();
+        ConstructorManager constructorManager = engine.getConstructorManager();
 
         constructorManager.addConstructor(new SpatialConstructor(),10);
         constructorManager.addConstructor(new BoundsConstructor(),20);
-        constructorManager.addConstructor(new PhysicsConstructor(world,physicsWorld),30);
-        constructorManager.addConstructor(new LightConstructor(rayHandler,world),40);
-        constructorManager.addConstructor(new RenderableConstructor(world,shapeTextureFactory),50);
+        constructorManager.addConstructor(new PhysicsConstructor(engine,physicsWorld),30);
+        constructorManager.addConstructor(new LightConstructor(rayHandler, engine),40);
+        constructorManager.addConstructor(new RenderableConstructor(engine,shapeTextureFactory),50);
+        constructorManager.addConstructor(new EffectConstructor(engine),60);
     }
 
     protected CameraSystem addCameraSystem(int priority){
         CameraSystem cameraSystem = new CameraSystem(priority, 640, 480);
-        world.addSystem(cameraSystem);
+        engine.addSystem(cameraSystem);
         return cameraSystem;
     }
 
     protected RenderSystem addRenderSystem(int priority,CameraSystem cameraSystem){
         RenderSystem renderer = new RenderSystem(priority, cameraSystem);
-        world.addSystem(renderer);
+        engine.addSystem(renderer);
         return renderer;
     }
 
 
     protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){
         PhysicsDebugRenderer debugRenderer = new PhysicsDebugRenderer(physicsWorld,priority,cameraSystem);
-        world.addSystem(debugRenderer);
+        engine.addSystem(debugRenderer);
         return debugRenderer;
     }
 
     protected PhysicsSystem addPhysicsSystem(int priority,World physicsWorld){
         PhysicsSystem physicsSystem = new PhysicsSystem(physicsWorld,priority);
-        world.addSystem(physicsSystem);
+        engine.addSystem(physicsSystem);
         return physicsSystem;
     }
 
     protected PhysicsScenegraphSystem addPhysicsTrackerSystem(int priority){
         PhysicsScenegraphSystem physicsSystem = new PhysicsScenegraphSystem(priority);
-        world.addSystem(physicsSystem);
+        engine.addSystem(physicsSystem);
         return physicsSystem;
     }
 }

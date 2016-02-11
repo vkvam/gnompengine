@@ -1,5 +1,6 @@
 package com.flatfisk.gnomp.engine.constructors;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
@@ -16,12 +17,12 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, TextureCoordinates> {
+public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, Component, TextureCoordinates> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ComponentMapper<Shape> structureNodeComponentMapper;
 
     public BoundsConstructor() {
-        super(Renderable.class,Renderable.Node.class);
+        super(Renderable.class,Renderable.Node.class, null);
         structureNodeComponentMapper = ComponentMapper.getFor(Shape.class);
     }
 

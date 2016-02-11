@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
@@ -20,7 +21,7 @@ public class PhysicsSystem extends IteratingSystem {
 
     private World box2DWorld;
     private boolean fixedStep=false;
-    private float fixedStepInterval = 1/60f;
+    private float fixedStepInterval = 1f/60f;
 
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.Container.class).get(),priority);
@@ -31,12 +32,13 @@ public class PhysicsSystem extends IteratingSystem {
         return box2DWorld;
     }
 
-    public void setFixedStep(boolean fixedStep) {
-        this.fixedStep = fixedStep;
-    }
-
-    public void setFixedStepInterval(float fixedStepInterval) {
-        this.fixedStepInterval = fixedStepInterval;
+    /**
+     *
+     * @param fixedStep, 0 will turn fixed stepping off.
+     */
+    public void setFixedStep(float fixedStep) {
+        this.fixedStep = !MathUtils.isZero(fixedStep);
+        this.fixedStepInterval = fixedStep;
     }
 
     @Override
@@ -49,8 +51,9 @@ public class PhysicsSystem extends IteratingSystem {
     }
 
     @Override
-    public void update(final float f) {
-        box2DWorld.step(fixedStep?fixedStepInterval:f,3,3);
+    public void update(float f) {
+        f = fixedStep ? fixedStepInterval : Math.min(f,fixedStepInterval*2);
+        box2DWorld.step(fixedStepInterval, 3, 3);
         super.update(f);
     }
 

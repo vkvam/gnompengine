@@ -71,14 +71,12 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
                         if(dot!=null) {
 
                             i++;
-                                Entity e = createCharacterDot(new Transform(20*i, 0,0));
-                                Entity e2 = createCharacterDot(new Transform(-20*i, 0,0));
-                                player.getComponent(Spatial.Node.class).addChild(e);
-                                player.getComponent(Spatial.Node.class).addChild(e2);
+                            Entity e = createCharacterDot(new Transform(20*i, 0,0));
+                            Entity e2 = createCharacterDot(new Transform(-20*i, 0,0));
+                            player.getComponent(Spatial.Node.class).addChild(e);
+                            player.getComponent(Spatial.Node.class).addChild(e2);
+                            engine.removeEntity(dot);
 
-                                
-                                
-                                engine.removeEntity(dot);
                             if(Math.random()>0){
                                 playerComponent.touchedPlatformTimes--;
                                 engine.constructEntity(e);

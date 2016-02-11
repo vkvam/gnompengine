@@ -17,11 +17,13 @@ public class GnompEngine extends PooledEngine {
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private ConstructorManager constructorManager;
-    protected Array<Entity> entitiesToConstruct = new Array<Entity>();
-    protected Array<Entity> entitiesConstructed = new Array<Entity>();
+    protected Array<Entity> entitiesToConstruct = new Array<Entity>(2);
+    protected Array<Entity> entitiesConstructed = new Array<Entity>(2);
+
+    protected Array<EntityReconstructDef> entitiesToReconstruct = new Array<EntityReconstructDef>(2);
 
     public GnompEngine () {
-        this(10, 100, 10, 100);
+        this(10, 1000, 10, 1000);
     }
 
     public GnompEngine (int entityPoolInitialSize, int entityPoolMaxSize, int componentPoolInitialSize, int componentPoolMaxSize) {
@@ -42,11 +44,19 @@ public class GnompEngine extends PooledEngine {
      * @param entity
      */
     public void constructEntity(Entity entity){
-        if(constructorManager.rootFamily.matches(entity)) {
-            constructorManager.constructEntity(entity);
-        }else{
-            entitiesToConstruct.add(entity);
-        }
+        entitiesToConstruct.add(entity);
+    }
+
+    /**
+     * Reconstruct an entity for the specified constructor components.
+     * If some constructors are removed from the the entity, the Container will be removed.
+     * @param entity
+     */
+    public void reConstructEntity(Entity entity, Class<? extends Component> ... components){
+        EntityReconstructDef def = new EntityReconstructDef();
+        def.entity = entity;
+        def.toConstruct = components;
+        entitiesToReconstruct.add(def);
     }
 
     public Entity createEntity () {
@@ -71,7 +81,8 @@ public class GnompEngine extends PooledEngine {
 
     public void update(float f){
         super.update(f);
-        reconstructEntities();
+        constructEntities();
+        reconstructsEntitiesForComponents();
     }
 
     private void removeFromParents(Entity entity){
@@ -102,7 +113,7 @@ public class GnompEngine extends PooledEngine {
         }
     }
 
-    private void reconstructEntities(){
+    private void constructEntities(){
         if(entitiesToConstruct.size>0) {
             Iterator<Entity> entitiesAddedIterator = entitiesToConstruct.iterator();
             while (entitiesAddedIterator.hasNext()) {
@@ -119,6 +130,31 @@ public class GnompEngine extends PooledEngine {
             }
             entitiesConstructed.clear();
         }
+    }
+
+    private void reconstructsEntitiesForComponents(){
+        if(entitiesToReconstruct.size>0) {
+            Iterator<EntityReconstructDef> entitiesAddedIterator = entitiesToReconstruct.iterator();
+
+            while (entitiesAddedIterator.hasNext()) {
+                EntityReconstructDef entity = entitiesAddedIterator.next();
+                Entity constructor = constructorManager.getConstructor(entity.entity,true);
+
+                if(!entitiesConstructed.contains(constructor,false)){
+                    constructorManager.reConstructEntity(constructor,entity.toConstruct);
+                    entitiesConstructed.add(constructor);
+                }
+
+                entitiesAddedIterator.remove();
+            }
+            entitiesConstructed.clear();
+        }
+    }
+
+    public static class EntityReconstructDef{
+        Entity entity;
+        Class<? extends Component>[] toConstruct;
+
     }
 
 

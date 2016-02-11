@@ -6,8 +6,8 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.GnompEngine;
-import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.components.Renderable;
+import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
@@ -17,7 +17,7 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,ShapeTexture> {
+public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Constructed, ShapeTexture> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
@@ -25,7 +25,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     private GnompEngine engine;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
-        super(Renderable.class,Renderable.Node.class);
+        super(Renderable.class,Renderable.Node.class, Renderable.Constructed.class);
         this.engine = engine;
         structureRelativeComponentMapper = ComponentMapper.getFor(Shape.class);
         this.shapeTextureFactory = shapeTextureFactory;

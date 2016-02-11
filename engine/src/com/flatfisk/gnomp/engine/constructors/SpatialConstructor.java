@@ -1,5 +1,6 @@
 package com.flatfisk.gnomp.engine.constructors;
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.flatfisk.gnomp.engine.Constructor;
 import com.flatfisk.gnomp.engine.components.Spatial;
@@ -8,9 +9,9 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Spatial.Node> {
+public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Component, Spatial.Node> {
     public SpatialConstructor() {
-        super(Spatial.class, Spatial.Node.class);
+        super(Spatial.class, Spatial.Node.class, null);
     }
 
     @Override

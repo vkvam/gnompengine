@@ -17,12 +17,12 @@ import com.flatfisk.gnomp.math.Transform;
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Container> {
+public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Container, Light.Container> {
     public final RayHandler rayHandler;
     public final GnompEngine engine;
 
     public LightConstructor(RayHandler rayHandler, GnompEngine engine) {
-        super(Light.class, Spatial.Node.class);
+        super(Light.class, Spatial.Node.class, Light.Container.class);
         this.engine = engine;
         this.rayHandler = rayHandler;
     }

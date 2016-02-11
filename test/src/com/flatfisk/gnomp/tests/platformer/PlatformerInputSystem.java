@@ -81,18 +81,24 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
         if(enemyKilled==null && ( bulletComponentMapper.has(entityA) || bulletComponentMapper.has(entityB) )){
             Enemy e = null;
-            if(enemyComponentMapper.has(entityA)){
+            if(enemyComponentMapper.has(entityA) && !bulletComponentMapper.get(entityB).inert){
                 enemyKilled = entityA;
                 e = enemyComponentMapper.get(entityA);
-                getEngine().removeEntity(entityB);
+                entityB.remove(PhysicsBody.class);
+                entityB.getComponent(Bullet.class).lifeTime=2f;
+                ((GnompEngine) getEngine()).reConstructEntity(entityB);
+                ++e.shotTimes;
 
-            }else if(enemyComponentMapper.has(entityB)){
+            }else if(enemyComponentMapper.has(entityB) && !bulletComponentMapper.get(entityA).inert){
                 enemyKilled = entityB;
                 e = enemyComponentMapper.get(entityB);
-                getEngine().removeEntity(entityA);
+                entityA.remove(PhysicsBody.class);
+                entityA.getComponent(Bullet.class).lifeTime=2f;
+                ((GnompEngine) getEngine()).reConstructEntity(entityA);
+                ++e.shotTimes;
             }
 
-            if(e!=null && e.shotTimes++<3){
+            if(e!=null && e.shotTimes<3){
                 enemyKilled = null;
             }
         }
@@ -100,8 +106,6 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         if(enemyKilled!=null){
             getEngine().removeEntity(enemyKilled);
         }
-
-
 
         if(sensor !=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
@@ -134,7 +138,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     }
 
-    float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.2f, shotCounter = 0f;
+    float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.25f, shotCounter = 0f;
 
     private Vector2 lookAt = new Vector2(),
             output = new Vector2();
@@ -209,7 +213,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
 
                     Vector2 p = output.cpy().add(0,0.4f).nor();
-                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && ((shotCounter+=deltaTime)>shotInterval)) {
+                    shotCounter+=deltaTime;
+                    if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && shotCounter>shotInterval) {
                         Transform t = Pools.obtain(Transform.class);
                         t.set(player.getComponent(Spatial.Node.class).world);
                         shoot(t, p);
@@ -245,7 +250,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
     private void shoot(Transform t, Vector2 direction){
         t.vector.add(direction.cpy().scl(20));
         getEngine().getSystem(CameraTrackerSystem.class).shake(.05f,5);
-        Entity e = createBullet(t,direction);
+        createBullet(t,direction);
     }
 
     protected Entity createBullet(Transform translation,Vector2 direction){
@@ -255,8 +260,6 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
 
         world.addComponent(Bullet.class,e);
-        world.addComponent(Renderable.class,e);
-        world.addComponent(Renderable.Node.class,e);
         world.addComponent(PhysicsBody.Node.class,e);
 
         PhysicsBody b = world.addComponent(PhysicsBody.class,e);
@@ -271,7 +274,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         p.density=100;
 
         Velocity v = world.addComponent(Velocity.class,e);
-        v.velocity = new Transform(direction.scl(1000),0);
+        v.velocity.vector.set(direction).nor().scl(400);
 
         world.addComponent(Spatial.class,e);
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class,e);
@@ -279,9 +282,12 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         orientationRelative.world = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
+        Effect effect = world.addComponent(Effect.class,e);
+        effect.effectFileName = "data/test.p";
+        effect.initialEmitters.addAll("simple");
 
         com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class,e);
-        Circle circle = new Circle(1,3, Color.WHITE,Color.RED);
+        Circle circle = new Circle(1,3, Color.WHITE,Color.DARK_GRAY);
         structure.geometry = circle;
 
 

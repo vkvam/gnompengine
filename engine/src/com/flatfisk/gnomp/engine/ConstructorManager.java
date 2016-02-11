@@ -4,6 +4,7 @@ package com.flatfisk.gnomp.engine;
  * Created by Vemund Kvam on 06/12/15.
  */
 
+import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -36,16 +37,44 @@ public class ConstructorManager {
         constructors.insert(priority,constructor);
     }
 
+
+
     public void constructEntity(Entity entity) {
         dismantleEntity(entity);
         Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
-            constructEntityForConstructor(constructor, entity, constructorOrientation);
+            constructEntity(constructor, entity, constructorOrientation);
         }
     }
 
-    private void constructEntityForConstructor(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
+    public void reConstructEntity(Entity entity, Class<? extends Component>[] constructorClasses) {
+        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+
+        for (SortedIntList.Node<Constructor> constructorNode : constructors) {
+            Constructor constructor = constructorNode.value;
+            if(classMatchesConstructor(constructor,constructorClasses)) {
+                parentRemoved(constructor, entity);
+                constructEntity(constructor, entity, constructorOrientation);
+            }else if(!entityHasConstructor(entity, constructor)){
+                entity.remove(constructor.constructed);
+            }
+        }
+    }
+
+    private boolean entityHasConstructor(Entity entity, Constructor constructor){
+        return constructor.hasConstructor(entity);
+    }
+
+    private boolean classMatchesConstructor(Constructor constructor, Class<? extends Component>[] constructorClasses){
+        for(Class<? extends Component> c : constructorClasses) {
+            if(constructor.constructor.equals(c))
+                return true;
+        }
+        return false;
+    }
+
+    private void constructEntity(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
         Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
@@ -75,11 +104,13 @@ public class ConstructorManager {
                     iterateDTO = constructor.insertedChild(child, constructorOrientation, parentOrientation, orientation, iterateDTO);
                     childrenAdded(orientation.children, constructor, rootOrientation, constructorOrientation, orientation, iterateDTO);
 
+                    /* TODO: Evaluate if this is valid when reconstructing an entity. It probably won't break an entity,
+                    but it may cause some strange and undesired end states. */
                 } else if (constructor.isParent(child)) {
                     LOG.info("RECONSTRUCT: "+rootOrientation);
                     LOG.info("Parent added for constructor through child:" + constructor.getClass());
 
-                    constructEntityForConstructor(constructor, child, rootOrientation);
+                    constructEntity(constructor, child, rootOrientation);
 
                 }
             }
@@ -96,15 +127,16 @@ public class ConstructorManager {
 
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             constructor = constructorNode.value;
+            // TODO: Is this really correct?
             if(!(constructor instanceof SpatialConstructor)) {
-                hasChildren = constructor.relationshipMapper.has(entity);
-                hasConstructor = constructor.constructorMapper.has(entity);
+                hasChildren = hasChildren|| constructor.relationshipMapper.has(entity);
+                hasConstructor = hasConstructor|| constructor.constructorMapper.has(entity);
             }
         }
 
         Spatial.Node rel = entity.getComponent(Spatial.Node.class);
 
-        if(isParent&&hasConstructor){
+        if(isParent && hasConstructor){
             return entity;
         }else if(hasChildren && rel!=null &&rel.parent!=null){
             return getConstructor(rel.parent, true);
@@ -135,12 +167,12 @@ public class ConstructorManager {
 
     private void childrenRemoved(Array<Entity> children, Constructor constructor){
         for(Entity childWrapper : children) {
-            LOG.info("Child for constructor:"+childWrapper);
+            //LOG.info("Child for constructor:"+childWrapper);
             if(childWrapper!=null && childWrapper!=null) {
                 Entity child = childWrapper;
                 if (constructor.isChild(child)) {
                     Spatial.Node orientation = spatialRelativeComponentMapper.get(child);
-                    LOG.info("Child added for constructor:" + constructor.getClass());
+                    //LOG.info("Child added for constructor:" + constructor.getClass());
 
                     constructor.childRemoved(child);
                     childrenRemoved(orientation.children, constructor);
