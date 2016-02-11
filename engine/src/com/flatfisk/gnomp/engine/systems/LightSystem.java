@@ -7,7 +7,6 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
@@ -56,14 +55,12 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         Light.Container container = lightMapper.get(entity);
         box2dLight.Light light = container.light;
 
-        Transform lightOffset = container.offset;
-
-        Transform worldTransform = container.worldTransform.set(spatialMapper.get(entity).world);
-        Vector2 worldRotatedOffset = container.worldRotatedOffset.set(lightOffset.vector).rotate(worldTransform.rotation);
-        worldTransform.add(worldRotatedOffset, lightOffset.rotation);
-
+        Transform worldTransform = spatialMapper.get(entity).world;
         light.setDirection(worldTransform.rotation);
-        light.setPosition(worldTransform.vector.scl(PhysicsConstants.METERS_PER_PIXEL));
+        light.setPosition(
+                worldTransform.vector.x*PhysicsConstants.METERS_PER_PIXEL,
+                worldTransform.vector.y*PhysicsConstants.METERS_PER_PIXEL
+        );
     }
 
     @Override

@@ -168,7 +168,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
                 timer += deltaTime;
 
                 Light.Container light = playerLight.getComponent(Light.Container.class);
-                com.flatfisk.gnomp.math.Transform lightOffset = light.offset;
+                com.flatfisk.gnomp.math.Transform lightOffset = playerLight.getComponent(Spatial.Node.class).local;
 
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     speed = -150f;

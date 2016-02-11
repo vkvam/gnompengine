@@ -2,7 +2,6 @@ package com.flatfisk.gnomp.engine.components.light;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.flatfisk.gnomp.math.Transform;
 
 /**
 * Created by Vemund Kvam on 31/01/16.
@@ -23,7 +22,7 @@ public abstract class LightDef {
 
 
     public static class Positional extends LightDef{
-        public Transform offset = new Transform();
+        //public Transform offset = new Transform();
     }
 
     public static class Cone extends Positional{

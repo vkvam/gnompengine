@@ -21,7 +21,6 @@ import com.flatfisk.gnomp.tests.platformer.Enemy;
 import com.flatfisk.gnomp.tests.platformer.EnemyMoverSystem;
 import com.flatfisk.gnomp.tests.platformer.PlatformerInputSystem;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
-import com.flatfisk.gnomp.utils.Pools;
 
 public class TestPlatformer extends Test {
 
@@ -92,6 +91,7 @@ public class TestPlatformer extends Test {
         Entity character = createCharacter(new Transform(0,150,0),new Transform(0,0,0));
         platform.getComponent(Spatial.Node.class).addChild(character);
 
+
         Entity sensor = createSensor(new Transform(0,-10,0));
         character.getComponent(Spatial.Node.class).addChild(sensor);
         character.getComponent(Scenegraph.Node.class).addChild(sensor);
@@ -114,6 +114,7 @@ public class TestPlatformer extends Test {
 
         engine.constructEntity(platform);
     }
+
 
     protected Entity createSensor(Transform translation){
         Entity e = engine.createEntity();
@@ -149,17 +150,6 @@ public class TestPlatformer extends Test {
         physicsBodyDef.bodyDef.fixedRotation=true;
         physicsBodyDef.bodyDef.angularDamping=.03f;
         physicsBodyDef.bodyDef.bullet=true;
-
-        LightDef.Point pointDef = new LightDef.Point();
-        pointDef.color = new Color(1f, 0.7f, 0.4f, 0.5f);
-        pointDef.distance = 200;
-        pointDef.staticLight=true;
-        pointDef.offset.vector.set(0,50);
-        pointDef.group = 0;
-
-        Light l = engine.addComponent(Light.class, e);
-        l.lightDef = pointDef;
-
 
         return e;
     }
@@ -204,7 +194,7 @@ public class TestPlatformer extends Test {
             pointDef.color = new Color(0.6f, 0.6f, 0.4f, 0.7f);
             pointDef.distance = 20;
             pointDef.staticLight=true;
-            pointDef.offset.vector.set(0,0);
+            //pointDef.offset.vector.set(0,0);
             pointDef.group = 0;
             light = pointDef;
         }else{
@@ -214,9 +204,9 @@ public class TestPlatformer extends Test {
             coneDef.coneAngle = 30;
             coneDef.distance = 400;
             coneDef.rayNum = 150;
-            coneDef.offset = Pools.obtainTransform();
-            coneDef.offset.vector.x = -20;
-            coneDef.offset.rotation = 180;
+            //coneDef.offset = Pools.obtainTransform();
+            //coneDef.offset.vector.x = -20;
+            //coneDef.offset.rotation = 180;
             coneDef.group = 0;
             coneDef.categoryBits = CATEGORY_LIGHT;
             coneDef.maskBits = CATEGORY_ENEMY | CATEGORY_PLATFORM;
