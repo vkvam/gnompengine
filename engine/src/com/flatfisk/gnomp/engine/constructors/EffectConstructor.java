@@ -64,7 +64,6 @@ public class EffectConstructor extends Constructor<Effect,Spatial.Node,Effect.Co
 
         }
 
-        container.offset.set(effectDef.offset);
 
         return container;
     }

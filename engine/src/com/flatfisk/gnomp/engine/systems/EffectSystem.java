@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.components.Effect;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
@@ -48,14 +47,10 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
     protected void processEntity(Entity entity, float deltaTime) {
         Effect.Container effect = containerComponentMapper.get(entity);
         Transform world = spatialMapper.get(entity).world;
+        Vector2 worldVector = world.vector;
 
-        Vector2 vector2 = Pools.obtain(Vector2.class);
-        vector2.set(effect.offset.vector);
-        vector2.rotate(world.rotation);
-
-        effect.particleEffect.setPosition(world.vector.x+vector2.x,world.vector.y+vector2.y);
+        effect.particleEffect.setPosition(worldVector.x,worldVector.y);
         effect.particleEffect.draw(spriteBatch, deltaTime);
-        Pools.free(vector2);
     }
 
     @Override
