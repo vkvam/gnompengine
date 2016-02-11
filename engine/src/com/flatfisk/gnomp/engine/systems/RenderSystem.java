@@ -2,7 +2,6 @@ package com.flatfisk.gnomp.engine.systems;
 
 
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -47,19 +46,13 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
                 return (renderableA.zIndex - renderableB.zIndex) > 0 ? 1 : -1;
             }
         };
+        renderableMapper = ComponentMapper.getFor(Renderable.Constructed.class);
+        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
     }
 
     public void setCameraSystem(CameraSystem cameraSystem){
         this.cameraSystem = cameraSystem;
     }
-
-    @Override
-    public void addedToEngine(Engine engine) {
-        super.addedToEngine(engine);
-        renderableMapper = ComponentMapper.getFor(Renderable.Constructed.class);
-        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
-    }
-
 
     public void processEntity(Entity e,float f){
         renderQueue.add(e);

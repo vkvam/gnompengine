@@ -1,7 +1,6 @@
 package com.flatfisk.gnomp.engine.systems;
 
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -34,11 +33,6 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
 
     public Matrix4 getPhysicsMatrix() {
         return physicsMatrix;
-    }
-
-    @Override
-    public void addedToEngine(Engine engine) {
-        super.addedToEngine(engine);
     }
 
     public OrthographicCamera getCamera() {

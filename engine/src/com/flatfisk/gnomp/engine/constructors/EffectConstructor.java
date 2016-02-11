@@ -20,8 +20,6 @@ public class EffectConstructor extends Constructor<Effect,Spatial.Node,Effect.Co
     public final GnompEngine engine;
 
 
-
-
     public EffectConstructor(GnompEngine engine) {
         super(Effect.class, Spatial.Node.class, null);
         this.engine = engine;

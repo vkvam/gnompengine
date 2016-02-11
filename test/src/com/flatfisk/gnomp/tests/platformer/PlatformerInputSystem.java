@@ -138,7 +138,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     }
 
-    float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.25f, shotCounter = 0f;
+    float speed = 0, timer=0, flickerTimer=0, shotInterval = 0.005f, shotCounter = 0f;
 
     private Vector2 lookAt = new Vector2(),
             output = new Vector2();

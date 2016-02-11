@@ -27,7 +27,6 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
     @Override
     public void addedToEngine(Engine engine) {
         debugRenderer = new Box2DDebugRenderer();
-
         debugRenderer.setDrawVelocities(true);
         debugRenderer.setDrawContacts(true);
         debugRenderer.setDrawBodies(true);

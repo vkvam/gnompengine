@@ -1,7 +1,6 @@
 package com.flatfisk.gnomp.engine.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -32,12 +31,6 @@ public class PhysicsScenegraphSystem extends IteratingSystem implements Applicat
         orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
         scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
-    }
-
-    @Override
-    public void addedToEngine(Engine engine) {
-        LOG.info("System added to engine");
-        super.addedToEngine(engine);
     }
 
     @Override

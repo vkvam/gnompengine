@@ -1,7 +1,6 @@
 package com.flatfisk.gnomp.engine.systems;
 
 import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -25,6 +24,9 @@ public class PhysicsSystem extends IteratingSystem {
 
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.Container.class).get(),priority);
+        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
+        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
+        velocityMapper = ComponentMapper.getFor(Velocity.class);
         this.box2DWorld = box2DWorld;
     }
 
@@ -41,14 +43,6 @@ public class PhysicsSystem extends IteratingSystem {
         this.fixedStepInterval = fixedStep;
     }
 
-    @Override
-    public void addedToEngine(Engine engine) {
-        LOG.info("System added to engine");
-        super.addedToEngine(engine);
-        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
-        velocityMapper = ComponentMapper.getFor(Velocity.class);
-    }
 
     @Override
     public void update(float f) {

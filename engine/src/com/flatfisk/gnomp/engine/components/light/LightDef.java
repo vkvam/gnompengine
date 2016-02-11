@@ -17,12 +17,9 @@ public abstract class LightDef {
     public boolean ignoreBody = false;
     public int rayNum = 10;
     public float distance = 2;
-    //public float direction = 0; Done through offset, since it is a Transform
     public float softShadowLength = 2.5f;
 
-
     public static class Positional extends LightDef{
-        //public Transform offset = new Transform();
     }
 
     public static class Cone extends Positional{
