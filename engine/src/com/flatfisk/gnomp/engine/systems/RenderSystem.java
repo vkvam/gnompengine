@@ -30,6 +30,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     public ComponentMapper<Spatial.Node> orientationMapper;
     private Comparator comperator;
     private CameraSystem cameraSystem;
+    private StatsSystem statsSystem;
 
     public RenderSystem(int priority, CameraSystem cameraSystem) {
         super(Family.all(Renderable.Constructed.class).get(),priority);
@@ -61,7 +62,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
     @Override
     public void update(float f) {
         super.update(f);
-        OrthographicCamera orthographicCamera = cameraSystem.getCamera();
+        OrthographicCamera orthographicCamera = cameraSystem.getWorldCamera();
 
         batch.setProjectionMatrix(orthographicCamera.combined);
 
@@ -112,6 +113,11 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
             }
         }
         batch.end();
+        if(statsSystem!=null){
+            statsSystem.addStat("Rendering");
+            statsSystem.addStat("Textures:"+renderQueue.size);
+            statsSystem.addLine();
+        }
         renderQueue.clear();
     }
 
@@ -147,4 +153,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
 
     }
 
+    public void setStatsSystem(StatsSystem statsSystem) {
+        this.statsSystem = statsSystem;
+    }
 }

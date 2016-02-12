@@ -40,19 +40,19 @@ public class TestPlatformer extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false, true);
 
         World w = engine.getSystem(PhysicsSystem.class).getBox2DWorld();
 
 
-        engine.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        engine.getSystem(CameraSystem.class).getWorldCamera().zoom = 1f;
 
         PlatformerInputSystem inputSystem = new PlatformerInputSystem(0,w);
         engine.addSystem(inputSystem);
         engine.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
         engine.addSystem(new EnemyMoverSystem(0));
-        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getCamera(),true,true));
+        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getWorldCamera(),true,true));
         createGame(new Transform(0, -120, 0));
     }
 

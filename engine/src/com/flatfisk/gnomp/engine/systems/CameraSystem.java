@@ -14,7 +14,8 @@ import com.flatfisk.gnomp.PhysicsConstants;
 
 public class CameraSystem extends EntitySystem implements ApplicationListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private OrthographicCamera orthographicCamera;
+    private OrthographicCamera worldCamera;
+    private OrthographicCamera hudCamera;
     private Matrix4 physicsMatrix = new Matrix4();
 
     private float virtualWidth, virtualHeight;
@@ -24,7 +25,8 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
     public CameraSystem(int priority, int width, int height) {
         super(priority);
 
-        orthographicCamera = new OrthographicCamera(width, height);
+        worldCamera = new OrthographicCamera(width, height);
+        hudCamera = new OrthographicCamera(width, height);
         virtualWidth = width;
         virtualHeight = height;
         virtualAspectRatio = virtualWidth/virtualHeight;
@@ -35,8 +37,12 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
         return physicsMatrix;
     }
 
-    public OrthographicCamera getCamera() {
-        return orthographicCamera;
+    public OrthographicCamera getWorldCamera() {
+        return worldCamera;
+    }
+
+    public OrthographicCamera getHudCamera() {
+        return hudCamera;
     }
 
     @Override
@@ -44,8 +50,9 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
         Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        orthographicCamera.update();
-        physicsMatrix.set(orthographicCamera.combined);
+        worldCamera.update();
+        hudCamera.update();
+        physicsMatrix.set(worldCamera.combined);
         physicsMatrix.scale(PhysicsConstants.PIXELS_PER_METER, PhysicsConstants.PIXELS_PER_METER, 1);
 
     }

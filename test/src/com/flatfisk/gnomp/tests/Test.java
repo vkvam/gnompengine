@@ -8,22 +8,24 @@ import com.flatfisk.gnomp.gdx.DefaultGnompApplicationListener;
 
 public class Test extends DefaultGnompApplicationListener {
 
-    public void createSystems(Vector2 gravity, boolean physicsDebug){
+    public void createSystems(Vector2 gravity, boolean physicsDebug, boolean showStats){
         World physicsWorld = new World(gravity,true);
 
         RayHandler rayHandler = new RayHandler(physicsWorld);
         initializeConstructorManager(physicsWorld,rayHandler);
 
         addScenegraphSystem(100);
-        CameraSystem cameraSystem = addCameraSystem(200);
+        CameraSystem cameraSystem = addCameraSystem(200, 1280, 720);
         RenderSystem renderSystem = addRenderSystem(300,cameraSystem);
 
 
+
         addPhysicsTrackerSystem(400);
+        PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
+
         if(physicsDebug) {
             addDebugRenderer(500, physicsWorld,cameraSystem);
         }
-        PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
 
         LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
         engine.addSystem(lightSystem);
@@ -33,6 +35,15 @@ public class Test extends DefaultGnompApplicationListener {
 
         renderSystem.setProcessing(true);
         physicsSystem.setFixedStep(1f/60f);
+
+        if(showStats){
+            StatsSystem statsSystem = new StatsSystem(10000,cameraSystem);
+            engine.addSystem(statsSystem);
+            physicsSystem.setStatsSystem(statsSystem);
+            renderSystem.setStatsSystem(statsSystem);
+            effectSystem.setStatsSystem(statsSystem);
+            lightSystem.setStatsSystem(statsSystem);
+        }
     }
 
 }

@@ -26,6 +26,8 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
     public final SpriteBatch spriteBatch = new SpriteBatch();
     public final ComponentMapper<Effect.Container> containerComponentMapper = ComponentMapper.getFor(Effect.Container.class);
     public final ComponentMapper<Spatial.Node> spatialMapper = ComponentMapper.getFor(Spatial.Node.class);
+    private StatsSystem statsSystem;
+    private int effectsDrawn = 0;
 
 
     public EffectSystem(int priority, CameraSystem cameraSystem) {
@@ -33,13 +35,23 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
         this.cameraSystem = cameraSystem;
     }
 
+    public void setStatsSystem(StatsSystem statsSystem){
+        this.statsSystem = statsSystem;
+    }
 
     @Override
     public void update(float deltaTime) {
-        spriteBatch.setProjectionMatrix(cameraSystem.getCamera().combined);
+        spriteBatch.setProjectionMatrix(cameraSystem.getWorldCamera().combined);
         spriteBatch.begin();
         super.update(deltaTime);
         spriteBatch.end();
+
+        if(statsSystem!=null){
+            statsSystem.addStat("Effects");
+            statsSystem.addStat("Processed:"+effectsDrawn);
+            statsSystem.addLine();
+        }
+        effectsDrawn=0;
 
     }
 
@@ -51,6 +63,7 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
 
         effect.particleEffect.setPosition(worldVector.x,worldVector.y);
         effect.particleEffect.draw(spriteBatch, deltaTime);
+        effectsDrawn++;
     }
 
     @Override
@@ -94,4 +107,6 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
         public ParticleEffect effect;
         public ParticleEffectPool pool;
     }
+
+
 }

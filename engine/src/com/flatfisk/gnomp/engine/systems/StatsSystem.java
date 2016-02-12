@@ -1,39 +1,40 @@
 package com.flatfisk.gnomp.engine.systems;
 
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.components.Renderable;
-import com.flatfisk.gnomp.engine.components.Spatial;
-
-import java.util.Comparator;
 
 public class StatsSystem extends EntitySystem implements ApplicationListener {
     private static float ROOT2 = (float) Math.sqrt(2);
 
     public SpriteBatch batch;
+    BitmapFont font; //or use alex answer to use custom font
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private Array<Entity> renderQueue = new Array<Entity>();
-
-    public ComponentMapper<Renderable.Constructed> renderableMapper;
-    public ComponentMapper<Spatial.Node> orientationMapper;
-    private Comparator comperator;
     private CameraSystem cameraSystem;
+    private String stats = "";
 
     public StatsSystem(int priority, CameraSystem cameraSystem) {
         super(priority);
 
         this.cameraSystem = cameraSystem;
+        this.font =  new BitmapFont();
+        this.font.setColor(Color.WHITE);
+        this.batch = new SpriteBatch();
 
-        batch = new SpriteBatch();
+    }
 
+    public void addStat(String stat){
+        stats+=stat+"\n";
+    }
+    public void addLine() {
+        addStat("               ");
     }
 
     public void setCameraSystem(CameraSystem cameraSystem){
@@ -43,12 +44,16 @@ public class StatsSystem extends EntitySystem implements ApplicationListener {
     @Override
     public void update(float f) {
         super.update(f);
-        OrthographicCamera orthographicCamera = cameraSystem.getCamera();
+        OrthographicCamera orthographicCamera = cameraSystem.getHudCamera();
 
         batch.setProjectionMatrix(orthographicCamera.combined);
 
+        float w = orthographicCamera.viewportWidth,h=orthographicCamera.viewportHeight;
+
         batch.begin();
+        font.draw(batch,stats,-w/2+2,h/2-2,w/4, Align.topLeft,true);
         batch.end();
+        stats="";
     }
 
     @Override
@@ -82,5 +87,4 @@ public class StatsSystem extends EntitySystem implements ApplicationListener {
         LOG.info("Resizing render system: w="+w+"h="+h);
 
     }
-
 }

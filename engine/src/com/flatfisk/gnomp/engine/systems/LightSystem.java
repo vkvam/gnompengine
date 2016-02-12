@@ -20,10 +20,12 @@ import com.flatfisk.gnomp.math.Transform;
 public class LightSystem extends IteratingSystem implements ApplicationListener {
     private CameraSystem cameraSystem;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    RayHandler rayHandler;
+    private RayHandler rayHandler;
 
-    ComponentMapper<Light.Container> lightMapper;
-    ComponentMapper<Spatial.Node> spatialMapper;
+    private ComponentMapper<Light.Container> lightMapper;
+    private ComponentMapper<Spatial.Node> spatialMapper;
+    private StatsSystem statsSystem;
+    private int lightsDrawn = 0;
 
 
     public LightSystem(int priority, RayHandler rayHandler, CameraSystem cameraSystem) {
@@ -38,6 +40,10 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         this.cameraSystem = cameraSystem;
     }
 
+    public void setStatsSystem(StatsSystem statsSystem){
+        this.statsSystem = statsSystem;
+    }
+
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
@@ -48,6 +54,12 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
                 cameraSystem.viewport.width*PhysicsConstants.PIXELS_PER_METER,
                 cameraSystem.viewport.height*PhysicsConstants.PIXELS_PER_METER);
         rayHandler.updateAndRender();
+        if(statsSystem!=null){
+            statsSystem.addStat("Lights");
+            statsSystem.addStat("Processed:"+lightsDrawn);
+            statsSystem.addLine();
+        }
+        lightsDrawn=0;
     }
 
     @Override
@@ -58,9 +70,10 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
         Transform worldTransform = spatialMapper.get(entity).world;
         light.setDirection(worldTransform.rotation);
         light.setPosition(
-                worldTransform.vector.x*PhysicsConstants.METERS_PER_PIXEL,
-                worldTransform.vector.y*PhysicsConstants.METERS_PER_PIXEL
+                worldTransform.vector.x * PhysicsConstants.METERS_PER_PIXEL,
+                worldTransform.vector.y * PhysicsConstants.METERS_PER_PIXEL
         );
+        lightsDrawn++;
     }
 
     @Override

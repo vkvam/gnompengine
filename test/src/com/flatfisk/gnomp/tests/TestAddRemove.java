@@ -36,15 +36,15 @@ public class TestAddRemove extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true, true);
 
-        engine.getSystem(CameraSystem.class).getCamera().zoom = 1f;
+        engine.getSystem(CameraSystem.class).getWorldCamera().zoom = 1f;
 
         AddRemoveInputSystem inputSystem = new AddRemoveInputSystem(0, engine.getSystem(PhysicsSystem.class).getBox2DWorld());
         engine.addSystem(inputSystem);
         engine.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
-        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getCamera(),true,true));
+        engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getWorldCamera(),true,true));
         createGame(new Transform(0, -120, 0));
     }
 

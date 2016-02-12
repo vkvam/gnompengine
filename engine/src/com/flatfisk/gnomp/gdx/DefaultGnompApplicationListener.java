@@ -34,8 +34,8 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         constructorManager.addConstructor(new EffectConstructor(engine),60);
     }
 
-    protected CameraSystem addCameraSystem(int priority){
-        CameraSystem cameraSystem = new CameraSystem(priority, 640, 480);
+    protected CameraSystem addCameraSystem(int priority, int width, int height){
+        CameraSystem cameraSystem = new CameraSystem(priority, width, height);
         engine.addSystem(cameraSystem);
         return cameraSystem;
     }

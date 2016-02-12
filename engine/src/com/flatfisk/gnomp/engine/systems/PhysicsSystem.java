@@ -21,6 +21,7 @@ public class PhysicsSystem extends IteratingSystem {
     private World box2DWorld;
     private boolean fixedStep=false;
     private float fixedStepInterval = 1f/60f;
+    private StatsSystem statsSystem;
 
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.Container.class).get(),priority);
@@ -32,6 +33,9 @@ public class PhysicsSystem extends IteratingSystem {
 
     public World getBox2DWorld() {
         return box2DWorld;
+    }
+    public void setStatsSystem(StatsSystem statsSystem){
+        this.statsSystem = statsSystem;
     }
 
     /**
@@ -49,6 +53,18 @@ public class PhysicsSystem extends IteratingSystem {
         f = fixedStep ? fixedStepInterval : Math.min(f,fixedStepInterval*2);
         box2DWorld.step(fixedStepInterval, 3, 3);
         super.update(f);
+        addStats();
+    }
+
+    private void addStats(){
+        if(statsSystem!=null){
+            statsSystem.addStat("Physics");
+            statsSystem.addStat("Bodies:"+box2DWorld.getBodyCount());
+            statsSystem.addStat("Fixtures:"+box2DWorld.getFixtureCount());
+            statsSystem.addStat("Joints:"+box2DWorld.getJointCount());
+            statsSystem.addStat("Proxies:"+box2DWorld.getProxyCount());
+            statsSystem.addLine();
+        }
     }
 
     @Override
