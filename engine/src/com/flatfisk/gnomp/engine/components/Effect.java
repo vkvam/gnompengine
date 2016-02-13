@@ -39,14 +39,14 @@ public class Effect implements ISerializable<Effect>, Pool.Poolable  {
         @Override
         public void reset() {
             LOG.info("REMOVED LIGHT");
-            // Add emitters back to effect before removing it.
+            // Add emitters back to effect before freeing it.
             for(ParticleEmitter emitter : unusedEmitters){
                 particleEffect.getEmitters().add(emitter);
             }
 
-            // Also calls reset
-            particleEffect.free();
+            particleEffect.free(); // Calls reset as well
             unusedEmitters.clear();
+            particleEffect.dispose();
         }
 
     }

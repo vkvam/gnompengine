@@ -64,6 +64,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
 
     @Override
     public void dispose() {
+        LOG.info("Disposing debugrenderer");
         debugRenderer.dispose();
     }
 }

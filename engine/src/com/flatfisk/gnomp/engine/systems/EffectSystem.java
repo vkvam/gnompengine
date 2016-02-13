@@ -93,7 +93,10 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
 
     @Override
     public void dispose() {
+        LOG.info("Disposing effect batch");
+        spriteBatch.dispose();
         for(ParticleEffectPoolWrapper wrapper : EFFECT_POOLS.values()){
+            LOG.info("Disposing effect");
             wrapper.effect.dispose();
         }
     }

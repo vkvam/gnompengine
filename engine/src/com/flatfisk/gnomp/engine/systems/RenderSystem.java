@@ -21,14 +21,14 @@ import java.util.Comparator;
 public class RenderSystem extends IteratingSystem implements ApplicationListener {
     private static float ROOT2 = (float) Math.sqrt(2);
 
-    public SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private Array<Entity> renderQueue = new Array<Entity>();
+    private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private final Array<Entity> renderQueue = new Array<Entity>();
 
-    public ComponentMapper<Renderable.Constructed> renderableMapper;
-    public ComponentMapper<Spatial.Node> orientationMapper;
-    private Comparator comperator;
+    private final ComponentMapper<Renderable.Constructed> renderableMapper;
+    private final ComponentMapper<Spatial.Node> orientationMapper;
+    private final Comparator comperator;
     private CameraSystem cameraSystem;
     private StatsSystem statsSystem;
 
@@ -143,6 +143,7 @@ public class RenderSystem extends IteratingSystem implements ApplicationListener
 
     @Override
     public void dispose() {
+        LOG.info("Disposing batch");
         batch.dispose();
     }
 

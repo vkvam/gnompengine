@@ -51,6 +51,9 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         Entity entityA = (Entity) contact.getFixtureA().getBody().getUserData();
         Entity entityB = (Entity) contact.getFixtureB().getBody().getUserData();
 
+        if(entityA==null||entityB==null){
+            return;
+        }
 
         if((entityA.equals(player) && enemyComponentMapper.has(entityB) || entityB.equals(player) && enemyComponentMapper.has(entityA) )){
             if(playerComponent.touchedPlatformTimes>0) {

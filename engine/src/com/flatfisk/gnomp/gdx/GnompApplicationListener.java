@@ -50,11 +50,12 @@ public class GnompApplicationListener implements ApplicationListener {
 
     @Override
     public void dispose() {
+        engine.removeAllEntities();
+        engine.clearPools();
         for (EntitySystem system : engine.getSystems()) {
             if (system instanceof ApplicationListener) {
                 ((ApplicationListener) system).dispose();
             }
         }
-        engine.clearPools();
     }
 }

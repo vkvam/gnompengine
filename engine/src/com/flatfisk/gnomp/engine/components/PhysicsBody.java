@@ -65,15 +65,6 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
         public Body body;
         public boolean positionChanged = false;
 
-        public Container() {
-        }
-
-        /*
-        public Transform getTranslation(){
-            return new Transform(getPosition(),getAngle());
-        }
-        */
-
         public Vector2 getLinearVelocity(){
             return body.getLinearVelocity();
         }
@@ -100,6 +91,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
             }
             LOG.info("Destroying body");
             body.getWorld().destroyBody(body);
+
             body = null;
             positionChanged = false;
         }

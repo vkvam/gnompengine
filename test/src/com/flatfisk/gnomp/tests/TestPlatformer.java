@@ -40,7 +40,7 @@ public class TestPlatformer extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false, true);
+        createSystems(new Vector2(0, 000f * PhysicsConstants.METERS_PER_PIXEL), true, true);
 
         World w = engine.getSystem(PhysicsSystem.class).getBox2DWorld();
 
@@ -67,6 +67,7 @@ public class TestPlatformer extends Test {
         engine.constructEntity(platform2);
 
         int i=1;
+
         for(;i<10;i++) {
             platform2 = createPlatform(new Transform(-150*i, -100+i*15, -i*4-90), 40,Color.ORANGE,true);
             engine.addComponent(Spatial.class,platform2);

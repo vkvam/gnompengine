@@ -20,6 +20,7 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
 
     private float virtualWidth, virtualHeight;
     private float virtualAspectRatio;
+    public float scale = 1;
     public Rectangle viewport = new Rectangle();
 
     public CameraSystem(int priority, int width, int height) {
@@ -88,7 +89,7 @@ public class CameraSystem extends EntitySystem implements ApplicationListener{
     {
         // calculate new viewport
         float screenAspectRatio = (float)width/(float)height;
-        float scale;
+        //float scale;
         Vector2 crop = new Vector2(0f, 0f);
 
         if(screenAspectRatio > virtualAspectRatio){
