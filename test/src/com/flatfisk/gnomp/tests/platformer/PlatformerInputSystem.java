@@ -28,8 +28,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
     private Player playerComponent;
     private Family family;
 
-    ComponentMapper<Enemy> enemyComponentMapper = ComponentMapper.getFor(Enemy.class);
-    ComponentMapper<Bullet> bulletComponentMapper = ComponentMapper.getFor(Bullet.class);
+    private final ComponentMapper<Enemy> enemyComponentMapper = ComponentMapper.getFor(Enemy.class);
+    private final ComponentMapper<Bullet> bulletComponentMapper = ComponentMapper.getFor(Bullet.class);
 
     private Queue<Entity> bullets;
     public PlatformerInputSystem(int priority, World physicsWorld) {
@@ -57,9 +57,9 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
         if((entityA.equals(player) && enemyComponentMapper.has(entityB) || entityB.equals(player) && enemyComponentMapper.has(entityA) )){
             if(playerComponent.touchedPlatformTimes>0) {
-                player.getComponent(Spatial.Node.class).world.vector.setZero();
+
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
-                body.positionChanged = true;
+                body.setPosition(0,0);
                 player.getComponent(Player.class).wasKilled = true;
             }
         }
@@ -112,9 +112,8 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
         if(sensor !=null && player!=null && entityA.equals(endpoint) || entityB.equals(endpoint) ){
             if(entityA.equals(player) || entityB.equals(player)) {
-                player.getComponent(Spatial.Node.class).world.vector.setZero();
                 PhysicsBody.Container body = player.getComponent(PhysicsBody.Container.class);
-                body.positionChanged = true;
+                body.setPosition(0,0);
             }
         }
     }
@@ -258,7 +257,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
 
     protected Entity createBullet(Transform translation,Vector2 direction){
         GnompEngine world = (GnompEngine) getEngine();
-        Entity e = world.createEntity();
+        Entity e = world.addEntity();
         e.removeAll();
 
 

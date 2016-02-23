@@ -27,7 +27,7 @@ public class SnowballGrowSystem extends IntervalSystem {
         Entity e = getEngine().getEntitiesFor(Family.all(Player.class).get()).get(0);
         CatmullPolygon p = (CatmullPolygon) e.getComponent(Shape.class).geometry;
 
-        Renderable.Constructed n = e.getComponent(Renderable.Constructed.class);
+        Renderable.Container n = e.getComponent(Renderable.Container.class);
         float w = n.texture.getWidth();
 
         Velocity v = e.getComponent(Velocity.class);

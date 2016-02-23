@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.constructors;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -12,6 +11,7 @@ import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.math.Transform;
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
@@ -20,18 +20,14 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<Shape> structureMapper;
-    private ComponentMapper<Velocity> velocityMapper;
-    private ComponentMapper<PhysicalProperties> physicalPropertiesMapper;
+    //private ComponentMapper<Shape> structureMapper;
+
     private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
         super(PhysicsBody.class, PhysicsBody.Node.class, PhysicsBody.Container.class);
         this.engine = engine;
         this.box2DWorld = box2DWorld;
-        structureMapper = ComponentMapper.getFor(Shape.class);
-        velocityMapper = ComponentMapper.getFor(Velocity.class);
-        physicalPropertiesMapper = ComponentMapper.getFor(PhysicalProperties.class);
     }
 
     @Override
@@ -49,7 +45,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         bodyContainer.body = createBody(bodyDef, fixtureDefs);
         bodyContainer.body.setUserData(entity);
 
-        Velocity velocity = velocityMapper.get(entity);
+        Velocity velocity = velocityMap.get(entity);
         if (velocity != null && velocity.velocity != null) {
             LOG.info("VECTOR:"+velocity.velocity.vector);
             Transform velocityTransform = Pools.obtain(Transform.class).set(velocity.velocity).toBox2D();
@@ -64,7 +60,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         Array<FixtureDefWrapper> fixtureDefs = new Array<FixtureDefWrapper>();
         Transform t = Pools.obtain(Transform.class);
 
-        FixtureDef[] fixtures = getFixtures(structureMapper.get(entity), t, physicalPropertiesMapper.get(entity));
+        FixtureDef[] fixtures = getFixtures(shapeMap.get(entity), t, physicalPropertiesMap.get(entity));
         if (fixtures != null) {
             for(FixtureDef f:fixtures){
                 fixtureDefs.add(new FixtureDefWrapper(entity,f, t));
@@ -79,9 +75,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     @Override
     public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefs) {
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
-        Shape shape = structureMapper.get(entity);
+        Shape shape = shapeMap.get(entity);
         if(relationshipMapper.get(entity).intermediate) {
-            FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMapper.get(entity));
+            FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMap.get(entity));
             if(fixtures!=null){
                 for(FixtureDef f:fixtures){
                     fixtureDefs.add(new FixtureDefWrapper(entity, f, transform));
@@ -103,7 +99,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     private Body createBody(BodyDef bodyDef, Array<FixtureDefWrapper> fixtureDefs) {
-        LOG.info("Create physics body of type:"+bodyDef.type);
+        LOG.info("Create physicsConstructorMap body of type:"+bodyDef.type);
         Body body = box2DWorld.createBody(bodyDef);
         LOG.info("Adding "+fixtureDefs.size+" fixtures");
         for (FixtureDefWrapper fixture : fixtureDefs) {

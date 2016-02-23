@@ -1,10 +1,7 @@
 package com.flatfisk.gnomp.tests.platformer;
 
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.GnompEngine;
@@ -13,14 +10,18 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.TestPlatformer;
 import com.flatfisk.gnomp.tests.components.Player;
+import com.flatfisk.gnomp.tests.systems.HooverMessage;
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
-public class EnemyMoverSystem extends IteratingSystem {
+public class EnemyMoverSystem extends IteratingSystem implements EntityListener {
 
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public ComponentMapper<Enemy> enemyMapper;
-    public ComponentMapper<PhysicsBody.Container> physicsBodyComponentMapper;
+    public ComponentMapper<Enemy> enemyMapper = ComponentMapper.getFor(Enemy.class);
+    private ComponentMapper<HooverMessage> eventComponentMapper = ComponentMapper.getFor(HooverMessage.class);
+
     private Family player = Family.all(Player.class).get();
+
 
     public EnemyMoverSystem(int priority) {
         super(Family.all(Enemy.class,PhysicsBody.Container.class).get(), priority);
@@ -29,15 +30,15 @@ public class EnemyMoverSystem extends IteratingSystem {
     @Override
     public void addedToEngine(Engine engine) {
         super.addedToEngine(engine);
-        enemyMapper = ComponentMapper.getFor(Enemy.class);
-        physicsBodyComponentMapper=ComponentMapper.getFor(PhysicsBody.Container.class);
+        Family hooverEventFamily = Family.all(HooverMessage.class).get();
+        engine.addEntityListener(hooverEventFamily,priority,this);
     }
 
     float c = 0;
     public void update(float f){
         super.update(f);
         c+=f;
-        if(c>0.5f){
+        if(c>0.25f){
 
             GnompEngine world= (GnompEngine) getEngine();
 
@@ -50,7 +51,7 @@ public class EnemyMoverSystem extends IteratingSystem {
     }
 
     public void processEntity(Entity e,float f){
-        PhysicsBody.Container physicsBody = physicsBodyComponentMapper.get(e);
+        PhysicsBody.Container physicsBody = physicsBodyMap.get(e);
         Enemy enemy = enemyMapper.get(e);
         if(!enemy.startedMoving){
             enemy.startedMoving = true;
@@ -72,6 +73,16 @@ public class EnemyMoverSystem extends IteratingSystem {
 
     }
 
+    @Override
+    public void entityAdded(Entity entity) {
+        HooverMessage event = eventComponentMapper.get(entity);
+        if(event.isPressed) {
+            getEngine().removeEntity(event.entityHoovered);
+        }else{
+            event.entityHoovered.getComponent(PhysicsBody.Container.class).body.applyLinearImpulse(0, 1f, 0, 0, true);
+        }
+    }
 
-
+    @Override
+    public void entityRemoved(Entity entity) {}
 }

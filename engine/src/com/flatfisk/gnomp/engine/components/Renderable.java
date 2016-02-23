@@ -40,7 +40,7 @@ public class Renderable implements ISerializable<Renderable>,Pool.Poolable {
         }
     }
 
-    public static class Constructed implements Component,Pool.Poolable {
+    public static class Container implements Component,Pool.Poolable {
         private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
         public Vector2 offset;
         public Texture texture;

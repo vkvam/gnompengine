@@ -101,7 +101,7 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
 
         GnompEngine world = ((GnompEngine) getEngine());
 
-        Entity e = world.createEntity();
+        Entity e = world.addEntity();
 
         world.addComponent(Dot.class,e);
 

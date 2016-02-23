@@ -54,7 +54,7 @@ public class TestCatmullRender extends Test {
 
     protected Entity createOddBall(Transform translation){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
         engine.addComponent(Spatial.class,e);
 
         engine.addComponent(Renderable.class,e);
@@ -101,7 +101,7 @@ public class TestCatmullRender extends Test {
 
     protected Entity createPlatform(Transform translation){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
         engine.addComponent(Renderable.class,e);
         engine.addComponent(Renderable.Node.class,e);
         engine.addComponent(PhysicsBody.Node.class,e);
@@ -128,7 +128,7 @@ public class TestCatmullRender extends Test {
 
     public static Entity createDot(GnompEngine world, Transform translation, float scale){
 
-        Entity e = world.createEntity();
+        Entity e = world.addEntity();
 
         Spatial.Node orientationRelative = world.addComponent(Spatial.Node.class, e);
         orientationRelative.local = translation;

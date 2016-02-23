@@ -103,7 +103,7 @@ public class TestAddRemove extends Test {
     protected Entity createSensor(Transform translation){
 
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
@@ -150,7 +150,7 @@ public class TestAddRemove extends Test {
 
     protected Entity createCharacter(Transform translation, Transform velocity){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
@@ -190,7 +190,7 @@ public class TestAddRemove extends Test {
 
     protected Entity createCharacterDot(Transform translation){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         engine.addComponent(Dot.class,e);
 
@@ -218,7 +218,7 @@ public class TestAddRemove extends Test {
 
     protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;

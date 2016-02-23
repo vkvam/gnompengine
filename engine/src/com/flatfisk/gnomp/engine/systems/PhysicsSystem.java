@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -12,12 +11,10 @@ import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.Velocity;
 import com.flatfisk.gnomp.math.Transform;
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 public class PhysicsSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
-    private ComponentMapper<Spatial.Node> orientationMapper;
-    private ComponentMapper<Velocity> velocityMapper;
 
     private World box2DWorld;
     private boolean fixedStep=false;
@@ -26,9 +23,7 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
 
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.Container.class).get(),priority);
-        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
-        velocityMapper = ComponentMapper.getFor(Velocity.class);
+
         this.box2DWorld = box2DWorld;
         box2DWorld.setContinuousPhysics(true);
 
@@ -72,28 +67,66 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
 
     @Override
     public void processEntity(Entity entity, float f) {
-        PhysicsBody.Container body = physicsBodyMapper.get(entity);
+        PhysicsBody.Container body = physicsBodyMap.get(entity);
         if(body.body!=null) {
-            if(body.positionChanged){
-                body.positionChanged = false;
-                Spatial.Node relative = orientationMapper.get(entity);
-                Transform transform = relative.world.toBox2D();
-                body.body.setTransform(transform.vector, transform.rotation);
-            }else {
-                Velocity velocity = velocityMapper.get(entity);
 
-                if (velocity != null) {
-                    velocity.velocity.vector.set(body.getLinearVelocity());
-                    velocity.velocity.rotation = body.getAngularVelocity();
-                    velocity.velocity.toWorld();
+            // Apply manually defined angular change
+            if( body.angleModificationType!=PhysicsBody.Container.AngleModificationType.NONE ) {
+
+                switch (body.angleModificationType) {
+                    case IMPULSE:
+                        body.body.applyAngularImpulse(body.angularModification, body.wake);
+                        break;
+                    case TORQUE:
+                        body.body.applyTorque(body.angularModification, body.wake);
+                        break;
                 }
 
-                Spatial.Node orientation = orientationMapper.get(entity);
-                Transform world = orientation.world;
-                world.vector.set(body.getPosition());
-                world.rotation = body.getAngle();
-                world.toWorld();
+                body.angleModificationType = PhysicsBody.Container.AngleModificationType.NONE;
+                body.wake = false;
             }
+
+            // Apply manually defined position change
+            if(body.positionModificationType != PhysicsBody.Container.PositionModificationType.TRANSFORM ){
+
+                switch(body.positionModificationType){
+                    case FORCE_AT_CENTER:
+                        body.body.applyForceToCenter(body.modifyDirection, body.wake);
+                        break;
+                    case FORCE_AT_POINT:
+                        body.body.applyForce(body.modifyDirection, body.modifyPoint, body.wake);
+                        break;
+                    case IMPULSE_AT_POINT:
+                        body.body.applyLinearImpulse(body.modifyDirection, body.modifyPoint, body.wake);
+                        break;
+                    case TRANSFORM:
+                        body.body.setTransform(body.modifyDirection, body.angularModification);
+                        break;
+                    case POSITION:
+                        body.body.setTransform(body.modifyDirection, body.body.getAngle());
+                        break;
+                }
+
+                body.positionModificationType = PhysicsBody.Container.PositionModificationType.NONE;
+                body.wake = false;
+
+            }
+
+            // Transfer velocity and position to correct components.
+            Velocity velocity = velocityMap.get(entity);
+
+            if (velocity != null) {
+                velocity.velocity.vector.set(body.getLinearVelocity());
+                velocity.velocity.rotation = body.getAngularVelocity();
+                velocity.velocity.toWorld();
+            }
+
+            Spatial.Node orientation = spatialNodeMap.get(entity);
+            Transform world = orientation.world;
+            world.vector.set(body.getPosition());
+            world.rotation = body.getAngle();
+            world.toWorld();
+
         }
     }
 
@@ -124,7 +157,7 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
 
     @Override
     public void dispose() {
-        LOG.info("Disposing physics world");
+        LOG.info("Disposing physicsConstructorMap world");
         box2DWorld.dispose();
     }
 }

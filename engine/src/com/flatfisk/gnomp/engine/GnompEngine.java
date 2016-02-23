@@ -20,7 +20,7 @@ public class GnompEngine extends PooledEngine {
     protected Array<Entity> entitiesToConstruct = new Array<Entity>(2);
     protected Array<Entity> entitiesConstructed = new Array<Entity>(2);
 
-    protected Array<EntityReconstructDef> entitiesToReconstruct = new Array<EntityReconstructDef>(2);
+    protected Array<EntityReconstructOperation> entitiesToReconstruct = new Array<EntityReconstructOperation>(2);
 
     public GnompEngine () {
         this(10, 1000, 10, 1000);
@@ -35,41 +35,60 @@ public class GnompEngine extends PooledEngine {
         return constructorManager;
     }
 
-    public void addEntity(Entity entity){
-        super.addEntity(entity);
+    /**
+     * Creates and adds a new entity
+     *
+     * @return created entity added to engine
+     */
+    public Entity addEntity() {
+        Entity entity = super.createEntity();
+        addEntity(entity);
+        return entity;
     }
 
     /**
-     * Constructs or reconstructs the entity or the nearest descendant entity with one or more constructors.
-     * @param entity
+     * Removes all children of this entity, then removes the entity from the engine
+     *
+     * @param entity to be removed
+     */
+    public void removeEntity(Entity entity){
+        removeFromParents(entity);
+        super.removeEntity(entity);
+    }
+
+    /**
+     * Constructs an entity or the nearest descendant that has one or more constructors
+     *
+     * @param entity to be constructed
      */
     public void constructEntity(Entity entity){
         entitiesToConstruct.add(entity);
     }
 
     /**
-     * Reconstruct an entity for the specified constructor components.
-     * If some constructors are removed from the the entity, the Container will be removed.
-     * @param entity
+     * Reconstructs an entity
+     *
+     * Constructors, specified by class, will be rebuilt
+     * Containers without any matching constructors, will be removed
+     *
+     * @param entity to reconstruct
+     * @param constructorClasses component classes to use for reconstruction
      */
-    public void reConstructEntity(Entity entity, Class<? extends Component> ... components){
-        EntityReconstructDef def = new EntityReconstructDef();
+    public void reConstructEntity(Entity entity, Class<? extends Component> ... constructorClasses){
+        EntityReconstructOperation def = new EntityReconstructOperation();
         def.entity = entity;
-        def.toConstruct = components;
+        def.toConstruct = constructorClasses;
         entitiesToReconstruct.add(def);
     }
 
-    public Entity createEntity () {
-        Entity entity = super.createEntity();
-        addEntity(entity);
-        return entity;
-    }
-
-    public void removeEntity(Entity entity){
-        removeFromParents(entity);
-        super.removeEntity(entity);
-    }
-
+    /**
+     * Creates and adds component to entity.
+     *
+     * @param componentType to be created
+     * @param entity to add the created component to
+     *
+     * @return the created component added to the entity
+     */
     public <T extends Component> T addComponent (Class<T> componentType, Entity entity) {
         T component = createComponent(componentType);
         if( component instanceof AbstractNode){
@@ -79,8 +98,12 @@ public class GnompEngine extends PooledEngine {
         return component;
     }
 
-    public void update(float f){
-        super.update(f);
+    /**
+     * Updates all the systems in this Engine, then constructs and rebuilds entities.
+     * @param deltaTime The time passed since the last frame.
+     */
+    public void update(float deltaTime){
+        super.update(deltaTime);
         constructEntities();
         reconstructsEntitiesForComponents();
     }
@@ -134,10 +157,10 @@ public class GnompEngine extends PooledEngine {
 
     private void reconstructsEntitiesForComponents(){
         if(entitiesToReconstruct.size>0) {
-            Iterator<EntityReconstructDef> entitiesAddedIterator = entitiesToReconstruct.iterator();
+            Iterator<EntityReconstructOperation> entitiesAddedIterator = entitiesToReconstruct.iterator();
 
             while (entitiesAddedIterator.hasNext()) {
-                EntityReconstructDef entity = entitiesAddedIterator.next();
+                EntityReconstructOperation entity = entitiesAddedIterator.next();
                 Entity constructor = constructorManager.getConstructor(entity.entity,true);
 
                 if(!entitiesConstructed.contains(constructor,false)){
@@ -151,7 +174,7 @@ public class GnompEngine extends PooledEngine {
         }
     }
 
-    public static class EntityReconstructDef{
+    private static class EntityReconstructOperation {
         Entity entity;
         Class<? extends Component>[] toConstruct;
 

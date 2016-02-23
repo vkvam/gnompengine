@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -12,8 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.flatfisk.gnomp.engine.components.Effect;
-import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.math.Transform;
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
 /**
@@ -24,8 +23,7 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
     private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public static final ObjectMap<String, ParticleEffectPoolWrapper> EFFECT_POOLS = new ObjectMap();
     public final SpriteBatch spriteBatch = new SpriteBatch();
-    public final ComponentMapper<Effect.Container> containerComponentMapper = ComponentMapper.getFor(Effect.Container.class);
-    public final ComponentMapper<Spatial.Node> spatialMapper = ComponentMapper.getFor(Spatial.Node.class);
+
     private StatsSystem statsSystem;
     private int effectsDrawn = 0;
 
@@ -57,8 +55,8 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        Effect.Container effect = containerComponentMapper.get(entity);
-        Transform world = spatialMapper.get(entity).world;
+        Effect.Container effect = effectMap.get(entity);
+        Transform world = spatialNodeMap.get(entity).world;
         Vector2 worldVector = world.vector;
 
         effect.particleEffect.setPosition(worldVector.x,worldVector.y);

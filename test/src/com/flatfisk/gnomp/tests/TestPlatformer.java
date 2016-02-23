@@ -21,6 +21,7 @@ import com.flatfisk.gnomp.tests.platformer.Enemy;
 import com.flatfisk.gnomp.tests.platformer.EnemyMoverSystem;
 import com.flatfisk.gnomp.tests.platformer.PlatformerInputSystem;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
+import com.flatfisk.gnomp.tests.systems.PhysicsEventListener;
 
 public class TestPlatformer extends Test {
 
@@ -40,7 +41,7 @@ public class TestPlatformer extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, 000f * PhysicsConstants.METERS_PER_PIXEL), true, true);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true, true);
 
         World w = engine.getSystem(PhysicsSystem.class).getBox2DWorld();
 
@@ -54,6 +55,8 @@ public class TestPlatformer extends Test {
         engine.addSystem(new EnemyMoverSystem(0));
         engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getWorldCamera(),true,true));
         createGame(new Transform(0, -120, 0));
+
+        engine.addSystem(new PhysicsEventListener(w,engine.getSystem(CameraSystem.class),200));
     }
 
     private void createGame(Transform position){
@@ -118,7 +121,7 @@ public class TestPlatformer extends Test {
 
 
     protected Entity createSensor(Transform translation){
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         engine.addComponent(PlayerSensor.class,e);
         engine.addComponent(Scenegraph.Node.class,e);
@@ -156,7 +159,7 @@ public class TestPlatformer extends Test {
     }
 
     protected Entity createGun(Transform translation){
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         engine.addComponent(Renderable.class,e);
         engine.addComponent(Renderable.Node.class,e);
@@ -180,7 +183,7 @@ public class TestPlatformer extends Test {
     }
 
     protected static Entity createLight(GnompEngine world, Transform translation, boolean ambient){
-        Entity e = world.createEntity();
+        Entity e = world.addEntity();
 
         world.addComponent(Scenegraph.Node.class,e);
 
@@ -195,7 +198,6 @@ public class TestPlatformer extends Test {
             pointDef.color = new Color(0.6f, 0.6f, 0.4f, 0.7f);
             pointDef.distance = 20;
             pointDef.staticLight=true;
-            //pointDef.offset.vector.set(0,0);
             pointDef.group = 0;
             light = pointDef;
         }else{
@@ -205,9 +207,6 @@ public class TestPlatformer extends Test {
             coneDef.coneAngle = 30;
             coneDef.distance = 400;
             coneDef.rayNum = 150;
-            //coneDef.offset = Pools.obtainTransform();
-            //coneDef.offset.vector.x = -20;
-            //coneDef.offset.rotation = 180;
             coneDef.group = 0;
             coneDef.categoryBits = CATEGORY_LIGHT;
             coneDef.maskBits = CATEGORY_ENEMY | CATEGORY_PLATFORM;
@@ -222,7 +221,7 @@ public class TestPlatformer extends Test {
     }
 
     public static Entity createEnemy(GnompEngine world, Transform translation){
-        Entity e = world.createEntity();
+        Entity e = world.addEntity();
 
         world.addComponent(Spatial.class,e);
         world.addComponent(Scenegraph.class,e);
@@ -265,7 +264,7 @@ public class TestPlatformer extends Test {
     }
 
     protected Entity createCharacter(Transform translation, Transform velocity){
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
 
         engine.addComponent(Renderable.class,e);
         engine.addComponent(Renderable.Node.class,e);
@@ -302,7 +301,7 @@ public class TestPlatformer extends Test {
 
     protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
 
-        Entity e = engine.createEntity();
+        Entity e = engine.addEntity();
         engine.addComponent(Renderable.class,e);
         engine.addComponent(Renderable.Node.class,e);
         engine.addComponent(PhysicsBody.Node.class,e);

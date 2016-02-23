@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.constructors;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
@@ -12,22 +11,21 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.math.Transform;
-
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
  */
-public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Constructed, ShapeTexture> {
+public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Container, ShapeTexture> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
-    private ComponentMapper<Shape> structureRelativeComponentMapper;
+
     private GnompEngine engine;
 
     public RenderableConstructor(GnompEngine engine,ShapeTextureFactory shapeTextureFactory) {
-        super(Renderable.class,Renderable.Node.class, Renderable.Constructed.class);
+        super(Renderable.class,Renderable.Node.class, Renderable.Container.class);
         this.engine = engine;
-        structureRelativeComponentMapper = ComponentMapper.getFor(Shape.class);
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
@@ -35,7 +33,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     @Override
     public void parentAddedFinal(Entity entity, Spatial.Node constructorOrientation, ShapeTexture shapeTexture) {
         Renderable renderableDef = constructorMapper.get(entity);
-        Renderable.Constructed renderable = engine.addComponent(Renderable.Constructed.class, entity);
+        Renderable.Container renderable = engine.addComponent(Renderable.Container.class, entity);
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();
         renderable.zIndex = renderableDef.zIndex;
@@ -44,13 +42,12 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
     @Override
     public ShapeTexture parentAdded(Entity entity, Spatial.Node constructorOrientation) {
         Renderable geometry = constructorMapper.get(entity);
-        Shape structure = structureRelativeComponentMapper.get(entity);
         ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
-
+        Shape shape = shapeMap.get(entity);
         // If the constructor has a geometry, the geometry should be drawn at origin.
         Transform transform = Pools.obtain(Transform.class);
-        if (structure.geometry != null && !relationshipMapper.get(entity).intermediate) {
-            px.draw(structure, transform);
+        if (shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
+            px.draw(shape, transform);
         }
         Pools.free(transform);
         return px;
@@ -63,7 +60,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
-        Shape shape = structureRelativeComponentMapper.get(entity);
+        Shape shape = shapeMap.get(entity);
 
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
 
@@ -77,7 +74,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
 
     @Override
     public void parentRemoved(Entity entity) {
-        entity.remove(Renderable.Constructed.class);
+        entity.remove(Renderable.Container.class);
     }
 
     @Override

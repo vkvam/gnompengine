@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.systems;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -12,24 +11,17 @@ import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 /**
-Acts on entities with physics-components and a Scenegraph parent,
+Acts on entities with physicsConstructorMap-components and a Scenegraph parent,
 PhysicsBody.Container and Light.Container
  */
 public class PhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    private ComponentMapper<PhysicsBody.Container> physicsBodyMapper;
-    private ComponentMapper<Scenegraph.Node> scenegraphNodeComponentMapper;
-    private ComponentMapper<Spatial.Node> orientationMapper;
-
     public PhysicsScenegraphSystem(int priority) {
 
         super(Family.all(PhysicsBody.Container.class,Scenegraph.Node.class).exclude(Scenegraph.class).get(),priority);
-
-        physicsBodyMapper = ComponentMapper.getFor(PhysicsBody.Container.class);
-        orientationMapper = ComponentMapper.getFor(Spatial.Node.class);
-        scenegraphNodeComponentMapper = ComponentMapper.getFor(Scenegraph.Node.class);
 
     }
 
@@ -41,17 +33,17 @@ public class PhysicsScenegraphSystem extends IteratingSystem implements Applicat
     @Override
     public void processEntity(Entity entity, float f) throws UnsupportedOperationException{
 
-        Spatial.Node childSpatial = orientationMapper.get(entity);
+        Spatial.Node childSpatial = spatialNodeMap.get(entity);
 
         verifyPositionTransfer(childSpatial);
 
-        Scenegraph.Node childNode = scenegraphNodeComponentMapper.get(entity);
+        Scenegraph.Node childNode = scenegraphNodeMap.get(entity);
         Entity parent = childNode.parent;
-        PhysicsBody.Container childBodyContainer = physicsBodyMapper.get(entity);
+        PhysicsBody.Container childBodyContainer = physicsBodyMap.get(entity);
         Body childBody = childBodyContainer.body;
 
         if(childBody!=null) {
-            PhysicsBody.Container parentBodyContainer = physicsBodyMapper.get(parent);
+            PhysicsBody.Container parentBodyContainer = physicsBodyMap.get(parent);
 
             if (parentBodyContainer != null) {
                 Vector2 childScenegraphPosition = childSpatial.world.vector;

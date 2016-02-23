@@ -20,15 +20,13 @@ public class Test extends DefaultGnompApplicationListener {
 
         addPhysicsTrackerSystem(400);
         PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
-        PhysicsInputSystem inputSystem = new PhysicsInputSystem(physicsWorld,650);
-        engine.addSystem(inputSystem);
 
         if(physicsDebug) {
             addDebugRenderer(500, physicsWorld,cameraSystem);
         }
 
-        //LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
-        //engine.addSystem(lightSystem);
+        LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
+        engine.addSystem(lightSystem);
 
         EffectSystem effectSystem = new EffectSystem(800,cameraSystem);
         engine.addSystem(effectSystem);
@@ -42,7 +40,7 @@ public class Test extends DefaultGnompApplicationListener {
             physicsSystem.setStatsSystem(statsSystem);
             renderSystem.setStatsSystem(statsSystem);
             effectSystem.setStatsSystem(statsSystem);
-            //lightSystem.setStatsSystem(statsSystem);
+            lightSystem.setStatsSystem(statsSystem);
         }
     }
 

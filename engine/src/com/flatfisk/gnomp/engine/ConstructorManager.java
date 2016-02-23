@@ -5,7 +5,6 @@ package com.flatfisk.gnomp.engine;
  */
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.utils.Array;
@@ -14,11 +13,13 @@ import com.badlogic.gdx.utils.SortedIntList;
 import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.constructors.SpatialConstructor;
 
+import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
+
 public class ConstructorManager {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    public ComponentMapper<Spatial.Node> spatialRelativeComponentMapper;
-    public ComponentMapper<Spatial> spatialDefComponentMapper;
+    //public ComponentMapper<Spatial.Node> spatialRelativeComponentMapper;
+    //public ComponentMapper<Spatial> spatialDefComponentMapper;
 
     public SortedIntList<Constructor> constructors;
     public Family rootFamily;
@@ -27,8 +28,8 @@ public class ConstructorManager {
     public ConstructorManager(GnompEngine engine){
         rootFamily = Family.all(Spatial.class, Spatial.Node.class).get();
 
-        spatialRelativeComponentMapper = ComponentMapper.getFor(Spatial.Node.class);
-        spatialDefComponentMapper = ComponentMapper.getFor(Spatial.class);
+        //spatialRelativeComponentMapper = ComponentMapper.getFor(Spatial.Node.class);
+        //spatialDefComponentMapper = ComponentMapper.getFor(Spatial.class);
         constructors = new SortedIntList<Constructor>();
         this.engine = engine;
     }
@@ -41,7 +42,7 @@ public class ConstructorManager {
 
     public void constructEntity(Entity entity) {
         dismantleEntity(entity);
-        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
             constructEntity(constructor, entity, constructorOrientation);
@@ -49,7 +50,7 @@ public class ConstructorManager {
     }
 
     public void reConstructEntity(Entity entity, Class<? extends Component>[] constructorClasses) {
-        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
 
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
@@ -75,7 +76,7 @@ public class ConstructorManager {
     }
 
     private void constructEntity(Constructor constructor, Entity entity, Spatial.Node rootOrientation){
-        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
         boolean isParent = constructor.isParent(entity);
@@ -98,7 +99,7 @@ public class ConstructorManager {
             if(childWrapper!=null && childWrapper!=null) {
             Entity child = childWrapper;
                 if (constructor.isChild(child)) {
-                    Spatial.Node orientation = spatialRelativeComponentMapper.get(child);
+                    Spatial.Node orientation = spatialNodeMap.get(child);
                     LOG.info("Child added for constructor:" + constructor.getClass());
 
                     iterateDTO = constructor.insertedChild(child, constructorOrientation, parentOrientation, orientation, iterateDTO);
@@ -157,7 +158,7 @@ public class ConstructorManager {
 
     private void parentRemoved(Constructor constructor, Entity entity){
         LOG.info("Parent removed for constructor:"+constructor.getClass());
-        Spatial.Node constructorOrientation = spatialRelativeComponentMapper.get(entity);
+        Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
         Array<Entity> children = constructorOrientation.children;
 
         constructor.parentRemoved(entity);
@@ -171,7 +172,7 @@ public class ConstructorManager {
             if(childWrapper!=null && childWrapper!=null) {
                 Entity child = childWrapper;
                 if (constructor.isChild(child)) {
-                    Spatial.Node orientation = spatialRelativeComponentMapper.get(child);
+                    Spatial.Node orientation = spatialNodeMap.get(child);
                     //LOG.info("Child added for constructor:" + constructor.getClass());
 
                     constructor.childRemoved(child);
