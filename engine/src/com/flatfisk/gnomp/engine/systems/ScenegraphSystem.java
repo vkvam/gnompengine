@@ -35,7 +35,7 @@ public class ScenegraphSystem extends IteratingSystem {
         if(entity!=null) {
             Scenegraph.Node scenegraphNode = scenegraphNodeMap.get(entity);
             Spatial.Node childOrientation = spatialNodeMap.get(entity);
-            childOrientation.addParentWorld(parentWorld);
+            childOrientation.addParentTransform(parentWorld);
 
             for (Entity child : scenegraphNode.children) {
                 processChild(child, childOrientation.world);

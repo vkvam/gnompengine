@@ -29,7 +29,7 @@ public class SpatialConstructor extends Constructor<Spatial,Spatial.Node,Compone
                                       Spatial.Node constructorDTO) {
 
         Transform parentWorld = parentOrientation.world;
-        childOrientation.addParentWorld(parentWorld);
+        childOrientation.addParentTransform(parentWorld);
         return constructorOrientation;
     }
 
