@@ -56,6 +56,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Renderable.Node renderableNode = relationshipMapper.get(entity);
 
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
+        transform.vector.rotate(-constructorOrientation.world.rotation);
 
         if(shape.geometry !=null &&! renderableNode.intermediate){
             textureCoordinates = shape.geometry.getTextureCoordinates(textureCoordinates, transform);

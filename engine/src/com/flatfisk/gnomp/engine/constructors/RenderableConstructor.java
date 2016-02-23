@@ -63,6 +63,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         Shape shape = shapeMap.get(entity);
 
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
+        transform.vector.rotate(-constructorOrientation.world.rotation);
 
         if(shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
             constructorDTO.draw(shape, transform);

@@ -60,8 +60,6 @@ public class Spatial implements ISpatialController, ISerializable<Spatial>, Pool
         public void addParentWorld(Transform parentWorld){
             boolean transferAngle = inheritFromParentType.equals(Spatial.Node.SpatialInheritType.POSITION_ANGLE);
 
-
-
             if(transferAngle) {
                 world.set(parentWorld);
                 tempTransformVector.set(local.vector);

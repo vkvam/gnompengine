@@ -19,9 +19,6 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
 public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,PhysicsBody.Container, Array<PhysicsConstructor.FixtureDefWrapper>> {
     private final World box2DWorld;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-
-    //private ComponentMapper<Shape> structureMapper;
-
     private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
@@ -74,17 +71,18 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
 
     @Override
     public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefs) {
-        Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
+        Transform t = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
+        t.vector.rotate(-constructorOrientation.world.rotation);
         Shape shape = shapeMap.get(entity);
         if(relationshipMapper.get(entity).intermediate) {
-            FixtureDef[] fixtures = getFixtures(shape, transform, physicalPropertiesMap.get(entity));
+            FixtureDef[] fixtures = getFixtures(shape, t, physicalPropertiesMap.get(entity));
             if(fixtures!=null){
                 for(FixtureDef f:fixtures){
-                    fixtureDefs.add(new FixtureDefWrapper(entity, f, transform));
+                    fixtureDefs.add(new FixtureDefWrapper(entity, f, t));
                 }
             }
         }
-        Pools.free(transform);
+        Pools.free(t);
         return fixtureDefs;
     }
 

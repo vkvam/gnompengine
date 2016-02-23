@@ -26,10 +26,15 @@ public class Transform implements Pool.Poolable {
         this.rotation = rotation;
     }
 
-    public Transform subtract(Transform subtractor){
-        this.vector.sub(subtractor.vector);
-        this.vector.rotate(-subtractor.rotation);
-        this.rotation -=subtractor.rotation;
+    public Transform subtract(Transform t){
+        this.vector.sub(t.vector);
+        this.rotation -=t.rotation;
+        return this;
+    }
+
+    public Transform subtract(Vector2 vector, float rotation){
+        this.vector.sub(vector);
+        this.rotation -=rotation;
         return this;
     }
 
