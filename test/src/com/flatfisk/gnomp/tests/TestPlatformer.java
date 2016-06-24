@@ -162,6 +162,7 @@ public class TestPlatformer extends Test {
         Entity e = engine.addEntity();
 
         engine.addComponent(Renderable.class,e);
+        e.getComponent(Renderable.class).zIndex = 10;
         engine.addComponent(Renderable.Node.class,e);
         engine.addComponent(Scenegraph.Node.class,e);
         engine.addComponent(Gun.class,e);
@@ -170,13 +171,12 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
-
         Shape structure = engine.addComponent(Shape.class,e);
-        RectangularLine circle = new RectangularLine(3,3,Color.DARK_GRAY,Color.GRAY);
-        circle.from.set(-10,0);
-        circle.to.set(10,0);
-        circle.createPolygonVertices();
-        structure.geometry = circle;
+        RectangularLine barrel = new RectangularLine(3,3,Color.DARK_GRAY,Color.GRAY);
+        barrel.from.set(-10,0);
+        barrel.to.set(30,0);
+        barrel.createPolygonVertices();
+        structure.geometry = barrel;
 
 
         return e;

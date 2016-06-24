@@ -33,7 +33,7 @@ public class SnowballGrowSystem extends IntervalSystem {
         Velocity v = e.getComponent(Velocity.class);
         float length = v.velocity.vector.len()*0.002f;
 
-        if(Math.random()>0.94f) {
+        if(Math.random()>0.994f) {
             Entity child = e.getComponent(Spatial.Node.class).children.get(0);
             e.getComponent(Spatial.Node.class).removeChild(child);
             getEngine().removeEntity(child);

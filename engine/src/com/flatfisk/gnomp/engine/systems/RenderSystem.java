@@ -16,20 +16,23 @@ import com.flatfisk.gnomp.math.Transform;
 
 import java.util.Comparator;
 
-import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 import static com.flatfisk.gnomp.engine.GnompMappers.renderableMap;
+import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 
 public class RenderSystem extends SortedIteratingSystem implements ApplicationListener {
+    protected final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+
     private static float ROOT2 = (float) Math.sqrt(2);
 
     private final SpriteBatch batch;
-    private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+
+    private int renderedObjects = 0;
 
     private CameraSystem cameraSystem;
     private StatsSystem statsSystem;
 
     public RenderSystem(int priority, CameraSystem cameraSystem) {
-        super(Family.all(Renderable.Container.class).get(),new RenderComperator(),priority);
+        super(Family.all(Renderable.Container.class).get(),new RenderComparator(),priority);
 
         this.cameraSystem = cameraSystem;
 
@@ -54,24 +57,23 @@ public class RenderSystem extends SortedIteratingSystem implements ApplicationLi
             int tH = texture.getHeight();
             float tWDiv2 = ((float) tW) / 2 - offset.x;
             float tHDiv2 = ((float) tH) / 2 - offset.y;
-            float xCenter = x - tWDiv2, yCenter = y - tHDiv2;
+            float lowerLeft = x - tWDiv2, lowerRight = y - tHDiv2;
 
-            // TODO: Very large Rectangular lines, get cut off to early.
-
-            // The idea for this check is that a texture's rotated bounding-box never will be larger than root(2) of half of longest side.
-            float longestSide = Math.max(tW, tH) * 0.5f * ROOT2;
-            if (cameraSystem.getWorldCamera().frustum.boundsInFrustum(xCenter + tWDiv2, yCenter + tHDiv2, 0, longestSide, longestSide, 0)) {
+            // Assume texture is a square for culling.
+            float longestSide = Math.max(tWDiv2,tHDiv2) * ROOT2;
+            if (cameraSystem.getWorldCamera().frustum.boundsInFrustum(x,y, 0, longestSide, longestSide, 0)) {
+                renderedObjects++;
                 batch.draw(
                         texture,                            // Texture texture
-                        xCenter,                            // float x
-                        yCenter,                            // float y
+                        lowerLeft,                          // float x
+                        lowerRight,                         // float y
                         tWDiv2,                             // float originX
                         tHDiv2,                             // float originY
                         tW,                                 // float width
                         tH,                                 // float height
                         1,                                  // float scaleX
                         1,                                  // float scaleY
-                        transform.rotation,                  // float rotation
+                        transform.rotation,                 // float rotation
                         0,                                  // int srcX
                         0,                                  // int srcY
                         tW,                                 // int srcHeight
@@ -88,6 +90,7 @@ public class RenderSystem extends SortedIteratingSystem implements ApplicationLi
     @Override
     public void update(float f) {
 
+        renderedObjects = 0;
         batch.setProjectionMatrix(cameraSystem.getWorldCamera().combined);
         batch.begin();
 
@@ -96,7 +99,7 @@ public class RenderSystem extends SortedIteratingSystem implements ApplicationLi
         batch.end();
         if(statsSystem!=null){
             statsSystem.addStat("Rendering");
-            statsSystem.addLine();
+            statsSystem.addStat("# of objects:" + renderedObjects);
         }
     }
 
@@ -137,7 +140,7 @@ public class RenderSystem extends SortedIteratingSystem implements ApplicationLi
         this.statsSystem = statsSystem;
     }
 
-    private static class RenderComperator implements Comparator<Entity>{
+    private static class RenderComparator implements Comparator<Entity>{
 
         @Override
         public int compare(Entity spriteA, Entity spriteB){

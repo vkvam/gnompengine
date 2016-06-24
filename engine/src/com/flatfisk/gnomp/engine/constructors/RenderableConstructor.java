@@ -11,7 +11,8 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTexture;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.math.Transform;
-import static com.flatfisk.gnomp.engine.GnompMappers.*;
+
+import static com.flatfisk.gnomp.engine.GnompMappers.shapeMap;
 
 /**
  * Created by Vemund Kvam on 06/12/15.
