@@ -19,8 +19,6 @@ import com.flatfisk.gnomp.utils.Pools;
 public class Circle extends AbstractShape {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public com.badlogic.gdx.math.Circle circle = new com.badlogic.gdx.math.Circle();
-    private Vector2 from = Pools.obtainVector(),
-            to=Pools.obtainVector();
 
     protected Circle(){
         super(1, null, null);
