@@ -36,7 +36,7 @@ public class TestAddRemove extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true, true);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), true, true, false);
 
         engine.getSystem(CameraSystem.class).getWorldCamera().zoom = 1f;
 

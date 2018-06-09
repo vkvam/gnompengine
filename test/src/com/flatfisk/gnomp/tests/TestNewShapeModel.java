@@ -37,7 +37,7 @@ public class TestNewShapeModel extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false, true);
+        createSystems(new Vector2(0, -1000f * PhysicsConstants.METERS_PER_PIXEL), false, true, false);
 
         World w = engine.getSystem(PhysicsSystem.class).getBox2DWorld();
 

@@ -8,7 +8,7 @@ import com.flatfisk.gnomp.gdx.DefaultGnompApplicationListener;
 
 public class Test extends DefaultGnompApplicationListener {
 
-    public void createSystems(Vector2 gravity, boolean physicsDebug, boolean showStats){
+    public void createSystems(Vector2 gravity, boolean physicsDebug, boolean showStats, boolean lights){
         World physicsWorld = new World(gravity,true);
 
         RayHandler rayHandler = new RayHandler(physicsWorld);
@@ -25,9 +25,10 @@ public class Test extends DefaultGnompApplicationListener {
         if(physicsDebug) {
             addDebugRenderer(500, physicsWorld,cameraSystem);
         }
-
-        //LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
-        //engine.addSystem(lightSystem);
+        if (lights) {
+            LightSystem lightSystem = new LightSystem(700, rayHandler, cameraSystem);
+            engine.addSystem(lightSystem);
+        }
 
         EffectSystem effectSystem = new EffectSystem(800,cameraSystem);
         engine.addSystem(effectSystem);

@@ -33,7 +33,7 @@ public class TestCatmullRender extends Test {
     public void create () {
         super.create();
         PhysicsConstants.setPixelsPerMeter(100);
-        createSystems(new Vector2(0, -10), true, true);
+        createSystems(new Vector2(0, -10), true, true, false);
 
         engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getWorldCamera(),true,true));
         engine.addSystem(new SnowballGrowSystem(.05f,0));
