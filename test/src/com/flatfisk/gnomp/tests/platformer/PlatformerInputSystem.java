@@ -288,9 +288,12 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         effect.effectFileName = "data/test.p";
         effect.initialEmitters.addAll("simple");
 
-        com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class,e);
-        Circle circle = new Circle(1,3, Color.WHITE,Color.DARK_GRAY);
-        structure.geometry = circle;
+        com.flatfisk.gnomp.engine.components.Shape<Circle> structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class,e);
+        Circle circle = structure.obtain(Circle.class);
+        //new Circle(1,3, Color.WHITE,Color.DARK_GRAY);
+        circle.lineWidth=1;
+        circle.setRadius(3);
+        circle.lineWidth = 1;
 
 
         bullets.addFirst(e);

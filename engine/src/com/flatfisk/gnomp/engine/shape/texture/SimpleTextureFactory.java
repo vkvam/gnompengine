@@ -34,26 +34,26 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
 
         public void draw(Shape structure,Transform orientation) {
             Vector2 pos = orientation.vector;
-            AbstractShape abstractShape = structure.geometry;
+            AbstractShape abstractShape = structure.getGeometry();
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
             Gdx.app.log("Draw vector:", centerX + "," + centerY);
 
             if (abstractShape instanceof Circle) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (structure.getGeometry().fillColor != null) {
+                    setColor(structure.getGeometry().fillColor);
                     int radius = Math.round(((Circle) abstractShape).circle.radius);
                     fillCircle(centerX, centerY, radius);
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (structure.getGeometry().lineColor != null) {
+                    setColor(structure.getGeometry().lineColor);
                     int radius = Math.round(((Circle) abstractShape).circle.radius);
                     drawCircle(centerX, centerY, radius);
                 }
 
             } else if (abstractShape instanceof RectangularLine) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (structure.getGeometry().fillColor != null) {
+                    setColor(structure.getGeometry().fillColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
                     ls.getRenderPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
@@ -61,8 +61,8 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
 
                     fillPolygon(vertices, centerX, centerY);
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (structure.getGeometry().lineColor != null) {
+                    setColor(structure.getGeometry().lineColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
                     ls.getRenderPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
@@ -71,8 +71,8 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
                     drawPolygon(vertices, centerX, centerY);
                 }
             } else if (abstractShape instanceof Polygon) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (structure.getGeometry().fillColor != null) {
+                    setColor(structure.getGeometry().fillColor);
                     Polygon ls = (Polygon) abstractShape;
                     ls.getRenderPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
@@ -80,8 +80,8 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
 
                     fillPolygon(vertices, centerX, centerY);
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (structure.getGeometry().lineColor != null) {
+                    setColor(structure.getGeometry().lineColor);
                     Polygon ls = (Polygon) abstractShape;
                     ls.getRenderPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();

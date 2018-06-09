@@ -9,6 +9,7 @@ import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.shape.CatmullPolygon;
+import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
@@ -16,6 +17,7 @@ import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.catmull.SnowballGrowSystem;
 import com.flatfisk.gnomp.tests.components.Player;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.Random;
 
@@ -73,10 +75,13 @@ public class TestCatmullRender extends Test {
         orientationRelative.world = translation;
 
         Shape<CatmullPolygon> shape = engine.addComponent(Shape.class,e);
-        shape.geometry = new CatmullPolygon(5,Color.WHITE,Color.WHITE);
-        shape.geometry.physicsResolution=5;
-        shape.geometry.renderResolution=10;
-        shape.geometry.setVertices(new float[]{
+        CatmullPolygon geom = shape.obtain(CatmullPolygon.class);
+        geom.lineWidth = 5;
+        geom.lineColor = Color.WHITE;
+        geom.fillColor = Color.WHITE;
+        geom.physicsResolution=5;
+        geom.renderResolution=10;
+        geom.setVertices(new float[]{
                 100,0,
                 75,75,
                 0,100,
@@ -87,7 +92,7 @@ public class TestCatmullRender extends Test {
                 75,-75
         });
 
-        shape.geometry.polygon.setScale(0.2f,0.2f);
+        geom.polygon.setScale(0.2f,0.2f);
 
 
         Entity e2 = createDot(engine,new Transform(8,0,-90), .1f);
@@ -108,10 +113,14 @@ public class TestCatmullRender extends Test {
         orientationRelative.world = translation;
 
         Shape<RectangularLine> shape = engine.addComponent(Shape.class,e);
-        shape.geometry = new RectangularLine(1,200,Color.WHITE,Color.WHITE);
-        shape.geometry.from.set(500,0);
-        shape.geometry.to.set(-15500,0);
-        shape.geometry.createPolygonVertices();
+        RectangularLine geometry = shape.obtain(RectangularLine.class);
+        geometry.lineWidth = 1;
+        geometry.rectangleWidth = 200;
+        geometry.lineColor = Color.WHITE;
+        geometry.fillColor = Color.WHITE;
+        geometry.from.set(500,0);
+        geometry.to.set(-15500,0);
+        geometry.createPolygonVertices();
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
@@ -138,10 +147,14 @@ public class TestCatmullRender extends Test {
         c.g=0.9f;
         c.b=0.9f;
         c.a=1;
-        shape.geometry = new CatmullPolygon(5,null,c);
-        shape.geometry.physicsResolution=5;
-        shape.geometry.renderResolution=10;
-        shape.geometry.setVertices(new float[]{
+
+        CatmullPolygon geometry = shape.obtain(CatmullPolygon.class);
+        geometry.lineWidth = 5;
+        geometry.lineColor = null;
+        geometry.fillColor = c;
+        geometry.physicsResolution=5;
+        geometry.renderResolution=10;
+        geometry.setVertices(new float[]{
                 50*new Random().nextFloat(),0,
                 35*new Random().nextFloat(),75*new Random().nextFloat(),
                 0,75*new Random().nextFloat(),
@@ -152,7 +165,7 @@ public class TestCatmullRender extends Test {
                 75*new Random().nextFloat(),-75*new Random().nextFloat()
         });
 
-        shape.geometry.polygon.setScale(scale,scale);
+        geometry.polygon.setScale(scale,scale);
 
         return e;
     }

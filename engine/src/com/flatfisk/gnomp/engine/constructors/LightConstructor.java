@@ -17,7 +17,7 @@ import com.flatfisk.gnomp.math.Transform;
  * Created by Vemund Kvam on 06/12/15.
  */
 public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Container, Light.Container> {
-    public final RayHandler rayHandler;
+    private final RayHandler rayHandler;
     public final GnompEngine engine;
 
     public LightConstructor(RayHandler rayHandler, GnompEngine engine) {

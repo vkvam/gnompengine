@@ -15,9 +15,10 @@ public class RectangularLine extends Polygon {
     public final Vector2 from = new Vector2(),
             to=new Vector2();
 
-    public RectangularLine(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
-        super(lineWidth, color, fillColor);
-        this.rectangleWidth = rectangleWidth;
+
+    protected RectangularLine(){
+        super();
+        this.rectangleWidth = 1;
     }
 
     public void reset() {

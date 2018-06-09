@@ -23,9 +23,9 @@ public class PhysicsEventListener extends EntitySystem implements QueryCallback 
     private World box2DWorld;
     private StatsSystem statsSystem;
 
-    protected boolean isPressed = false;
-    protected final Vector3 press = new Vector3();
-    protected Messenger<HooverMessage> hooverMessenger;
+    private boolean isPressed = false;
+    private final Vector3 press = new Vector3();
+    private Messenger<HooverMessage> hooverMessenger;
 
 
     public PhysicsEventListener(World box2DWorld, CameraSystem cameraSystem, int priority) {

@@ -110,9 +110,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         return body;
     }
 
-    public FixtureDef[] getFixtures(Shape structure,Transform transform, PhysicalProperties physicalProperties) {
-        if (structure.geometry != null) {
-            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.geometry, transform, physicalProperties);
+    private FixtureDef[] getFixtures(Shape structure, Transform transform, PhysicalProperties physicalProperties) {
+        if (structure.getGeometry() != null) {
+            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.getGeometry(), transform, physicalProperties);
             return structureFixtureDefs;
         }
         return null;
@@ -137,21 +137,21 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     protected static class FixtureUserData{
-        public final Transform transformRelativeToBody;
-        public final Entity owner;
+        final Transform transformRelativeToBody;
+        final Entity owner;
 
-        public FixtureUserData(Entity owner, Transform transformRelativeToBody) {
+        FixtureUserData(Entity owner, Transform transformRelativeToBody) {
             this.owner = owner;
             this.transformRelativeToBody = transformRelativeToBody;
         }
     }
 
-    protected static class FixtureDefWrapper{
-        public Entity owner;
-        public FixtureDef fixtureDef;
-        public final Transform transformRelativeToBody;
+    static class FixtureDefWrapper{
+        Entity owner;
+        FixtureDef fixtureDef;
+        final Transform transformRelativeToBody;
 
-        public FixtureDefWrapper(Entity owner, FixtureDef fixtureDef, Transform transformRelativeToBody) {
+        FixtureDefWrapper(Entity owner, FixtureDef fixtureDef, Transform transformRelativeToBody) {
             this.owner = owner;
             this.fixtureDef = fixtureDef;
             this.transformRelativeToBody = transformRelativeToBody;

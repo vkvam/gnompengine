@@ -41,8 +41,8 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class);
         TextureCoordinates textureCoordinates = null;
 
-        if (structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {
-            textureCoordinates = structure.geometry.getTextureCoordinates(null, transform);
+        if (structure.getGeometry() != null && renderableNode != null && !renderableNode.intermediate) {
+            textureCoordinates = structure.getGeometry().getTextureCoordinates(null, transform);
         }
 
         Pools.free(transform);
@@ -58,8 +58,8 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         transform.vector.rotate(-constructorOrientation.world.rotation);
 
-        if(shape.geometry !=null &&! renderableNode.intermediate){
-            textureCoordinates = shape.geometry.getTextureCoordinates(textureCoordinates, transform);
+        if(shape.getGeometry() !=null &&! renderableNode.intermediate){
+            textureCoordinates = shape.getGeometry().getTextureCoordinates(textureCoordinates, transform);
         }
         Pools.free(transform);
         return textureCoordinates;

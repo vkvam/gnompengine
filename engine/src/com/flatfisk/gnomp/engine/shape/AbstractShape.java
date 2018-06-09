@@ -19,7 +19,7 @@ public abstract class AbstractShape implements Pool.Poolable, Component {
     public Color lineColor=Color.WHITE.cpy();
     public Color fillColor=Color.BLACK.cpy();
 
-    public AbstractShape(float lineWidth, Color lineColor, Color fillColor) {
+    AbstractShape(float lineWidth, Color lineColor, Color fillColor) {
         this.lineWidth = lineWidth;
         this.lineColor = lineColor;
         this.fillColor = fillColor;

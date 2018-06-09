@@ -111,9 +111,12 @@ public class AddRemoveInputSystem extends EntitySystem implements ContactListene
 
         world.addComponent(Renderable.Node.class,e);
 
-        Shape structure = world.addComponent(Shape.class,e);
-        Circle rectangularLineShape = new Circle(1,5, Color.GREEN,Color.BLACK);
-        structure.geometry = rectangularLineShape;
+        Shape<Circle> structure = world.addComponent(Shape.class,e);
+        Circle rectangularLineShape = structure.obtain(Circle.class);
+        rectangularLineShape.setRadius(5);
+        rectangularLineShape.lineColor = Color.GREEN;
+        rectangularLineShape.fillColor = Color.BLACK;
+
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;

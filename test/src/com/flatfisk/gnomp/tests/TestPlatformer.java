@@ -22,6 +22,7 @@ import com.flatfisk.gnomp.tests.platformer.EnemyMoverSystem;
 import com.flatfisk.gnomp.tests.platformer.PlatformerInputSystem;
 import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
 import com.flatfisk.gnomp.tests.systems.PhysicsEventListener;
+import com.sun.org.apache.regexp.internal.RE;
 
 public class TestPlatformer extends Test {
 
@@ -132,13 +133,13 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
-        Shape structure = engine.addComponent(Shape.class,e);
-
-        RectangularLine rectangularLineShape = new RectangularLine(1,6,Color.OLIVE,Color.BLUE);
+        Shape<RectangularLine> structure = engine.addComponent(Shape.class,e);
+        RectangularLine rectangularLineShape = structure.obtain(RectangularLine.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.rectangleWidth = 6;
         rectangularLineShape.from.set(-7.5f,0);
         rectangularLineShape.to.set(7.5f,0);
         rectangularLineShape.createPolygonVertices();
-        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.isSensor = true;
@@ -170,13 +171,15 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
-        Shape structure = engine.addComponent(Shape.class,e);
-        RectangularLine barrel = new RectangularLine(3,3,Color.DARK_GRAY,Color.GRAY);
+        Shape<RectangularLine> structure = engine.addComponent(Shape.class,e);
+        RectangularLine barrel = structure.obtain(RectangularLine.class);
+        barrel.rectangleWidth = 3;
+        barrel.lineWidth = 3;
+        barrel.fillColor = Color.DARK_GRAY;
+        barrel.lineColor = Color.GRAY;
         barrel.from.set(-10,0);
         barrel.to.set(30,0);
         barrel.createPolygonVertices();
-        structure.geometry = barrel;
-
 
         return e;
     }
@@ -235,13 +238,18 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape structure = world.addComponent(Shape.class,e);
-        RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,Color.RED);
+        Shape<RectangularLine> structure = world.addComponent(Shape.class,e);
+        RectangularLine rectangularLineShape = structure.obtain(RectangularLine.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.rectangleWidth =5;
+        rectangularLineShape.lineColor = Color.WHITE;
+        rectangularLineShape.fillColor = Color.RED;
+
         rectangularLineShape.from.set(0,-10);
         rectangularLineShape.to.set(0,10);
         rectangularLineShape.createPolygonVertices();
 
-        structure.geometry = rectangularLineShape;
+
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
@@ -279,9 +287,12 @@ public class TestPlatformer extends Test {
         velocityComponent.velocity = velocity;
         engine.addComponent(Player.class,e);
 
-        Shape structure = engine.addComponent(Shape.class,e);
-        Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
-        structure.geometry = rectangularLineShape;
+        Shape<Circle> structure = engine.addComponent(Shape.class,e);
+        Circle circle = structure.obtain(Circle.class);
+        circle.lineWidth = 1;
+        circle.setRadius(11);
+        circle.lineColor = Color.WHITE;
+        circle.fillColor = Color.FIREBRICK;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -298,7 +309,7 @@ public class TestPlatformer extends Test {
     }
 
 
-    protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
+    private Entity createPlatform(Transform translation, float width, Color color, boolean hasVelocity){
 
         Entity e = engine.addEntity();
         engine.addComponent(Renderable.class,e);
@@ -309,11 +320,16 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
+
         Shape<RectangularLine> shape = engine.addComponent(Shape.class,e);
-        shape.geometry = new RectangularLine(1,(float) 5,Color.WHITE,color);
-        shape.geometry.from.set(-width/2,0);
-        shape.geometry.to.set(width/2,0);
-        shape.geometry.createPolygonVertices();
+        RectangularLine rectangularLineShape = shape.obtain(RectangularLine.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.rectangleWidth =5;
+        rectangularLineShape.lineColor = Color.WHITE;
+        rectangularLineShape.fillColor = color;
+        rectangularLineShape.from.set(-width/2,0);
+        rectangularLineShape.to.set(width/2,0);
+        rectangularLineShape.createPolygonVertices();
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
