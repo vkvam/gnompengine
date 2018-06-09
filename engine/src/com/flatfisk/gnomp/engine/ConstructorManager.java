@@ -18,18 +18,12 @@ import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 public class ConstructorManager {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
-    //public ComponentMapper<Spatial.Node> spatialRelativeComponentMapper;
-    //public ComponentMapper<Spatial> spatialDefComponentMapper;
-
     public SortedIntList<Constructor> constructors;
-    public Family rootFamily;
+    private Family rootFamily;
 
     public GnompEngine engine;
-    public ConstructorManager(GnompEngine engine){
+    ConstructorManager(GnompEngine engine){
         rootFamily = Family.all(Spatial.class, Spatial.Node.class).get();
-
-        //spatialRelativeComponentMapper = ComponentMapper.getFor(Spatial.Node.class);
-        //spatialDefComponentMapper = ComponentMapper.getFor(Spatial.class);
         constructors = new SortedIntList<Constructor>();
         this.engine = engine;
     }
@@ -145,7 +139,7 @@ public class ConstructorManager {
         return null;
     }
 
-    public Entity dismantleEntity(Entity constructorEntity){
+    Entity dismantleEntity(Entity constructorEntity){
 
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
             Constructor constructor = constructorNode.value;
@@ -156,9 +150,12 @@ public class ConstructorManager {
         return constructorEntity;
     }
 
-    private void parentRemoved(Constructor constructor, Entity entity){
+    private void parentRemoved(Constructor constructor, Entity entity) {
         LOG.info("Parent removed for constructor:"+constructor.getClass());
         Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
+        if(constructorOrientation == null){
+            throw new NullPointerException("Constructable entities needs to have a Spatial.Node");
+        }
         Array<Entity> children = constructorOrientation.children;
 
         constructor.parentRemoved(entity);
@@ -168,18 +165,14 @@ public class ConstructorManager {
 
     private void childrenRemoved(Array<Entity> children, Constructor constructor){
         for(Entity childWrapper : children) {
-            //LOG.info("Child for constructor:"+childWrapper);
-            if(childWrapper!=null && childWrapper!=null) {
-                Entity child = childWrapper;
-                if (constructor.isChild(child)) {
-                    Spatial.Node orientation = spatialNodeMap.get(child);
-                    //LOG.info("Child added for constructor:" + constructor.getClass());
-
-                    constructor.childRemoved(child);
+            if(childWrapper!=null) {
+                if (constructor.isChild(childWrapper)) {
+                    Spatial.Node orientation = spatialNodeMap.get(childWrapper);
+                    constructor.childRemoved(childWrapper);
                     childrenRemoved(orientation.children, constructor);
 
-                } else if (constructor.isParent(child)) {
-                    parentRemoved(constructor, child);
+                } else if (constructor.isParent(childWrapper)) {
+                    parentRemoved(constructor, childWrapper);
                 }
             }
         }
