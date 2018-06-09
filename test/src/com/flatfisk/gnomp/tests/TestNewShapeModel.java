@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.components.Shape;
+import com.flatfisk.gnomp.engine.shape.CatmullPolygon;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.CameraSystem;
@@ -27,12 +28,6 @@ public class TestNewShapeModel extends Test {
         this.shapeTextureFactory = shapeTextureFactory;
     }
 
-    private final static short CATEGORY_PLATFORM =     0x0001;  // 0000000000000001 in binary
-    private final static short CATEGORY_PLAYER =       0x0002; //  0000000000000010 in binary
-    private final static short CATEGORY_SENSOR =       0x0004; //  0000000000000100 in binary
-    private final static short CATEGORY_ENEMY  =       0x0008; //  0000000000001000 in binary
-    private final static short CATEGORY_LIGHT =        0x0010; //  0000000000010000 in binary
-
     @Override
     public void create () {
         super.create();
@@ -48,7 +43,11 @@ public class TestNewShapeModel extends Test {
         engine.addEntityListener(inputSystem.getFamily(),0,inputSystem);
 
         engine.addSystem(new CameraTrackerSystem(1, engine.getSystem(CameraSystem.class).getWorldCamera(),true,true));
-        Entity e = createGame(new Transform(0, -120, 0));
+        for(int i=0;i<=50;i++) {
+            for(int j=0;j<=50;j++) {
+                createGame(new Transform((i-25)*10, (j-25)*10, i+j));
+            }
+        }
 
         engine.addSystem(new PhysicsEventListener(w,engine.getSystem(CameraSystem.class),200));
         engine.addSystem(new RemoveEntitySystem());
@@ -58,7 +57,7 @@ public class TestNewShapeModel extends Test {
 
     private Entity createGame(Transform position){
 
-        Entity platform = createPlatform(position,90,Color.GREEN,false);
+        Entity platform = createPlatform(position);
         engine.addComponent(Spatial.class,platform);
         engine.constructEntity(platform);
         return platform;
@@ -66,7 +65,7 @@ public class TestNewShapeModel extends Test {
 
 
 
-    private Entity createPlatform(Transform translation, float width, Color color, boolean hasVelocity){
+    private Entity createPlatform(Transform translation){
 
         Entity entity = engine.addEntity();
         engine.addComponent(Renderable.class,entity);
@@ -78,26 +77,23 @@ public class TestNewShapeModel extends Test {
         orientationRelative.world = translation;
 
 
-        Shape<RectangularLine> shape = engine.addComponent(Shape.class, entity);
-        RectangularLine rl = shape.obtain(RectangularLine.class);
-        rl.from.set(-width/3,0);
-        rl.to.set(width/2,0);
-        rl.createPolygonVertices();
+        Shape<CatmullPolygon> shape = engine.addComponent(Shape.class, entity);
+        CatmullPolygon rl = shape.obtain(CatmullPolygon.class);
+        rl.fillColor = Color.RED;
+        rl.lineColor = Color.WHITE;
+        rl.setVertices(new float[]{
+                100,0,
+                75,75,
+                0,100,
+                -5,75,
+                -160,0,
+                -75,-7,
+                0,-10,
+                75,-175
+        });
+        rl.polygon.setScale(0.2f, 0.2f);
+        shape.getGeometry().renderResolution=30;
 
-        PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,entity);
-        physicalProperties.density = 0;
-        physicalProperties.friction = 1;
-        physicalProperties.categoryBits = CATEGORY_PLATFORM;
-        physicalProperties.maskBits = CATEGORY_PLAYER|CATEGORY_SENSOR|CATEGORY_ENEMY|CATEGORY_LIGHT;
-
-        PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,entity);
-        if(hasVelocity) {
-            Velocity velocity = engine.addComponent(Velocity.class,entity);
-            velocity.velocity = new Transform(0, 0, 6);
-            physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
-        }else{
-            physicsBodyDef.bodyDef.type = BodyDef.BodyType.StaticBody;
-        }
 
         return entity;
     }

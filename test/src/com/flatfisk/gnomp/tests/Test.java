@@ -25,8 +25,9 @@ public class Test extends DefaultGnompApplicationListener {
         if(physicsDebug) {
             addDebugRenderer(500, physicsWorld,cameraSystem);
         }
+        LightSystem lightSystem = null;
         if (lights) {
-            LightSystem lightSystem = new LightSystem(700, rayHandler, cameraSystem);
+            lightSystem = new LightSystem(700, rayHandler, cameraSystem);
             engine.addSystem(lightSystem);
         }
 
@@ -42,7 +43,9 @@ public class Test extends DefaultGnompApplicationListener {
             physicsSystem.setStatsSystem(statsSystem);
             renderSystem.setStatsSystem(statsSystem);
             effectSystem.setStatsSystem(statsSystem);
-            //lightSystem.setStatsSystem(statsSystem);
+            if (lights) {
+                lightSystem.setStatsSystem(statsSystem);
+            }
         }
     }
 
