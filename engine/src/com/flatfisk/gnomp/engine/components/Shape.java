@@ -45,7 +45,7 @@ public class Shape<SHAPETYPE extends AbstractShape> implements ISerializable<Sha
 
 
 
-    private static class ShapePool {
+    public static class ShapePool {
         private ObjectMap<Class<?>, ReflectionPool> pools;
         private int initialSize;
         private int maxSize;

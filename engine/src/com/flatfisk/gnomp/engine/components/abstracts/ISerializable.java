@@ -9,5 +9,5 @@ import com.flatfisk.gnomp.engine.GnompEngine;
  * Created by Vemund Kvam on 17/01/16.
  */
 public interface ISerializable<T extends ISerializable> extends Component, Pool.Poolable {
-    public T addCopy(GnompEngine gnompEngine,Entity entity);
+    T addCopy(GnompEngine gnompEngine, Entity entity);
 }

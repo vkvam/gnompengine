@@ -1,26 +1,29 @@
 package com.flatfisk.gnomp.engine;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
-
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Spatial;
 
+/**
+ * Abstract class managing the construction of components from other components.
+ *
+ * @param <CONSTRUCTOR_ROOT> Component type that triggers construction of a new component
+ * @param <RELATIONSHIP> Component type for a child contributing to the component
+ * @param <CONSTRUCTED> Component type being constructed
+ * @param <CONSTRUCTION_DTO> Type of object used to carry data through parentAdded and insertedChild calls during construction.
+ */
 public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends Component, CONSTRUCTED extends Component, CONSTRUCTION_DTO>{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    public Class<CONSTRUCTOR_ROOT> constructor;
-    public Class<RELATIONSHIP> relationship;
-    public Class<CONSTRUCTED> constructed;
+    Class<CONSTRUCTOR_ROOT> constructor;
+    private Class<RELATIONSHIP> relationship;
+    Class<CONSTRUCTED> constructed;
 
-    public ComponentMapper<CONSTRUCTOR_ROOT> constructorMapper;
-    public ComponentMapper<RELATIONSHIP> relationshipMapper;
-    public ComponentMapper<CONSTRUCTED> constructedMapper;
+    protected ComponentMapper<CONSTRUCTOR_ROOT> constructorMapper;
+    protected ComponentMapper<RELATIONSHIP> relationshipMapper;
+    private ComponentMapper<CONSTRUCTED> constructedMapper;
 
-    //public GnompEngine engine;
 
     public Constructor(Class<CONSTRUCTOR_ROOT> constructor, Class<RELATIONSHIP> relationship, Class<CONSTRUCTED> constructed) {
         this.constructor = constructor;
@@ -32,24 +35,19 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
         constructedMapper = constructed==null?null:ComponentMapper.getFor(this.constructed);
     }
 
-    public boolean hasConstructor(Entity entity){
+    boolean hasConstructor(Entity entity){
         return constructed==null?true:constructorMapper.has(entity);
     }
 
-    public boolean isParent(Entity entity){
+    boolean isParent(Entity entity){
         return constructorMapper.has(entity);
     }
 
-    public boolean isChild(Entity entity){
+    boolean isChild(Entity entity){
         return relationshipMapper.has(entity)&&!constructorMapper.has(entity);
     }
 
-    /**
-     * Entity added with constructorComponent for constructor
-     * @param entity added
-     * @param constructorOrientation
-     * @return
-     */
+
     public abstract CONSTRUCTION_DTO parentAdded(Entity entity, Spatial.Node constructorOrientation);
     public CONSTRUCTION_DTO insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, CONSTRUCTION_DTO constructorDTO){
         return null;

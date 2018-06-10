@@ -15,7 +15,7 @@ public class Test extends DefaultGnompApplicationListener {
         initializeConstructorManager(physicsWorld,rayHandler);
 
         addScenegraphSystem(100);
-        CameraSystem cameraSystem = addCameraSystem(200, 640, 480);
+        CameraSystem cameraSystem = addCameraSystem(200, 1280, 720);
         cameraSystem.getWorldCamera().zoom = 14f;
         RenderSystem renderSystem = addRenderSystem(300,cameraSystem);
 
