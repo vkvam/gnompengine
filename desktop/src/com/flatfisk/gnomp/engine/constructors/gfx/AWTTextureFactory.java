@@ -31,14 +31,15 @@ public class AWTTextureFactory extends ShapeTextureFactory {
     }
 
     public static class DesktopShapeTexture extends Texture implements ShapeTexture {
-        public TextureCoordinates.BoundingRectangle bounds;
+
+        TextureCoordinates.BoundingRectangle bounds;
         private BufferedImage bufferImg;
         private IntBuffer buffer;
         private final Color BACKGROUND = new Color(0, 0, 0, 0);
         private Vector2 offset;
         private Graphics2D g2d;
 
-        public DesktopShapeTexture(TextureCoordinates.BoundingRectangle envelope){
+        DesktopShapeTexture(TextureCoordinates.BoundingRectangle envelope){
             this(Math.round(envelope.width), Math.round(envelope.height));
             offset = new Vector2(envelope.offsetX,envelope.offsetY);
             setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -195,9 +196,8 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             return awtCircle;
         }
 
-        public Color gdxToAwtColor(com.badlogic.gdx.graphics.Color libGDXColor) {
-            Color color = new Color(libGDXColor.r, libGDXColor.g, libGDXColor.b, libGDXColor.a);
-            return color;
+        Color gdxToAwtColor(com.badlogic.gdx.graphics.Color libGDXColor) {
+            return new Color(libGDXColor.r, libGDXColor.g, libGDXColor.b, libGDXColor.a);
         }
 
     }

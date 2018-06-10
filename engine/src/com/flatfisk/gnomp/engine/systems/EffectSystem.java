@@ -12,26 +12,26 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.flatfisk.gnomp.engine.components.Effect;
 import com.flatfisk.gnomp.math.Transform;
-import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
+import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
 public class EffectSystem extends IteratingSystem implements ApplicationListener {
     private final CameraSystem cameraSystem;
-    private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
-    public static final ObjectMap<String, ParticleEffectPoolWrapper> EFFECT_POOLS = new ObjectMap();
-    public final SpriteBatch spriteBatch = new SpriteBatch();
+    private final Logger LOG = new Logger(this.getClass().getName(), Logger.DEBUG);
+    public static final ObjectMap<String, ParticleEffectPoolWrapper> EFFECT_POOLS = new ObjectMap<String, ParticleEffectPoolWrapper>();
+    private final SpriteBatch spriteBatch = new SpriteBatch();
 
     private StatsSystem statsSystem;
     private int effectsDrawn = 0;
 
 
     public EffectSystem(int priority, CameraSystem cameraSystem) {
-        super(Family.all(Effect.Container.class).get(),priority);
+        super(Family.all(Effect.Container.class).get(), priority);
         this.cameraSystem = cameraSystem;
     }
 
-    public void setStatsSystem(StatsSystem statsSystem){
+    public void setStatsSystem(StatsSystem statsSystem) {
         this.statsSystem = statsSystem;
     }
 
@@ -42,12 +42,12 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
         super.update(deltaTime);
         spriteBatch.end();
 
-        if(statsSystem!=null){
+        if (statsSystem != null) {
             statsSystem.addStat("Effects");
-            statsSystem.addStat("Processed:"+effectsDrawn);
+            statsSystem.addStat("Processed:" + effectsDrawn);
             statsSystem.addLine();
         }
-        effectsDrawn=0;
+        effectsDrawn = 0;
 
     }
 
@@ -57,7 +57,7 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
         Transform world = spatialNodeMap.get(entity).world;
         Vector2 worldVector = world.vector;
 
-        effect.particleEffect.setPosition(worldVector.x,worldVector.y);
+        effect.particleEffect.setPosition(worldVector.x, worldVector.y);
         effect.particleEffect.draw(spriteBatch, deltaTime);
         effectsDrawn++;
     }
@@ -91,19 +91,19 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
     public void dispose() {
         LOG.info("Disposing effect batch");
         spriteBatch.dispose();
-        for(ParticleEffectPoolWrapper wrapper : EFFECT_POOLS.values()){
+        for (ParticleEffectPoolWrapper wrapper : EFFECT_POOLS.values()) {
             LOG.info("Disposing effect");
             wrapper.effect.dispose();
         }
     }
 
-    public static class ParticleEffectPoolWrapper{
+    public static class ParticleEffectPoolWrapper {
         public ParticleEffectPoolWrapper(ParticleEffect effect) {
-            this.pool = new ParticleEffectPool(effect,1,10);
+            this.pool = new ParticleEffectPool(effect, 1, 10);
             this.effect = effect;
         }
 
-        public ParticleEffect effect;
+        ParticleEffect effect;
         public ParticleEffectPool pool;
     }
 
