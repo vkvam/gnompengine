@@ -5,9 +5,7 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 
-/**
- * Created by Vemund Kvam on 28/01/16.
- */
+
 public class PhysicalProperties implements ISerializable<PhysicalProperties>, Pool.Poolable {
     public boolean isSensor = false;
     public float density = 1;

@@ -68,20 +68,20 @@ public class PhysicsConstructor extends Constructor<PhysicsBody, PhysicsBody.Nod
     }
 
     @Override
-    public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefs) {
+    public Array<FixtureDefWrapper> insertedChild(Entity entity, Spatial.Node constructorOrientation, Spatial.Node parentOrientation, Spatial.Node childOrientation, Array<FixtureDefWrapper> fixtureDefDTO) {
         Transform t = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         t.vector.rotate(-constructorOrientation.world.rotation);
         Shape shape = shapeMap.get(entity);
         if (relationshipMapper.get(entity).intermediate) {
-            FixtureDef[] fixtures = getFixtures(shape, t, physicalPropertiesMap.get(entity));
-            if (fixtures != null) {
-                for (FixtureDef f : fixtures) {
-                    fixtureDefs.add(new FixtureDefWrapper(entity, f, t));
+            FixtureDef[] childFixtureDefs = getFixtures(shape, t, physicalPropertiesMap.get(entity));
+            if (childFixtureDefs != null) {
+                for (FixtureDef childFixture : childFixtureDefs) {
+                    fixtureDefDTO.add(new FixtureDefWrapper(entity, childFixture, t));
                 }
             }
         }
         Pools.free(t);
-        return fixtureDefs;
+        return fixtureDefDTO;
     }
 
     @Override

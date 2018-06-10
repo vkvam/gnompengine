@@ -6,9 +6,7 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 
-/**
- * Created by Vemund Kvam on 15/01/16.
- */
+
 public class EndPoint implements ISerializable<EndPoint>,Component,Pool.Poolable{
 
     @Override

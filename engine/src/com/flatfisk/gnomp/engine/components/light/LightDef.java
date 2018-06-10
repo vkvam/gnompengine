@@ -3,9 +3,7 @@ package com.flatfisk.gnomp.engine.components.light;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-/**
-* Created by Vemund Kvam on 31/01/16.
-*/
+
 public abstract class LightDef {
 
     public short categoryBits =1,group=1, maskBits =1;

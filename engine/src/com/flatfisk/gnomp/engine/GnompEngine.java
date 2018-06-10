@@ -10,9 +10,7 @@ import com.flatfisk.gnomp.engine.components.abstracts.AbstractNode;
 import java.util.Iterator;
 
 
-/**
- * Created by Vemund Kvam on 16/01/16.
- */
+
 public class GnompEngine extends PooledEngine {
 
 

@@ -19,9 +19,7 @@ import com.flatfisk.gnomp.tests.systems.CameraTrackerSystem;
 
 import java.util.Iterator;
 
-/**
- * Created by Vemund Kvam on 22/12/15.
- */
+
 public class PlatformerInputSystem extends EntitySystem implements ContactListener, EntityListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private Entity player,sensor,endpoint, playerLight,gun;

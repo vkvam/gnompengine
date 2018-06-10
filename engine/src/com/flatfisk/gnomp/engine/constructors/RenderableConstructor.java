@@ -14,9 +14,7 @@ import com.flatfisk.gnomp.math.Transform;
 
 import static com.flatfisk.gnomp.engine.GnompMappers.shapeMap;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Container, ShapeTexture> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 

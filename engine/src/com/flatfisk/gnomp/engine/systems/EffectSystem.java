@@ -15,9 +15,7 @@ import com.flatfisk.gnomp.math.Transform;
 import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
-/**
- * Created by Vemund Kvam on 31/01/16.
- */
+
 public class EffectSystem extends IteratingSystem implements ApplicationListener {
     private final CameraSystem cameraSystem;
     private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);

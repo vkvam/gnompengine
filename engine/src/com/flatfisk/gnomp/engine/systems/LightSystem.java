@@ -14,9 +14,7 @@ import com.flatfisk.gnomp.math.Transform;
 import static com.flatfisk.gnomp.engine.GnompMappers.lightMap;
 import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 
-/**
- * Created by Vemund Kvam on 31/01/16.
- */
+
 public class LightSystem extends IteratingSystem implements ApplicationListener {
     private CameraSystem cameraSystem;
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);

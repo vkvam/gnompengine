@@ -6,9 +6,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 
-/**
- * Created by Vemund Kvam on 22/12/15.
- */
+
 public class PlayerLight implements ISerializable<PlayerLight>,Component, Pool.Poolable {
     public int touchedPlatformTimes = 0;
 

@@ -14,9 +14,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, Component, TextureCoordinates> {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 

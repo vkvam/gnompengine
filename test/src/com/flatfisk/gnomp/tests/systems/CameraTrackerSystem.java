@@ -13,9 +13,7 @@ import java.util.Random;
 import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 
 
-/**
- * Created by Vemund Kvam on 22/12/15.
- */
+
 public class CameraTrackerSystem extends IteratingSystem{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     //private Entity tracked;

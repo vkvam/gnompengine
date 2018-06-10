@@ -4,9 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.math.Transform;
 
-/**
- * Created by Vemund Kvam on 13/01/16.
- */
+
 public class Pools {
     private static Vector2PoolProvider vector2Pool = new Vector2PoolProvider();
     private static SpatialPoolProvider spatialPool = new SpatialPoolProvider();

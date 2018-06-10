@@ -10,9 +10,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 
-/**
- * Created by Vemund Kvam on 31/01/16.
- */
+
 public class Effect implements ISerializable<Effect>, Pool.Poolable  {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public String effectFileName = "";

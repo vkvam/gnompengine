@@ -1,8 +1,6 @@
 package com.flatfisk.gnomp.tests.particle;
 
-/**
- * Created by Vemund Kvam on 30/01/16.
- */
+
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *

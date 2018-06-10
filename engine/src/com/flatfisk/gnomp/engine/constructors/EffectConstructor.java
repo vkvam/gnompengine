@@ -13,9 +13,7 @@ import com.flatfisk.gnomp.engine.systems.EffectSystem;
 
 import java.util.Iterator;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class EffectConstructor extends Constructor<Effect,Spatial.Node,Effect.Container, Effect.Container> {
     public final GnompEngine engine;
 

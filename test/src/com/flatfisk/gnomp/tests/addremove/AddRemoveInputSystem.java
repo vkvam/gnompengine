@@ -18,9 +18,7 @@ import com.flatfisk.gnomp.tests.components.EndPoint;
 import com.flatfisk.gnomp.tests.components.Player;
 import com.flatfisk.gnomp.tests.components.PlayerSensor;
 
-/**
- * Created by Vemund Kvam on 22/12/15.
- */
+
 public class AddRemoveInputSystem extends EntitySystem implements ContactListener, EntityListener{
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     private Entity player,sensor,endpoint;

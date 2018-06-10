@@ -8,9 +8,7 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.abstracts.ISerializable;
 import com.flatfisk.gnomp.engine.components.light.LightDef;
 
-/**
- * Created by Vemund Kvam on 31/01/16.
- */
+
 public class Light implements ISerializable<Light>, Pool.Poolable  {
     private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
     public LightDef lightDef;

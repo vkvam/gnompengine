@@ -3,9 +3,7 @@ package com.flatfisk.gnomp.engine;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.flatfisk.gnomp.engine.components.*;
 
-/**
- * Created by Vemund Kvam on 23/02/16.
- */
+
 public class GnompMappers {
     public final static ComponentMapper<Renderable> renderableConstructorMap =
             ComponentMapper.getFor(Renderable.class);

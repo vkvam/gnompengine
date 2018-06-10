@@ -13,9 +13,7 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.light.LightDef;
 import com.flatfisk.gnomp.math.Transform;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Container, Light.Container> {
     private final RayHandler rayHandler;
     public final GnompEngine engine;

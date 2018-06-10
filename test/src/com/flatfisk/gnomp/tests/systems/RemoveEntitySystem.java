@@ -12,9 +12,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.physicsBodyMap;
 import static com.flatfisk.gnomp.engine.GnompMappers.scenegraphNodeMap;
 import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
 
-/**
-* Created by Vemund Kvam on 20/02/16.
-*/
+
 public class RemoveEntitySystem extends IteratingSystem {
     private float c = 0;
     public RemoveEntitySystem() {

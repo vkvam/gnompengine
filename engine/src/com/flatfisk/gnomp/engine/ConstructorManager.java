@@ -1,9 +1,5 @@
 package com.flatfisk.gnomp.engine;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
-
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;

@@ -10,9 +10,7 @@ import com.flatfisk.gnomp.math.Transform;
 import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
-/**
- * Created by Vemund Kvam on 22/12/15.
- */
+
 public class ScenegraphSystem extends IteratingSystem {
     private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
