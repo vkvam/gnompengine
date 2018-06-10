@@ -98,11 +98,11 @@ public class PhysicsConstructor extends Constructor<PhysicsBody, PhysicsBody.Nod
         LOG.info("Create physicsConstructorMap body of type:" + bodyDef.type);
         Body body = box2DWorld.createBody(bodyDef);
         LOG.info("Adding " + fixtureDefs.size + " fixtures");
-        for (FixtureDefWrapper fixture : fixtureDefs) {
-            Fixture f = body.createFixture(fixture.fixtureDef);
-            fixture.fixtureDef.shape.dispose();
+        for (FixtureDefWrapper fixtureDefWrapper : fixtureDefs) {
+            Fixture fixture = body.createFixture(fixtureDefWrapper.fixtureDef);
+            fixtureDefWrapper.fixtureDef.shape.dispose();
             // Use the entity used for construction and it's relative position to the parent body as userdata.
-            f.setUserData(new FixtureUserData(fixture.owner, fixture.transformRelativeToBody));
+            fixture.setUserData(new FixtureUserData(fixtureDefWrapper.owner, fixtureDefWrapper.transformRelativeToBody));
         }
         LOG.info("Total mass:" + body.getMass());
         return body;

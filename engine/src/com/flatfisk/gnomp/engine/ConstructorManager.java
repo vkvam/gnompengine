@@ -43,7 +43,7 @@ public class ConstructorManager {
         }
     }
 
-    public void reConstructEntity(Entity entity, Class<? extends Component>[] constructorClasses) {
+    void reConstructEntity(Entity entity, Class<? extends Component>[] constructorClasses) {
         Spatial.Node constructorOrientation = spatialNodeMap.get(entity);
 
         for (SortedIntList.Node<Constructor> constructorNode : constructors) {
