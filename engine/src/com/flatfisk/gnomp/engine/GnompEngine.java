@@ -142,7 +142,7 @@ public class GnompEngine extends PooledEngine {
             Iterator<Entity> entitiesAddedIterator = entitiesToConstruct.iterator();
             while (entitiesAddedIterator.hasNext()) {
                 Entity entity = entitiesAddedIterator.next();
-                Entity constructor = constructorManager.getConstructor(entity, true);
+                Entity constructor = constructorManager.getConstructor(entity);
 
                 if (!entitiesConstructed.contains(constructor, false)) {
                     constructorManager.dismantleEntity(constructor);
@@ -162,7 +162,7 @@ public class GnompEngine extends PooledEngine {
 
             while (entitiesAddedIterator.hasNext()) {
                 EntityReconstructOperation entity = entitiesAddedIterator.next();
-                Entity constructor = constructorManager.getConstructor(entity.entity, true);
+                Entity constructor = constructorManager.getConstructor(entity.entity);
 
                 if (!entitiesConstructed.contains(constructor, false)) {
                     constructorManager.reConstructEntity(constructor, entity.toConstruct);

@@ -113,7 +113,7 @@ public class ConstructorManager {
     }
 
 
-    public Entity getConstructor(Entity entity, boolean isParent) {
+    Entity getConstructor(Entity entity) {
 
         boolean hasChildren = false;
         boolean hasConstructor = false;
@@ -131,10 +131,10 @@ public class ConstructorManager {
 
         Spatial.Node rel = entity.getComponent(Spatial.Node.class);
 
-        if(isParent && hasConstructor){
+        if(hasConstructor){
             return entity;
         }else if(hasChildren && rel!=null &&rel.parent!=null){
-            return getConstructor(rel.parent, true);
+            return getConstructor(rel.parent);
         }
         return null;
     }
