@@ -33,7 +33,7 @@ public abstract class AbstractShape implements Pool.Poolable, Component {
         this.fillColor = fillColor;
     }
 
-    public void setRotation(float angle){};
+    public void setRotation(float angle){}
 
     public void reset() {
         lineColor = null;

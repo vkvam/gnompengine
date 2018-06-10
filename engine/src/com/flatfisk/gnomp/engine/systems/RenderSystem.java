@@ -148,5 +148,5 @@ public class RenderSystem extends SortedIteratingSystem implements ApplicationLi
             Renderable.Container renderableB = renderableMap.get(spriteB);
             return (renderableA.zIndex - renderableB.zIndex) > 0 ? 1 : -1;
         }
-    };
+    }
 }

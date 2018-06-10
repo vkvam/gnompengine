@@ -7,7 +7,7 @@ import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.math.Transform;
 
 public interface ShapeTexture {
-    public abstract void draw(Shape structure, Transform orientation);
-    public abstract Texture createTexture();
-    public abstract Vector2 getOffset();
+    void draw(Shape structure, Transform orientation);
+    Texture createTexture();
+    Vector2 getOffset();
 }

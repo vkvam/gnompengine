@@ -36,7 +36,7 @@ public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSH
     }
 
     boolean hasConstructor(Entity entity){
-        return constructed==null?true:constructorMapper.has(entity);
+        return constructed == null || constructorMapper.has(entity);
     }
 
     boolean isParent(Entity entity){

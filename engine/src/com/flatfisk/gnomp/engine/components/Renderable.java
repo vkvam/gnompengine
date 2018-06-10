@@ -23,7 +23,7 @@ public class Renderable implements ISerializable<Renderable>,Pool.Poolable {
     public Renderable addCopy(GnompEngine gnompEngine, Entity entity) {
         return null;
     }
-    
+
     public static class Node implements ISerializable<Node> {
         public boolean intermediate = false;
 

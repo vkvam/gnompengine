@@ -237,7 +237,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
             positionChanged = false;
         }
 
-        public static enum PositionModificationType {
+        public enum PositionModificationType {
             NONE,
             FORCE_AT_CENTER,
             FORCE_AT_POINT,
@@ -246,7 +246,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
             POSITION
         }
 
-        public static enum AngleModificationType {
+        public enum AngleModificationType {
             NONE,
             IMPULSE,
             TORQUE
