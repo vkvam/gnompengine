@@ -20,10 +20,11 @@ import com.flatfisk.gnomp.math.Transform;
 public class Polygon extends AbstractShape {
     public com.badlogic.gdx.math.Polygon polygon = new com.badlogic.gdx.math.Polygon();
 
-    public Polygon(float lineWidth, Color color, Color fillColor) {
-        super(lineWidth, color, fillColor);
-        this.lineColor = color;
+
+    Polygon(){
+        super(1, null, null);
     }
+
 
     public com.badlogic.gdx.math.Polygon getRenderPolygon() {
         return polygon;
@@ -47,6 +48,7 @@ public class Polygon extends AbstractShape {
 
         com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(physicsPolygon.getTransformedVertices());
         com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
+
         FixtureDef[] fixtureDefs = new FixtureDef[polygons.length];
         int i = 0;
         for (com.badlogic.gdx.math.Polygon p : polygons) {
@@ -55,7 +57,6 @@ public class Polygon extends AbstractShape {
         physicsPolygon.setScale(1, 1);
         physicsPolygon.setPosition(0, 0);
         return fixtureDefs;
-
     }
 
     @Override

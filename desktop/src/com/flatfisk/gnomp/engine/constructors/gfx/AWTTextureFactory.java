@@ -73,7 +73,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
 
         @Override
         public void draw(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform){
-            if (structure == null || structure.geometry == null) {
+            if (structure == null || structure.getGeometry() == null) {
                 return;
             }
 
@@ -84,19 +84,19 @@ public class AWTTextureFactory extends ShapeTextureFactory {
         }
 
         private void drawFilled(com.flatfisk.gnomp.engine.components.Shape structure, java.awt.Shape shape){
-            if (structure.geometry.fillColor != null) {
-                Color color = gdxToAwtColor(structure.geometry.fillColor);
+            if (structure.getGeometry().fillColor != null) {
+                Color color = gdxToAwtColor(structure.getGeometry().fillColor);
                 g2d.setColor(color);
                 g2d.fill(shape);
             }
         }
 
         private void drawLine(com.flatfisk.gnomp.engine.components.Shape structure, java.awt.Shape shape){
-            if (structure.geometry.lineColor != null) {
-                Color color = gdxToAwtColor(structure.geometry.lineColor);
+            if (structure.getGeometry().lineColor != null) {
+                Color color = gdxToAwtColor(structure.getGeometry().lineColor);
                 g2d.setColor(color);
                 g2d.setStroke(new BasicStroke(
-                                structure.geometry.lineWidth,
+                                structure.getGeometry().lineWidth,
                                 BasicStroke.CAP_ROUND,
                                 BasicStroke.JOIN_ROUND)
                 );
@@ -116,7 +116,6 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             Gdx.gl.glTexSubImage2D(GL20.GL_TEXTURE_2D, 0, 0, 0, bufferImg.getWidth(), bufferImg.getHeight(),
                     GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
             g2d.dispose();
-
             return this;
         }
 
@@ -136,10 +135,10 @@ public class AWTTextureFactory extends ShapeTextureFactory {
 
             float angle = transform.rotation;
 
-            AbstractShape geAbstractShape = structure.geometry;
+            AbstractShape geAbstractShape = structure.getGeometry();
             java.awt.Shape awtShape = null;
             if (geAbstractShape instanceof Polygon) {
-                Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.geometry;
+                Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.getGeometry();
 
                 com.badlogic.gdx.math.Polygon poly = ps.getRenderPolygon();
 
@@ -148,12 +147,12 @@ public class AWTTextureFactory extends ShapeTextureFactory {
                 poly.setRotation(0);
 
             }else if (geAbstractShape instanceof Line) {
-                Line c = (Line) structure.geometry;
+                Line c = (Line) structure.getGeometry();
                 c.polyline.setRotation(angle);
                 awtShape = polyLineToShape(c.polyline, offsetPosition);
                 c.polyline.setRotation(0);
             }else if (geAbstractShape instanceof Circle) {
-                Circle c = (Circle) structure.geometry;
+                Circle c = (Circle) structure.getGeometry();
                 awtShape = circleToShape(c.circle, offsetPosition);
             }
             return awtShape;
@@ -202,12 +201,12 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             awtCircle.height = circleDiam;
             awtCircle.x = circleX;
             awtCircle.y = circleY;
+
             return awtCircle;
         }
 
-        public Color gdxToAwtColor(com.badlogic.gdx.graphics.Color libGDXColor) {
-            Color color = new Color(libGDXColor.r, libGDXColor.g, libGDXColor.b, libGDXColor.a);
-            return color;
+        Color gdxToAwtColor(com.badlogic.gdx.graphics.Color libGDXColor) {
+            return new Color(libGDXColor.r, libGDXColor.g, libGDXColor.b, libGDXColor.a);
         }
 
     }

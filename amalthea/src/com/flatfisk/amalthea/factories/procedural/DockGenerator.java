@@ -2,6 +2,7 @@ package com.flatfisk.amalthea.factories.procedural;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.flatfisk.amalthea.components.Dock;
 import com.flatfisk.gnomp.engine.GnompEngine;
@@ -69,13 +70,23 @@ public class DockGenerator {
 
         dockMain.add(engine.createComponent(Scenegraph.class, dockMain));
 
+        /*
         RectangularLine dockShape = new RectangularLine(0, width, Color.DARK_GRAY, Color.GRAY);
         dockShape.from.set(0,height);
         dockShape.to.set(0,-height);
         dockShape.createPolygonVertices();
+        */
 
         Shape<RectangularLine> shape = engine.createComponent(Shape.class, dockMain);
-        shape.geometry = dockShape;
+        RectangularLine dockShape = shape.obtain(RectangularLine.class);
+        dockShape.halfRectangleWidth = width;
+        dockShape.lineWidth = 0;
+        dockShape.lineColor = Color.GRAY;
+        dockShape.fillColor = Color.GRAY;
+        dockShape.from.set(0,height);
+        dockShape.to.set(0,-height);
+        dockShape.createPolygonVertices();
+
         dockMain.add(shape);
 
 
@@ -120,13 +131,17 @@ public class DockGenerator {
         Spatial.Node spatial = engine.createComponent(Spatial.Node.class, dockPhysics);
         dockPhysics.add(spatial);
 
-        RectangularLine dockShape = new RectangularLine(0, 5, Color.BROWN, Color.BROWN);
+
+
+        Shape<RectangularLine> shape = engine.createComponent(Shape.class, dockPhysics);
+        RectangularLine dockShape = shape.obtain(RectangularLine.class);
+
         dockShape.from.set(width*sideDirection,height);
         dockShape.to.set(width*sideDirection,-height);
         dockShape.createPolygonVertices();
+        dockShape.lineColor = Color.BROWN;
+        dockShape.fillColor = Color.BROWN;
 
-        Shape<RectangularLine> shape = engine.createComponent(Shape.class, dockPhysics);
-        shape.geometry = dockShape;
         dockPhysics.add(shape);
 
         PhysicalProperties physicalProperties = engine.createComponent(PhysicalProperties.class,dockPhysics);
@@ -145,28 +160,13 @@ public class DockGenerator {
     public static Entity dockDoor(GnompEngine engine, float dockHeight, float doorDepth, float dockWidth, float offset, Color color, boolean scenegraphed){
         Entity dockDoor = engine.addEntity();
 
-        Vector2 shapeOffset;
-
-        RectangularLine dockShape = new RectangularLine(0, dockWidth, null, color);
-
-        dockShape.from.set(0,-dockHeight);
-        dockShape.to.set(0,-dockHeight-doorDepth);
-        dockShape.createPolygonVertices();
-
-        //shapeOffset = dockShape.shiftCenterToCentroid();
         if(scenegraphed) {
             dockDoor.add(engine.createComponent(Renderable.class, dockDoor));
             dockDoor.add(engine.createComponent(Scenegraph.Node.class, dockDoor));
         }
-        else{
-            //shapeOffset.scl(0.1f);
-        }
-
-
 
         Spatial.Node orientationRelative = engine.createComponent(Spatial.Node.class, dockDoor);
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION_ANGLE;
-        //orientationRelative.local.vector.set(shapeOffset);
         orientationRelative.local.vector.x=offset;
         dockDoor.add(orientationRelative);
 
@@ -174,7 +174,14 @@ public class DockGenerator {
         dockDoor.add(renderableNode);
 
         Shape<RectangularLine> shape = engine.createComponent(Shape.class, dockDoor);
-        shape.geometry = dockShape;
+
+        RectangularLine dockShape = shape.obtain(RectangularLine.class);
+        dockShape.fillColor = color;
+        dockShape.halfRectangleWidth = dockWidth;
+        dockShape.from.set(0,-dockHeight);
+        dockShape.to.set(0,-dockHeight-doorDepth);
+        dockShape.createPolygonVertices();
+
         dockDoor.add(shape);
 
         return dockDoor;
@@ -224,8 +231,6 @@ public class DockGenerator {
         Vector2 previous = Pools.obtainVector();
         Vector2 current = Pools.obtainVector();
 
-        //Shape<Polygon> s = island.getComponent(Shape.class);
-        //float[] verts = s.geometry.getRenderPolygon().getVertices();
         float[] verts = renderPolygon.getVertices();
 
         float longestDist2 = 0;
@@ -277,8 +282,5 @@ public class DockGenerator {
         public float height;
     }
 
-    public void buildDock(){
-
-    }
 
 }

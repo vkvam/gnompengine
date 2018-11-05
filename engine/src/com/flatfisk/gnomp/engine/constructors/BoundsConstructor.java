@@ -15,11 +15,8 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, Component, TextureCoordinates> {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     public BoundsConstructor() {
         super(Renderable.class,Renderable.Node.class, null);
@@ -48,8 +45,8 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class);
         TextureCoordinates textureCoordinates = null;
 
-        if (structure != null && structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {
-            textureCoordinates = structure.geometry.getTextureCoordinates(null, transform);
+        if (structure.getGeometry() != null && renderableNode != null && !renderableNode.intermediate) {
+            textureCoordinates = structure.getGeometry().getTextureCoordinates(null, transform);
         }
 
         Pools.free(transform);
@@ -65,8 +62,8 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         transform.vector.rotate(-constructorOrientation.world.rotation);
 
-        if(shape != null && shape.geometry !=null &&! renderableNode.intermediate){
-            textureCoordinates = shape.geometry.getTextureCoordinates(textureCoordinates, transform);
+        if(!renderableNode.intermediate && shape.getGeometry() !=null){
+            textureCoordinates = shape.getGeometry().getTextureCoordinates(textureCoordinates, transform);
         }
 
         Gdx.app.log(getClass().getName(),"Added child");

@@ -199,7 +199,10 @@ public class TestProcedural implements ApplicationListener {
                 pls[i++] = p3.x;
                 pls[i++] = p3.y;
             }
-            CatmullPolygon polly = new CatmullPolygon(1,Color.BLUE,Color.FIREBRICK);
+            CatmullPolygon polly = new CatmullPolygon();
+            polly.lineWidth = 1;
+            polly.lineColor = Color.BLUE;
+            polly.fillColor = Color.FIREBRICK;
             polly.setVertices(pls);
             polly.getRenderPolygon();
 

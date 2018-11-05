@@ -17,7 +17,7 @@ public class IslandPopulator {
         // 4. Build docks out from straight, with an inside astroid and outside astroid part.
         // 5. Make docks
 
-        DockGenerator.LongestStraight longestStraight = DockGenerator.findLargestStraight(p.poly.getRenderPolygon());
+        DockGenerator.LongestStraight longestStraight = DockGenerator.findLargestStraight(p.poly.getGeometry().getRenderPolygon());
         DockGenerator.DockPositions dps = DockGenerator.getDockPositions(longestStraight, width, height);
 
         return dps;

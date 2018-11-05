@@ -24,6 +24,7 @@ import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.components.light.LightDef;
+import com.flatfisk.gnomp.engine.shape.CatmullPolygon;
 import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.engine.shape.Polygon;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
@@ -121,7 +122,7 @@ public class Amalthea extends SystemContructors {
         Spatial spatial;
 
 
-        IslandGenerator.Islands islands = IslandGenerator.getIslands(256, 256, 10, 0.75f, 40);
+        IslandGenerator.Islands islands = IslandGenerator.getIslands(256, 256, 10, 0.75f, 40, engine);
 
         engine.getSystem(EnemyDecisionSystem.class).initPathFinding(islands.wayPoints);
 
@@ -142,9 +143,11 @@ public class Amalthea extends SystemContructors {
                 engine.addComponent(Renderable.class, e);
                 engine.addComponent(Renderable.Node.class, e);
 
-                Shape structure = engine.addComponent(Shape.class, e);
-                structure.geometry = new Circle(1, 4, null, new Color(0.6f,0.6f,0.6f,1f));
-
+                Shape<Circle> structure = engine.createComponent(Shape.class, e);
+                Circle c = structure.obtain(Circle.class);
+                c.fillColor = new Color(0.6f,0.6f,0.6f,1f);
+                c.setRadius(4);
+                e.add(structure);
                 engine.constructEntity(e);
 
             }
@@ -260,12 +263,19 @@ public class Amalthea extends SystemContructors {
         orientationRelative.local = translation;
         orientationRelative.inheritFromParentType = Spatial.Node.SpatialInheritType.POSITION;
 
-        Shape structure = engine.addComponent(Shape.class, e);
-        RectangularLine barrel = new RectangularLine(3, 3, Color.DARK_GRAY, Color.GRAY);
+        Shape<RectangularLine> structure = engine.createComponent(Shape.class, e);
+        RectangularLine barrel = structure.obtain(RectangularLine.class);
+        barrel.lineColor = Color.DARK_GRAY;
+        barrel.fillColor = Color.GRAY;
+        barrel.halfRectangleWidth = 3;
+        barrel.lineWidth = 3;
         barrel.from.set(-10, 0);
         barrel.to.set(30, 0);
         barrel.createPolygonVertices();
-        structure.geometry = barrel;
+
+        e.add(structure);
+
+
 
 
         return e;
@@ -376,9 +386,9 @@ public class Amalthea extends SystemContructors {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape structure = world.addComponent(Shape.class, e);
+        Shape<Polygon> structure = world.createComponent(Shape.class, e);
+        Polygon rectangularLineShape = structure.obtain(Polygon.class);
 
-        Polygon rectangularLineShape = new Polygon(1, Color.RED, Color.FIREBRICK);
         rectangularLineShape.setVertices(new float[]{
                 0, 0,
                 0, 40,
@@ -387,10 +397,11 @@ public class Amalthea extends SystemContructors {
                 40, 40,
                 40, 0}
         );
+        rectangularLineShape.lineColor = Color.RED;
+        rectangularLineShape.fillColor = Color.FIREBRICK;
 
         rectangularLineShape.shiftCenterToCentroid();
-
-        structure.geometry = rectangularLineShape;
+        e.add(structure);
 
         PhysicalProperties physicalProperties = world.addComponent(PhysicalProperties.class, e);
         physicalProperties.density = 2f;
@@ -446,9 +457,12 @@ public class Amalthea extends SystemContructors {
         physicsBodyStateComponent.velocity = velocity;
         engine.addComponent(Player.class, e);
 
-        Shape structure = engine.addComponent(Shape.class, e);
-        structure.geometry = new Circle(1, 13, Color.GOLDENROD, Color.GOLDENROD);
-        ;
+        Shape<Circle> structure = engine.createComponent(Shape.class, e);
+        Circle c = structure.obtain(Circle.class);
+        c.init(1,  Color.GOLDENROD, Color.GOLDENROD);
+        c.setRadius(13);
+
+        e.add(structure);
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class, e);
         physicalProperties.density = 1;
@@ -472,7 +486,7 @@ public class Amalthea extends SystemContructors {
     }
 
 
-    private Entity createIsland(Polygon polygon, Transform translation, Color color) {
+    private Entity createIsland(Shape<CatmullPolygon> shape, Transform translation, Color color) {
 
         Entity e = engine.addEntity();
         engine.addComponent(Renderable.class, e);
@@ -484,8 +498,16 @@ public class Amalthea extends SystemContructors {
         orientationRelative.world = translation;
         e.add(orientationRelative);
 
-        Shape<Polygon> shape = engine.createComponent(Shape.class, e);
-        shape.geometry = polygon;
+        /*
+        Shape<CatmullPolygon> shape = engine.createComponent(Shape.class, e);
+        CatmullPolygon polygon1 = shape.obtain(CatmullPolygon.class);
+        polygon1.init(polygon.lineWidth, polygon.lineColor, polygon.fillColor);
+
+        polygon1.physicsResolution = polygon.physicsResolution;
+        polygon1.renderResolution = polygon.renderResolution;
+        polygon1.(polygon.);
+        e.add(shape);
+        */
         e.add(shape);
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class, e);
@@ -575,7 +597,8 @@ public class Amalthea extends SystemContructors {
         Shape<Circle> shape = engine.createComponent(Shape.class, e);
 
         orientationRelative.local = translation;
-        shape.geometry = new Circle(1, (float) 20, null, Color.FIREBRICK);
+        Circle c = shape.obtain(Circle.class);
+        c.init((float) 20, null, Color.FIREBRICK);
 
         e.add(orientationRelative);
         e.add(renderNode);

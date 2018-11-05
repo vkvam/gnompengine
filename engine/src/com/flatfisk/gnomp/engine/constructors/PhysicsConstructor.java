@@ -12,6 +12,7 @@ import com.flatfisk.gnomp.engine.components.*;
 import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.math.Transform;
+
 import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 /**
@@ -114,9 +115,9 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         return body;
     }
 
-    public FixtureDef[] getFixtures(Shape structure,Transform transform, PhysicalProperties physicalProperties) {
-        if (structure.geometry != null) {
-            FixtureDef[] structureFixtureDefs  = getFixtureDefinitions(structure.geometry, transform, physicalProperties);
+    private FixtureDef[] getFixtures(Shape structure, Transform transform, PhysicalProperties physicalProperties) {
+        if (structure.getGeometry() != null) {
+            FixtureDef[] structureFixtureDefs = getFixtureDefinitions(structure.getGeometry(), transform, physicalProperties);
             return structureFixtureDefs;
         }
         return null;

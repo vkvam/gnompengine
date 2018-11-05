@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array;
 import com.flatfisk.amalthea.factories.color.Colors;
 import com.flatfisk.amalthea.test.procedural.TestProcedural;
 import com.flatfisk.amalthea.test.procedural.noise.SimplexNoise;
+import com.flatfisk.gnomp.engine.GnompEngine;
+import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.CatmullPolygon;
 import com.flatfisk.gnomp.engine.shape.Polygon;
 
@@ -76,17 +78,17 @@ public class IslandGenerator {
 
     public static class PolyPoint {
         public Vector2 pos;
-        public Polygon poly;
+        public Shape<CatmullPolygon> poly;
 
-        PolyPoint(Vector2 pos, Polygon poly) {
+        PolyPoint(Vector2 pos, Shape<CatmullPolygon> poly) {
             this.pos = pos;
             this.poly = poly;
         }
     }
 
-    private static boolean pointInPolygons(Vector2 v, List<CatmullPolygon> polygons) {
-        for (Polygon p : polygons) {
-            if (p.polygon.contains(v)) {
+    private static boolean pointInPolygons(Vector2 v, List<Shape<CatmullPolygon>> polygons) {
+        for (Shape<CatmullPolygon> p : polygons) {
+            if (p.getGeometry().polygon.contains(v)) {
                 return true;
             }
         }
@@ -112,7 +114,7 @@ public class IslandGenerator {
         return waypointbool;
     }
 
-    private static boolean[][] getWayPoints(int X, int Y, int skip, int SCALE, boolean[][] shape, List<CatmullPolygon> islandPolys){
+    private static boolean[][] getWayPoints(int X, int Y, int skip, int SCALE, boolean[][] shape, List<Shape<CatmullPolygon>> islandPolys){
         boolean[][] waypointbool = new boolean[X / skip][Y / skip];
 
         Vector2 testPoint = new Vector2();
@@ -129,7 +131,7 @@ public class IslandGenerator {
         return waypointbool;
     }
 
-    public static Islands getIslands(int width, int height, int seed, float limit, float SCALE) {
+    public static Islands getIslands(int width, int height, int seed, float limit, float SCALE, GnompEngine engine) {
 
         //int X=1080,Y=1080;
         int X = width, Y = height;
@@ -201,7 +203,7 @@ public class IslandGenerator {
         }
 
         List<PolyPoint> islands = new ArrayList<PolyPoint>();
-        List<CatmullPolygon> islandPolys = new ArrayList<CatmullPolygon>();
+        List<Shape<CatmullPolygon>> islandPolys = new ArrayList<Shape<CatmullPolygon>>();
 
         for (List<TestProcedural.Point> pols : shapes) {
             Random rand = new Random();
@@ -228,12 +230,18 @@ public class IslandGenerator {
 
             Color col = colors.gradientColor((float) colorIndex / (float) 100);
 
-            CatmullPolygon polly = new CatmullPolygon(1, col, col);
+            // TODO: Create shape and obtain this.
+
+            Shape<CatmullPolygon> pol = engine.createComponent(Shape.class, null);
+            CatmullPolygon polly = pol.obtain(CatmullPolygon.class);
+            polly.lineWidth = 1;
+            polly.lineColor=col;
+            polly.fillColor = col;
             polly.physicsResolution = 1;
             polly.renderResolution = 1;
             polly.setVertices(pls);
 
-            islandPolys.add(polly);
+            islandPolys.add(pol);
 
 
         }
@@ -243,8 +251,8 @@ public class IslandGenerator {
 
         removeEdges(waypointbool, X/skip, Y/skip);
 
-        for (CatmullPolygon p2 : islandPolys) {
-            Vector2 vec = p2.shiftCenterToCentroid();
+        for (Shape<CatmullPolygon> p2 : islandPolys) {
+            Vector2 vec = p2.getGeometry().shiftCenterToCentroid();
             islands.add(new PolyPoint(vec, p2));
         }
 

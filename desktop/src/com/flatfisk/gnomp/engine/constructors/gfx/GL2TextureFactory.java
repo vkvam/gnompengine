@@ -83,7 +83,7 @@ public class GL2TextureFactory extends ShapeTextureFactory {
 
         @Override
         public void draw(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform){
-            if (structure == null || structure.geometry == null) {
+            if (structure == null || structure.getGeometry() == null) {
                 return;
             }
 
@@ -98,14 +98,14 @@ public class GL2TextureFactory extends ShapeTextureFactory {
         }
 
         private void drawFilled(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform){
-            if (structure.geometry.fillColor != null) {
+            if (structure.getGeometry().fillColor != null) {
                 shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.RED);
                 drawShape(structure, transform);
             }
         }
 
         private void drawLine(com.flatfisk.gnomp.engine.components.Shape structure, Transform transform){
-            if (structure.geometry.lineColor != null) {
+            if (structure.getGeometry().lineColor != null) {
                 drawShape(structure, transform);
             }
         }
@@ -122,9 +122,9 @@ public class GL2TextureFactory extends ShapeTextureFactory {
             offsetPosition.scl(1/scaleX, 1/scaleY);
             float angle = transform.rotation;
 
-            AbstractShape geAbstractShape = structure.geometry;
+            AbstractShape geAbstractShape = structure.getGeometry();
             if (geAbstractShape instanceof Polygon) {
-                Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.geometry;
+                Polygon ps = (com.flatfisk.gnomp.engine.shape.Polygon) structure.getGeometry();
 
                 com.badlogic.gdx.math.Polygon poly = ps.getRenderPolygon();
 
@@ -136,14 +136,14 @@ public class GL2TextureFactory extends ShapeTextureFactory {
                 poly.setRotation(0);
 
             }else if (geAbstractShape instanceof Line) {
-                Line c = (Line) structure.geometry;
+                Line c = (Line) structure.getGeometry();
                 c.polyline.setRotation(angle);
                 c.polyline.setPosition(offsetPosition.x, offsetPosition.y);
                 shapeRenderer.polygon(c.polyline.getTransformedVertices());
                 c.polyline.setRotation(0);
                 c.polyline.setPosition(0,0);
             }else if (geAbstractShape instanceof Circle) {
-                Circle c = (Circle) structure.geometry;
+                Circle c = (Circle) structure.getGeometry();
                 shapeRenderer.circle(c.circle.x+offsetPosition.x, c.circle.y+offsetPosition.x, c.circle.radius, 5);
             }
         }

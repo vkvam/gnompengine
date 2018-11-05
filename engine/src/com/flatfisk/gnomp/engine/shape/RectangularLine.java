@@ -1,6 +1,5 @@
 package com.flatfisk.gnomp.engine.shape;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Pools;
 
@@ -11,12 +10,14 @@ import com.badlogic.gdx.utils.Pools;
  * Project:Raven
  */
 public class RectangularLine extends Polygon {
-    public float halfRectangleWith;
-    public final Vector2 from = new Vector2(), to=new Vector2();
+    public float halfRectangleWidth;
+    public final Vector2 from = new Vector2(),
+            to=new Vector2();
 
-    public RectangularLine(float lineWidth, float halfRectangleWith, Color color, Color fillColor) {
-        super(lineWidth, color, fillColor);
-        this.halfRectangleWith = halfRectangleWith;
+
+    protected RectangularLine(){
+        super();
+        this.halfRectangleWidth = 1;
     }
 
     public void reset() {
@@ -27,7 +28,7 @@ public class RectangularLine extends Polygon {
 
     public void createPolygonVertices() {
         Vector2 direction = Pools.obtain(Vector2.class);
-        direction.set(to).sub(from).rotate(90).nor().scl(halfRectangleWith);
+        direction.set(to).sub(from).rotate(90).nor().scl(halfRectangleWidth);
 
         float[] vertices = new float[8];
         vertices[0] = from.x + direction.x;

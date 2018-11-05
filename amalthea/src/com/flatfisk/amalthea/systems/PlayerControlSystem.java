@@ -173,8 +173,11 @@ public class PlayerControlSystem extends EntitySystem implements GnompContactLis
             orientationRelative.local = t.cpy();
             orientationRelative.world = t.cpy();
 
-            com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
-            structure.geometry = new Circle(0, 0.5f, Color.WHITE, Color.DARK_GRAY);
+            com.flatfisk.gnomp.engine.components.Shape<Circle> structure = world.createComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
+            Circle c = structure.obtain(Circle.class);
+            c.init(0, Color.WHITE, Color.DARK_GRAY);
+            c.setRadius(0.5f);
+            e.add(structure);
             world.constructEntity(e);
 
         }

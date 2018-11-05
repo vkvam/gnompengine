@@ -48,8 +48,12 @@ public class WeaponBuilder {
         effect.effectFileName = "data/test.p";
         effect.initialEmitters.addAll("simple");
 
-        com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
-        structure.geometry = new Circle(0, 0.01f, Color.WHITE, Color.DARK_GRAY);
+        com.flatfisk.gnomp.engine.components.Shape<Circle> structure = world.createComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
+        Circle circle = structure.obtain(Circle.class);
+        circle.setRadius(0.01f);
+        circle.fillColor = Color.WHITE;
+        circle.lineColor = Color.WHITE;
+        e.add(structure);
         return e;
     }
 
@@ -88,8 +92,13 @@ public class WeaponBuilder {
         effect.effectFileName = "data/test.p";
         effect.initialEmitters.addAll("simple");
 
-        com.flatfisk.gnomp.engine.components.Shape structure = world.addComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
-        structure.geometry = new Circle(0, 0.01f, Color.WHITE, Color.DARK_GRAY);
+        com.flatfisk.gnomp.engine.components.Shape<Circle> structure = world.createComponent(com.flatfisk.gnomp.engine.components.Shape.class, e);
+        Circle c = structure.obtain(Circle.class);
+        c.setRadius(0.01f);
+        c.lineColor = Color.WHITE;
+        c.fillColor = Color.WHITE;
+
+        e.add(structure);
         return e;
     }
 }

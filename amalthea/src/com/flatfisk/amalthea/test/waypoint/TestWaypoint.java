@@ -37,12 +37,12 @@ public class TestWaypoint implements ApplicationListener {
     public void create() {
         shapeRenderer = new ShapeRenderer();
         sprite = new Sprite();
-        ps = IslandGenerator.getIslands(600,600,21332123, 0.7f, 40);
+        ps = IslandGenerator.getIslands(600,600,21332123, 0.7f, 40, null);
         //ps2 = IslandGenerator.getIslands(300,300,21332123, 0.65f);
 
         for(IslandGenerator.PolyPoint p:ps.islands) {
             //p.poly.shiftCenterToCentroid();
-            p.poly.polygon.setScale(scale,scale);
+            p.poly.getGeometry().polygon.setScale(scale,scale);
         }
     }
 
@@ -52,7 +52,7 @@ public class TestWaypoint implements ApplicationListener {
         List<IslandGenerator.PolyPoint> ps = islands.islands;
         for(IslandGenerator.PolyPoint p: ps){
 
-            float[] verts = p.poly.getRenderPolygon().getTransformedVertices();
+            float[] verts = p.poly.getGeometry().getRenderPolygon().getTransformedVertices();
 
             float xS,yS;
             float x1 = xS = verts[0]+p.pos.x*scale+320;

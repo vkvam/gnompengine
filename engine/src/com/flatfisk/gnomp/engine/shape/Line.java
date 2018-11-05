@@ -16,11 +16,11 @@ import com.flatfisk.gnomp.math.Transform;
  * Project:Raven
  */
 public class Line extends AbstractShape {
-    public Polygon polyline;
+    public Polygon polyline = new com.badlogic.gdx.math.Polygon();
 
-    public Line(Polygon polyline, float lineWidth, Color color) {
-        super(lineWidth, color, null);
-        this.polyline = polyline;
+    protected Line(){
+        super(1, null, null);
+        polyline = new Polygon();
     }
 
     @Override

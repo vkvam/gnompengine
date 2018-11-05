@@ -61,34 +61,34 @@ public class SimpleTextureFactory extends ShapeTextureFactory{
                 return;
             }
             Vector2 pos = orientation.vector;
-            AbstractShape abstractShape = structure.geometry;
+            AbstractShape abstractShape = structure.getGeometry();
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
             //Gdx.app.log("Draw vector:", centerX + "," + centerY);
 
             if (abstractShape instanceof Circle) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (abstractShape.fillColor != null) {
+                    setColor(abstractShape.fillColor);
                     int radius = Math.round(((Circle) abstractShape).circle.radius);
                     fillCircle(centerX, centerY, radius);
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (abstractShape.lineColor != null) {
+                    setColor(abstractShape.lineColor);
                     int radius = Math.round(((Circle) abstractShape).circle.radius);
                     drawCircle(centerX, centerY, radius);
                 }
 
             } else if (abstractShape instanceof RectangularLine) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (abstractShape.fillColor != null) {
+                    setColor(abstractShape.fillColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
                     ls.setRotation(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
                     ls.setRotation(0);
                     fillPolygon(vertices, centerX, centerY);
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (abstractShape.lineColor != null) {
+                    setColor(abstractShape.lineColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
                     ls.setRotation(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
@@ -97,8 +97,8 @@ public class SimpleTextureFactory extends ShapeTextureFactory{
                     drawPolygon(vertices, centerX, centerY);
                 }
             } else if (abstractShape instanceof Polygon) {
-                if (structure.geometry.fillColor != null) {
-                    setColor(structure.geometry.fillColor);
+                if (abstractShape.fillColor != null) {
+                    setColor(abstractShape.fillColor);
                     Polygon ls = (Polygon) abstractShape;
 
                     ls.setRotation(orientation.rotation);
@@ -111,8 +111,8 @@ public class SimpleTextureFactory extends ShapeTextureFactory{
 
 
                 }
-                if (structure.geometry.lineColor != null) {
-                    setColor(structure.geometry.lineColor);
+                if (abstractShape.lineColor != null) {
+                    setColor(abstractShape.lineColor);
                     Polygon ls = (Polygon) abstractShape;
                     ls.getRenderPolygon().rotate(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();

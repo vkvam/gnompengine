@@ -15,11 +15,9 @@ import com.flatfisk.gnomp.math.Transform;
 
 import static com.flatfisk.gnomp.engine.GnompMappers.shapeMap;
 
-/**
- * Created by Vemund Kvam on 06/12/15.
- */
+
 public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Container, ShapeTexture> {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
 
     private ShapeTextureFactory shapeTextureFactory;
 
@@ -39,7 +37,6 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();
         renderable.zIndex = renderableDef.zIndex;
-        Gdx.app.log(getClass().getName(),"Constructed parent");
     }
 
     @Override
@@ -55,9 +52,7 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         Shape shape = shapeMap.get(entity);
         // If the constructor has a geometry, the geometry should be drawn at origin.
         Transform transform = Pools.obtain(Transform.class);
-
-        // shape != null lets Renderable be a root node where only the children has shapes
-        if (shape != null && shape.geometry != null){// && !relationshipMapper.get(entity).intermediate) {
+        if (shape.getGeometry() != null && !relationshipMapper.get(entity).intermediate) {
             px.draw(shape, transform);
         }
         Pools.free(transform);
@@ -71,21 +66,16 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
-        if(constructorDTO.isCached()){
-            return constructorDTO;
-        }
-
         Shape shape = shapeMap.get(entity);
 
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         transform.vector.rotate(-constructorOrientation.world.rotation);
 
-        if(shape != null && shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
+        if(!relationshipMapper.get(entity).intermediate && shape.getGeometry() != null) {
             constructorDTO.draw(shape, transform);
         }
 
         Pools.free(transform);
-        Gdx.app.log(getClass().getName(),"Added child");
         return constructorDTO;
     }
 

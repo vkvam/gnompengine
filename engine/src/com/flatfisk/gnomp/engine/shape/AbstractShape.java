@@ -25,6 +25,8 @@ public abstract class AbstractShape implements Pool.Poolable, Component {
         this.fillColor = fillColor;
     }
 
+
+
     public abstract AbstractShape getCopy();
 
     public void init(float lineWidth, Color lineColor, Color fillColor){
