@@ -3,6 +3,7 @@ package com.flatfisk.gnomp.engine.systems;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Scenegraph;
 import com.flatfisk.gnomp.engine.components.Spatial;
@@ -14,7 +15,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
  * Created by Vemund Kvam on 22/12/15.
  */
 public class ScenegraphSystem extends IteratingSystem {
-    private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private final Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
 
     public ScenegraphSystem(int priority) {
@@ -42,7 +43,7 @@ public class ScenegraphSystem extends IteratingSystem {
             }
 
         }else{
-            LOG.info("Entity is null!");
+            Gdx.app.debug(getClass().getName(),"Entity is null!");
         }
     }
 }

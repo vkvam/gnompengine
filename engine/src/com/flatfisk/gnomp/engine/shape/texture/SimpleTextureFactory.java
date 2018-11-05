@@ -1,43 +1,70 @@
 package com.flatfisk.gnomp.engine.shape.texture;
 
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.DelaunayTriangulator;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.ShortArray;
+import com.badlogic.gdx.utils.*;
 import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.shape.AbstractShape;
 import com.flatfisk.gnomp.engine.shape.Circle;
 import com.flatfisk.gnomp.engine.shape.Polygon;
 import com.flatfisk.gnomp.engine.shape.RectangularLine;
+import com.flatfisk.gnomp.math.GeometryUtils;
 import com.flatfisk.gnomp.math.Transform;
 
-public class SimpleTextureFactory extends ShapeTextureFactory {
+import static com.flatfisk.gnomp.math.GeometryUtils.toVector2Array;
+
+public class SimpleTextureFactory extends ShapeTextureFactory{
+    private IntMap<SimpleShapeTexture> shapeTextureCache = new IntMap<SimpleShapeTexture>(100);
+
     @Override
-    public ShapeTexture createShapeTexture(TextureCoordinates.BoundingRectangle boundingRectangle) {
-        return new SimpleShapeTexture(boundingRectangle);
+    public ShapeTexture createShapeTexture(TextureCoordinates.BoundingRectangle boundingRectangle, int textureId) {
+        SimpleShapeTexture t;
+        if(textureId>=0 && shapeTextureCache.containsKey(textureId)){
+            t = shapeTextureCache.get(textureId);
+            t.id = textureId;
+        }else {
+            t = new SimpleShapeTexture(boundingRectangle);
+            if (textureId >= 0) {
+                shapeTextureCache.put(textureId, t);
+            }
+        }
+        return t;
     }
 
-    /**
-     * Created by a-004213 on 27/04/14.
-     */
+    @Override
+    public void dispose() {
+        // TODO: Keep a counter of textures used and dispose once it reaches 0
+        for(SimpleShapeTexture tex: shapeTextureCache.values()){
+            tex.texture.dispose();
+        }
+    }
+
     public static class SimpleShapeTexture extends Pixmap implements ShapeTexture {
         public Vector2 offset;
+        public Texture texture;
+        public int id = -1;
 
         public SimpleShapeTexture(TextureCoordinates.BoundingRectangle envelope) {
             super(Math.round(envelope.width), Math.round(envelope.height), Format.RGBA8888);
             offset = new Vector2(envelope.offsetX, envelope.offsetY);
         }
 
-        public void draw(Shape structure,Transform orientation) {
+        @Override
+        public boolean isCached() {
+            return id>=0;
+        }
+
+        public void draw(Shape structure, Transform orientation) {
+            if(isCached()){
+                return;
+            }
             Vector2 pos = orientation.vector;
             AbstractShape abstractShape = structure.geometry;
             int centerX = Math.round(pos.x + getWidth() / 2 - offset.x);
             int centerY = Math.round(pos.y + getHeight() / 2 - offset.y);
-            Gdx.app.log("Draw vector:", centerX + "," + centerY);
+            //Gdx.app.log("Draw vector:", centerX + "," + centerY);
 
             if (abstractShape instanceof Circle) {
                 if (structure.geometry.fillColor != null) {
@@ -55,30 +82,34 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
                 if (structure.geometry.fillColor != null) {
                     setColor(structure.geometry.fillColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
-                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    ls.setRotation(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
-                    ls.getRenderPolygon().rotate(-orientation.rotation);
-
+                    ls.setRotation(0);
                     fillPolygon(vertices, centerX, centerY);
                 }
                 if (structure.geometry.lineColor != null) {
                     setColor(structure.geometry.lineColor);
                     RectangularLine ls = (RectangularLine) abstractShape;
-                    ls.getRenderPolygon().rotate(orientation.rotation);
+                    ls.setRotation(orientation.rotation);
                     float[] vertices = ls.getRenderPolygon().getTransformedVertices();
-                    ls.getRenderPolygon().rotate(-orientation.rotation);
-
+                    ls.setRotation(0);
+                    // TODO: Major hack warning.
                     drawPolygon(vertices, centerX, centerY);
                 }
             } else if (abstractShape instanceof Polygon) {
                 if (structure.geometry.fillColor != null) {
                     setColor(structure.geometry.fillColor);
                     Polygon ls = (Polygon) abstractShape;
-                    ls.getRenderPolygon().rotate(orientation.rotation);
-                    float[] vertices = ls.getRenderPolygon().getTransformedVertices();
-                    ls.getRenderPolygon().rotate(-orientation.rotation);
 
-                    fillPolygon(vertices, centerX, centerY);
+                    ls.setRotation(orientation.rotation);
+                    com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(ls.getRenderPolygon());
+                    for(com.badlogic.gdx.math.Polygon pol: polygons) {
+                        //fillPolygon(vertices, centerX, centerY);
+                        fillPolygon(pol.getTransformedVertices(), centerX, centerY);
+                    }
+                    ls.setRotation(0);
+
+
                 }
                 if (structure.geometry.lineColor != null) {
                     setColor(structure.geometry.lineColor);
@@ -93,6 +124,9 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
         }
 
         public void drawPolygon(float[] vertices, float centerX, float centerY) {
+            if(isCached()){
+                return;
+            }
             int x0, y0, x1 = 0, y1 = 0;
             if (vertices.length > 3) {
                 for (int i = 3; i < vertices.length; i += 2) {
@@ -110,6 +144,9 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
 
         // TODO: Optimize
         public void fillPolygon(float[] vertices, float centerX, float centerY) {
+            if(isCached()){
+                return;
+            }
             FloatArray points = new FloatArray(vertices);
             DelaunayTriangulator dt = new DelaunayTriangulator();
             ShortArray triangles = dt.computeTriangles(vertices, false);
@@ -126,10 +163,14 @@ public class SimpleTextureFactory extends ShapeTextureFactory {
         }
 
         public Texture createTexture() {
-            Texture t = new Texture(this);
-            t.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            if(isCached()){
+                return texture;
+            }
+            texture = new Texture(this);
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
             this.dispose();
-            return t;
+            return texture;
         }
 
         @Override

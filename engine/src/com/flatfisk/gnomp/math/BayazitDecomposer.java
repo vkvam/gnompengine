@@ -384,7 +384,7 @@ public abstract class BayazitDecomposer {
         }
 
         private static double distancePointLine(Vector2 p, Vector2 A, Vector2 B) {
-            // if start == end, then use point-to-point distance
+            // if play == end, then use point-to-point distance
             if (A.x == B.x && A.y == B.y)
                 return distancePointPoint(p, A);
             // otherwise use comp.graphics.algorithms Frequently Asked Questions

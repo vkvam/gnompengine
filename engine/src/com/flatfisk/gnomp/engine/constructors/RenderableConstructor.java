@@ -1,6 +1,7 @@
 package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
@@ -18,7 +19,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.shapeMap;
  * Created by Vemund Kvam on 06/12/15.
  */
 public class RenderableConstructor extends Constructor<Renderable,Renderable.Node,Renderable.Container, ShapeTexture> {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     private ShapeTextureFactory shapeTextureFactory;
 
@@ -38,16 +39,25 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
         renderable.texture = shapeTexture.createTexture();
         renderable.offset = shapeTexture.getOffset();
         renderable.zIndex = renderableDef.zIndex;
+        Gdx.app.log(getClass().getName(),"Constructed parent");
     }
 
     @Override
     public ShapeTexture parentAdded(Entity entity, Spatial.Node constructorOrientation) {
         Renderable geometry = constructorMapper.get(entity);
-        ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle);
+        int textureId = geometry.textureId;
+        ShapeTexture px = shapeTextureFactory.createShapeTexture(geometry.boundingRectangle, textureId);
+
+        if(px.isCached()){
+            return px;
+        }
+
         Shape shape = shapeMap.get(entity);
         // If the constructor has a geometry, the geometry should be drawn at origin.
         Transform transform = Pools.obtain(Transform.class);
-        if (shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
+
+        // shape != null lets Renderable be a root node where only the children has shapes
+        if (shape != null && shape.geometry != null){// && !relationshipMapper.get(entity).intermediate) {
             px.draw(shape, transform);
         }
         Pools.free(transform);
@@ -61,16 +71,21 @@ public class RenderableConstructor extends Constructor<Renderable,Renderable.Nod
                                       Spatial.Node childOrientation,
                                       ShapeTexture constructorDTO) {
 
+        if(constructorDTO.isCached()){
+            return constructorDTO;
+        }
+
         Shape shape = shapeMap.get(entity);
 
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         transform.vector.rotate(-constructorOrientation.world.rotation);
 
-        if(shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
+        if(shape != null && shape.geometry != null && !relationshipMapper.get(entity).intermediate) {
             constructorDTO.draw(shape, transform);
         }
 
         Pools.free(transform);
+        Gdx.app.log(getClass().getName(),"Added child");
         return constructorDTO;
     }
 

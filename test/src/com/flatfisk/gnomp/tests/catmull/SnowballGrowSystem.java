@@ -4,10 +4,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IntervalSystem;
 import com.flatfisk.gnomp.engine.GnompEngine;
+import com.flatfisk.gnomp.engine.components.PhysicsBodyState;
 import com.flatfisk.gnomp.engine.components.Renderable;
 import com.flatfisk.gnomp.engine.components.Shape;
 import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.engine.components.Velocity;
 import com.flatfisk.gnomp.engine.shape.CatmullPolygon;
 import com.flatfisk.gnomp.math.Transform;
 import com.flatfisk.gnomp.tests.TestCatmullRender;
@@ -30,7 +30,7 @@ public class SnowballGrowSystem extends IntervalSystem {
         Renderable.Container n = e.getComponent(Renderable.Container.class);
         float w = n.texture.getWidth();
 
-        Velocity v = e.getComponent(Velocity.class);
+        PhysicsBodyState v = e.getComponent(PhysicsBodyState.class);
         float length = v.velocity.vector.len()*0.002f;
 
         if(Math.random()>0.994f) {

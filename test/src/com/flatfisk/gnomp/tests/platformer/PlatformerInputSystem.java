@@ -275,7 +275,7 @@ public class PlatformerInputSystem extends EntitySystem implements ContactListen
         p.maskBits=127;
         p.density=100;
 
-        Velocity v = world.addComponent(Velocity.class,e);
+        PhysicsBodyState v = world.addComponent(PhysicsBodyState.class,e);
         v.velocity.vector.set(direction).nor().scl(400);
 
         world.addComponent(Spatial.class,e);

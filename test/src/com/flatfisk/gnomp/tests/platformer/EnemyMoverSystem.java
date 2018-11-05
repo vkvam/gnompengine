@@ -4,14 +4,11 @@ package com.flatfisk.gnomp.tests.platformer;
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Logger;
-import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
-import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.math.Transform;
-import com.flatfisk.gnomp.tests.TestPlatformer;
 import com.flatfisk.gnomp.tests.components.Player;
 import com.flatfisk.gnomp.tests.systems.HooverMessage;
-import static com.flatfisk.gnomp.engine.GnompMappers.*;
+
+import static com.flatfisk.gnomp.engine.GnompMappers.physicsBodyMap;
 
 public class EnemyMoverSystem extends IteratingSystem implements EntityListener {
 
@@ -39,7 +36,7 @@ public class EnemyMoverSystem extends IteratingSystem implements EntityListener 
         super.update(f);
         c+=f;
         if(c>0.25f){
-
+/*
             GnompEngine world= (GnompEngine) getEngine();
 
             Transform t = getEngine().getEntitiesFor(player).get(0).getComponent(Spatial.Node.class).world;
@@ -47,6 +44,7 @@ public class EnemyMoverSystem extends IteratingSystem implements EntityListener 
             world.constructEntity(e);
 
             c=0;
+            */
         }
     }
 

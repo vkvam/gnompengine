@@ -4,27 +4,32 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
+import com.flatfisk.gnomp.engine.ContactManager;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
+import com.flatfisk.gnomp.engine.components.PhysicsBodyState;
 import com.flatfisk.gnomp.engine.components.Spatial;
-import com.flatfisk.gnomp.engine.components.Velocity;
 import com.flatfisk.gnomp.math.Transform;
 import static com.flatfisk.gnomp.engine.GnompMappers.*;
 
 public class PhysicsSystem extends IteratingSystem implements ApplicationListener {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     private World box2DWorld;
     private boolean fixedStep=false;
     private float fixedStepInterval = 1f/60f;
     private StatsSystem statsSystem;
 
+    public ContactManager manager = new ContactManager();
+
     public PhysicsSystem(World box2DWorld,int priority) {
         super(Family.all(PhysicsBody.Container.class).get(),priority);
 
         this.box2DWorld = box2DWorld;
+        this.box2DWorld.setContactListener(manager);
         box2DWorld.setContinuousPhysics(true);
 
     }
@@ -49,7 +54,7 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
     @Override
     public void update(float f) {
         f = fixedStep ? fixedStepInterval : Math.min(f,fixedStepInterval*2);
-        box2DWorld.step(fixedStepInterval, 3, 3);
+        box2DWorld.step(fixedStepInterval, 5, 8);
         super.update(f);
         addStats();
     }
@@ -87,38 +92,41 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
             }
 
             // Apply manually defined position change
-            if(body.positionModificationType != PhysicsBody.Container.PositionModificationType.TRANSFORM ){
+            //if(body.positionModificationType != PhysicsBody.Container.PositionModificationType.TRANSFORM ){
 
-                switch(body.positionModificationType){
-                    case FORCE_AT_CENTER:
-                        body.body.applyForceToCenter(body.modifyDirection, body.wake);
-                        break;
-                    case FORCE_AT_POINT:
-                        body.body.applyForce(body.modifyDirection, body.modifyPoint, body.wake);
-                        break;
-                    case IMPULSE_AT_POINT:
-                        body.body.applyLinearImpulse(body.modifyDirection, body.modifyPoint, body.wake);
-                        break;
-                    case TRANSFORM:
-                        body.body.setTransform(body.modifyDirection, body.angularModification);
-                        break;
-                    case POSITION:
-                        body.body.setTransform(body.modifyDirection, body.body.getAngle());
-                        break;
-                }
-
-                body.positionModificationType = PhysicsBody.Container.PositionModificationType.NONE;
-                body.wake = false;
-
+            switch(body.positionModificationType){
+                case FORCE_AT_CENTER:
+                    body.body.applyForceToCenter(body.modifyDirection, body.wake);
+                    break;
+                case FORCE_AT_POINT:
+                    body.body.applyForce(body.modifyDirection, body.modifyPoint, body.wake);
+                    break;
+                case IMPULSE_AT_POINT:
+                    body.body.applyLinearImpulse(body.modifyDirection, body.modifyPoint, body.wake);
+                    break;
+                case TRANSFORM:
+                    body.body.setTransform(body.modifyDirection, body.angularModification);
+                    break;
+                case POSITION:
+                    body.body.setTransform(body.modifyDirection, body.body.getAngle());
+                    break;
             }
 
-            // Transfer velocity and position to correct components.
-            Velocity velocity = velocityMap.get(entity);
+            body.positionModificationType = PhysicsBody.Container.PositionModificationType.NONE;
+            body.wake = false;
 
-            if (velocity != null) {
-                velocity.velocity.vector.set(body.getLinearVelocity());
-                velocity.velocity.rotation = body.getAngularVelocity();
-                velocity.velocity.toWorld();
+            //}
+
+            // Transfer physicsBodyState and position to correct components.
+            PhysicsBodyState physicsBodyState = physicsBodyStateMap.get(entity);
+
+            if (physicsBodyState != null) {
+                physicsBodyState.velocity.vector.set(body.getLinearVelocity());
+                physicsBodyState.velocity.rotation = body.getAngularVelocity();
+                physicsBodyState.intertia = body.body.getInertia();
+                physicsBodyState.mass = body.body.getMass();
+                // NOTE: Removed since we almost always convert it back to box2d space
+                //physicsBodyState.velocity.toWorld();
             }
 
             Spatial.Node orientation = spatialNodeMap.get(entity);
@@ -157,7 +165,7 @@ public class PhysicsSystem extends IteratingSystem implements ApplicationListene
 
     @Override
     public void dispose() {
-        LOG.info("Disposing physicsConstructorMap world");
+        Gdx.app.debug(getClass().getName(),"Disposing physicsConstructorMap world");
         box2DWorld.dispose();
     }
 }

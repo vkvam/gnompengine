@@ -38,7 +38,7 @@ public class MathUtils {
     }
 
     /**
-     * @return the sum of all values in the given array
+     * @return the sum of all values in the given steerings
      */
     public static float sum(float[] values) {
         float sum = 0;
@@ -48,14 +48,14 @@ public class MathUtils {
     }
 
     /**
-     * @return the peak-to-peak amplitude of the given array
+     * @return the peak-to-peak amplitude of the given steerings
      */
     public static float amplitude(float[] f) {
         return Math.abs(max(f) - min(f));
     }
 
     /**
-     * @return the largest element of the given array
+     * @return the largest element of the given steerings
      */
     public static float max(float[] floats) {
         float max = Float.NEGATIVE_INFINITY;
@@ -65,7 +65,7 @@ public class MathUtils {
     }
 
     /**
-     * @return the smallest element of the given array
+     * @return the smallest element of the given steerings
      */
     public static float min(float[] floats) {
         float min = Float.POSITIVE_INFINITY;
@@ -115,13 +115,13 @@ public class MathUtils {
     }
 
     /**
-     * scales the given float array to have the given min and max values
+     * scales the given float steerings to have the given min and max values
      *
      * @param values the values to scale
-     * @param min    the desired minimal value in the array
-     * @param max    the desired maximal value in the array
+     * @param min    the desired minimal value in the steerings
+     * @param max    the desired maximal value in the steerings
      * @param clamp  if the values should be clamped to correct floating point inaccuracy
-     * @return the scaled array
+     * @return the scaled steerings
      */
     public static float[] scale(float[] values, float min, float max, boolean clamp) {
         int i;

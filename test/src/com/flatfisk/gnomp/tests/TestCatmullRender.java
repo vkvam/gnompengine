@@ -57,7 +57,7 @@ public class TestCatmullRender extends Test {
         engine.addComponent(Spatial.class,e);
 
         engine.addComponent(Renderable.class,e);
-        engine.addComponent(Velocity.class,e);
+        engine.addComponent(PhysicsBodyState.class,e);
         engine.addComponent(Renderable.Node.class,e);
 
         engine.addComponent(Player.class,e);

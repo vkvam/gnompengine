@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +21,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
  */
 public class EffectSystem extends IteratingSystem implements ApplicationListener {
     private final CameraSystem cameraSystem;
-    private final Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private final Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     public static final ObjectMap<String, ParticleEffectPoolWrapper> EFFECT_POOLS = new ObjectMap();
     public final SpriteBatch spriteBatch = new SpriteBatch();
 
@@ -91,10 +92,10 @@ public class EffectSystem extends IteratingSystem implements ApplicationListener
 
     @Override
     public void dispose() {
-        LOG.info("Disposing effect batch");
+        Gdx.app.debug(getClass().getName(),"Disposing effect batch");
         spriteBatch.dispose();
         for(ParticleEffectPoolWrapper wrapper : EFFECT_POOLS.values()){
-            LOG.info("Disposing effect");
+            Gdx.app.debug(getClass().getName(),"Disposing effect");
             wrapper.effect.dispose();
         }
     }

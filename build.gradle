@@ -1,4 +1,5 @@
 apply plugin: 'maven'
+apply plugin: 'idea'
 group = 'com.github.vkvam'
 
 buildscript {
@@ -19,7 +20,7 @@ allprojects {
     apply plugin: "idea"
 
     ext {
-        gdxVersion = '1.9.3'
+        gdxVersion = '1.9.6'
         roboVMVersion = '1.12.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.2'
@@ -90,6 +91,14 @@ project(":test") {
     }
 }
 
+project(":amalthea") {
+    apply plugin: "java"
+    dependencies {
+        compile project(":android")
+        compile project(":desktop")
+    }
+}
+
 project(":desktop") {
     apply plugin: "java"
 
@@ -111,7 +120,6 @@ project(":desktop") {
     artifacts {
         archives sourcesJar
     }
-
 
 }
 

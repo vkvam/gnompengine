@@ -11,7 +11,7 @@ import com.flatfisk.gnomp.engine.components.Spatial;
 import com.flatfisk.gnomp.engine.components.PhysicsBody;
 
 public class PhysicsJointConstructionSystem implements EntityListener {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     //public ComponentMapper<PhysicsJointDef> jointMapper;
     public ComponentMapper<PhysicsBody.Container> bodyMapper;

@@ -71,7 +71,7 @@ public class LightConstructor extends Constructor<Light,Spatial.Node,Light.Conta
 
     @Override
     public void parentRemoved(Entity entity) {
-
+        entity.remove(Light.Container.class);
     }
 
     @Override

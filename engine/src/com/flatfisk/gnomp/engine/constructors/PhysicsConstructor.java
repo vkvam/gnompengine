@@ -1,6 +1,7 @@
 package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
@@ -18,7 +19,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
  */
 public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,PhysicsBody.Container, Array<PhysicsConstructor.FixtureDefWrapper>> {
     private final World box2DWorld;
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
@@ -42,14 +43,16 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         bodyContainer.body = createBody(bodyDef, fixtureDefs);
         bodyContainer.body.setUserData(entity);
 
-        Velocity velocity = velocityMap.get(entity);
-        if (velocity != null && velocity.velocity != null) {
-            LOG.info("VECTOR:"+velocity.velocity.vector);
-            Transform velocityTransform = Pools.obtain(Transform.class).set(velocity.velocity).toBox2D();
+        PhysicsBodyState physicsBodyState = physicsBodyStateMap.get(entity);
+        if (physicsBodyState != null && physicsBodyState.velocity != null) {
+            Gdx.app.debug(getClass().getName(),"VECTOR:"+ physicsBodyState.velocity.vector);
+            //Transform velocityTransform = Pools.obtain(Transform.class).set(physicsBodyState.velocity).toBox2D();
+            Transform velocityTransform = Pools.obtain(Transform.class).set(physicsBodyState.velocity);
             bodyContainer.body.setLinearVelocity(velocityTransform.vector);
             bodyContainer.body.setAngularVelocity(velocityTransform.rotation);
             Pools.free(velocityTransform);
         }
+        Gdx.app.log(getClass().getName(),"Constructed parent");
     }
 
     @Override
@@ -74,7 +77,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
         Transform t = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         t.vector.rotate(-constructorOrientation.world.rotation);
         Shape shape = shapeMap.get(entity);
-        if(relationshipMapper.get(entity).intermediate) {
+        if(!relationshipMapper.get(entity).intermediate) {
             FixtureDef[] fixtures = getFixtures(shape, t, physicalPropertiesMap.get(entity));
             if(fixtures!=null){
                 for(FixtureDef f:fixtures){
@@ -83,6 +86,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             }
         }
         Pools.free(t);
+        Gdx.app.log(getClass().getName(),"Added child");
         return fixtureDefs;
     }
 
@@ -97,16 +101,16 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
     }
 
     private Body createBody(BodyDef bodyDef, Array<FixtureDefWrapper> fixtureDefs) {
-        LOG.info("Create physicsConstructorMap body of type:"+bodyDef.type);
+        Gdx.app.debug(getClass().getName(),"Create physicsConstructorMap body of type:"+bodyDef.type);
         Body body = box2DWorld.createBody(bodyDef);
-        LOG.info("Adding "+fixtureDefs.size+" fixtures");
+        Gdx.app.debug(getClass().getName(),"Adding "+fixtureDefs.size+" fixtures");
         for (FixtureDefWrapper fixture : fixtureDefs) {
             Fixture f = body.createFixture(fixture.fixtureDef);
             fixture.fixtureDef.shape.dispose();
             // Use the entity used for construction and it's relative position to the parent body as userdata.
-            f.setUserData(new FixtureUserData(fixture.owner,fixture.transformRelativeToBody));
+            f.setUserData(new FixtureUserData(fixture.owner, fixture.transformRelativeToBody));
         }
-        LOG.info("Total mass:"+body.getMass());
+        Gdx.app.debug(getClass().getName(),"Total mass:"+body.getMass());
         return body;
     }
 

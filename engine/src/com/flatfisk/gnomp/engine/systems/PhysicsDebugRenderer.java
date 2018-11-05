@@ -3,13 +3,14 @@ package com.flatfisk.gnomp.engine.systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
 
 public class PhysicsDebugRenderer extends EntitySystem implements ApplicationListener {
     private CameraSystem cameraSystem;
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     private Box2DDebugRenderer debugRenderer;
     private World box2DWorld;
@@ -31,6 +32,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
         debugRenderer.setDrawContacts(true);
         debugRenderer.setDrawBodies(true);
         debugRenderer.setDrawAABBs(true);
+
     }
 
     @Override
@@ -64,7 +66,7 @@ public class PhysicsDebugRenderer extends EntitySystem implements ApplicationLis
 
     @Override
     public void dispose() {
-        LOG.info("Disposing debugrenderer");
+        Gdx.app.debug(getClass().getName(),"Disposing debugrenderer");
         debugRenderer.dispose();
     }
 }

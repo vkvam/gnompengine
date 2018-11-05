@@ -1,20 +1,29 @@
 package com.flatfisk.gnomp.gdx;
 
 import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Disposable;
 import com.flatfisk.gnomp.engine.ConstructorManager;
 import com.flatfisk.gnomp.engine.constructors.*;
 import com.flatfisk.gnomp.engine.shape.texture.ShapeTextureFactory;
 import com.flatfisk.gnomp.engine.systems.*;
 
 
-public class DefaultGnompApplicationListener extends GnompApplicationListener {
+public class DefaultGnompApplicationListener extends GnompApplicationListener{
 
     protected ShapeTextureFactory shapeTextureFactory;
 
     @Override
     public void create(){
         super.create();
+    }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+        shapeTextureFactory.dispose();
     }
 
     protected ScenegraphSystem addScenegraphSystem(int priority){
@@ -29,22 +38,24 @@ public class DefaultGnompApplicationListener extends GnompApplicationListener {
         constructorManager.addConstructor(new SpatialConstructor(),10);
         constructorManager.addConstructor(new BoundsConstructor(),20);
         constructorManager.addConstructor(new PhysicsConstructor(engine,physicsWorld),30);
+        constructorManager.addConstructor(new PhysicsSteerableConstructor(engine),35);
         constructorManager.addConstructor(new LightConstructor(rayHandler, engine),40);
         constructorManager.addConstructor(new RenderableConstructor(engine,shapeTextureFactory),50);
         constructorManager.addConstructor(new EffectConstructor(engine),60);
     }
 
     protected CameraSystem addCameraSystem(int priority, int width, int height){
-        CameraSystem cameraSystem = new CameraSystem(priority, width, height);
+        CameraSystem cameraSystem = new CameraSystem(priority, width, height, 1f/4f);
         engine.addSystem(cameraSystem);
         return cameraSystem;
     }
 
-    protected RenderSystem addRenderSystem(int priority,CameraSystem cameraSystem){
+    protected RenderSystem addRenderSystem(int priority,Camera cameraSystem){
         RenderSystem renderer = new RenderSystem(priority, cameraSystem);
         engine.addSystem(renderer);
         return renderer;
     }
+
 
 
     protected PhysicsDebugRenderer addDebugRenderer(int priority, World physicsWorld, CameraSystem cameraSystem){

@@ -3,6 +3,7 @@ package com.flatfisk.gnomp.engine.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -48,6 +49,11 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
      * PhysicsBody node for constructing a Fixture.
      */
     public static class Node implements ISerializable<Node> {
+        /*
+        false means the node will only be used with root nodes,
+        when set to true, the node can be used with children of root nodes.
+
+        */
         public boolean intermediate = false;
 
         @Override
@@ -61,7 +67,7 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
     }
 
     public static class Container implements ISpatialController, Component, Pool.Poolable {
-        private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+        private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
         public Body body;
 
         // Set to true to have the position updated to the value of Spatial.
@@ -223,14 +229,14 @@ public class PhysicsBody implements ISerializable<PhysicsBody>, Pool.Poolable {
 
         @Override
         public void reset() {
-            LOG.info("Removing userdata for body");
+            Gdx.app.debug(getClass().getName(),"Removing userdata for body");
             body.setUserData(null);
 
-            LOG.info("Removing userdata for fixtures");
+            Gdx.app.debug(getClass().getName(),"Removing userdata for fixtures");
             for(Fixture f : body.getFixtureList()){
                 f.setUserData(null);
             }
-            LOG.info("Destroying body");
+            Gdx.app.debug(getClass().getName(),"Destroying body");
             body.getWorld().destroyBody(body);
 
             body = null;

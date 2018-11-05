@@ -5,8 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Logger;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.flatfisk.gnomp.PhysicsConstants;
 import com.flatfisk.gnomp.engine.components.Light;
 import com.flatfisk.gnomp.math.Transform;
@@ -19,7 +20,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.spatialNodeMap;
  */
 public class LightSystem extends IteratingSystem implements ApplicationListener {
     private CameraSystem cameraSystem;
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     private RayHandler rayHandler;
 
 
@@ -44,12 +45,17 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
+        rayHandler.setCulling(true);
+
+        OrthographicCamera worldCam = cameraSystem.getWorldCamera();
+        float zoom = worldCam.zoom;
 
         rayHandler.setCombinedMatrix(cameraSystem.getPhysicsMatrix(),
-                cameraSystem.viewport.x,
-                cameraSystem.viewport.y,
-                cameraSystem.viewport.width*PhysicsConstants.PIXELS_PER_METER,
-                cameraSystem.viewport.height*PhysicsConstants.PIXELS_PER_METER);
+                worldCam.position.x*PhysicsConstants.METERS_PER_PIXEL,
+                worldCam.position.y*PhysicsConstants.METERS_PER_PIXEL,
+                worldCam.viewportWidth*PhysicsConstants.METERS_PER_PIXEL*zoom,
+                worldCam.viewportHeight*PhysicsConstants.METERS_PER_PIXEL*zoom);
+
         rayHandler.updateAndRender();
         if(statsSystem!=null){
             statsSystem.addStat("Lights");
@@ -80,8 +86,14 @@ public class LightSystem extends IteratingSystem implements ApplicationListener 
 
     @Override
     public void resize(int width, int height) {
-        Rectangle viewport= cameraSystem.viewport;
-        rayHandler.useCustomViewport((int)viewport.x,(int)viewport.y,(int)viewport.width,(int)viewport.height);
+        FitViewport viewport = cameraSystem.worldViewPort;
+        //rayHandler.useCustomViewport((int)viewport.x,(int)viewport.y,(int)viewport.width,(int)viewport.height);
+        rayHandler.useCustomViewport(
+                viewport.getScreenX(),
+                viewport.getScreenY(),
+                viewport.getScreenWidth(),
+                viewport.getScreenHeight()
+        );
     }
 
     @Override

@@ -18,6 +18,10 @@ public class Pools {
         return vector2Pool.obtain();
     }
 
+    public static void freeVector(Vector2 v){
+        vector2Pool.free(v);
+    }
+
     public static Vector2 obtainVector2FromCopy(Vector2 vector){
         return vector2Pool.createCopy(vector);
     }

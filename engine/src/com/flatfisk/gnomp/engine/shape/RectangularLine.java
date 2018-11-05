@@ -11,13 +11,12 @@ import com.badlogic.gdx.utils.Pools;
  * Project:Raven
  */
 public class RectangularLine extends Polygon {
-    public float rectangleWidth;
-    public final Vector2 from = new Vector2(),
-            to=new Vector2();
+    public float halfRectangleWith;
+    public final Vector2 from = new Vector2(), to=new Vector2();
 
-    public RectangularLine(float lineWidth, float rectangleWidth, Color color, Color fillColor) {
+    public RectangularLine(float lineWidth, float halfRectangleWith, Color color, Color fillColor) {
         super(lineWidth, color, fillColor);
-        this.rectangleWidth = rectangleWidth;
+        this.halfRectangleWith = halfRectangleWith;
     }
 
     public void reset() {
@@ -28,7 +27,7 @@ public class RectangularLine extends Polygon {
 
     public void createPolygonVertices() {
         Vector2 direction = Pools.obtain(Vector2.class);
-        direction.set(to).sub(from).rotate(90).nor().scl(rectangleWidth);
+        direction.set(to).sub(from).rotate(90).nor().scl(halfRectangleWith);
 
         float[] vertices = new float[8];
         vertices[0] = from.x + direction.x;

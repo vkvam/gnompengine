@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Logger;
 import com.flatfisk.gnomp.engine.components.Spatial;
 
 public abstract class Constructor<CONSTRUCTOR_ROOT extends Component, RELATIONSHIP extends Component, CONSTRUCTED extends Component, CONSTRUCTION_DTO>{
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     public Class<CONSTRUCTOR_ROOT> constructor;
     public Class<RELATIONSHIP> relationship;
     public Class<CONSTRUCTED> constructed;

@@ -17,13 +17,13 @@ public class Test extends DefaultGnompApplicationListener {
         addScenegraphSystem(100);
         CameraSystem cameraSystem = addCameraSystem(200, 640, 480);
         cameraSystem.getWorldCamera().zoom = 14f;
-        RenderSystem renderSystem = addRenderSystem(300,cameraSystem);
+        RenderSystem renderSystem = addRenderSystem(300,cameraSystem.getWorldCamera());
 
         addPhysicsTrackerSystem(400);
         PhysicsSystem physicsSystem = addPhysicsSystem(600, physicsWorld);
 
         if(physicsDebug) {
-            addDebugRenderer(500, physicsWorld,cameraSystem);
+            // addDebugRenderer(500, physicsWorld,cameraSystem);
         }
 
         //LightSystem lightSystem = new LightSystem(700,rayHandler, cameraSystem);
@@ -36,7 +36,7 @@ public class Test extends DefaultGnompApplicationListener {
         physicsSystem.setFixedStep(1f/60f);
 
         if(showStats){
-            StatsSystem statsSystem = new StatsSystem(10000,cameraSystem);
+            StatsSystem statsSystem = new StatsSystem(10000, cameraSystem);
             engine.addSystem(statsSystem);
             physicsSystem.setStatsSystem(statsSystem);
             renderSystem.setStatsSystem(statsSystem);

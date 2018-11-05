@@ -26,6 +26,10 @@ public class Transform implements Pool.Poolable {
         this.rotation = rotation;
     }
 
+    public Transform cpy(){
+        return new Transform(this.vector.cpy(), this.rotation);
+    }
+
     public Transform subtract(Transform t){
         this.vector.sub(t.vector);
         this.rotation -=t.rotation;
@@ -87,4 +91,9 @@ public class Transform implements Pool.Poolable {
         setZero();
     }
 
+    public Transform scl(float weight) {
+        this.vector.scl(weight);
+        this.rotation*=weight;
+        return this;
+    }
 }

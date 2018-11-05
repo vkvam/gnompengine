@@ -25,8 +25,8 @@ public class GnompMappers {
     public final static ComponentMapper<Shape> shapeMap =
             ComponentMapper.getFor(Shape.class);
 
-    public final static ComponentMapper<Velocity> velocityMap =
-            ComponentMapper.getFor(Velocity.class);
+    public final static ComponentMapper<PhysicsBodyState> physicsBodyStateMap =
+            ComponentMapper.getFor(PhysicsBodyState.class);
 
     public final static ComponentMapper<PhysicalProperties> physicalPropertiesMap =
             ComponentMapper.getFor(PhysicalProperties.class);
@@ -39,7 +39,7 @@ public class GnompMappers {
             ComponentMapper.getFor(Renderable.Container.class);
 
     public final static ComponentMapper<PhysicsBody.Container> physicsBodyMap =
-                ComponentMapper.getFor(PhysicsBody.Container.class);
+            ComponentMapper.getFor(PhysicsBody.Container.class);
 
     public final static ComponentMapper<Effect.Container> effectMap =
             ComponentMapper.getFor(Effect.Container.class);
@@ -47,4 +47,7 @@ public class GnompMappers {
     public final static ComponentMapper<Scenegraph.Node> scenegraphNodeMap =
             ComponentMapper.getFor(Scenegraph.Node.class);
 
+    public final static ComponentMapper<PhysicsSteerable.Container> physicsSteerableMapper =
+            ComponentMapper.getFor(PhysicsSteerable.Container.class);
+    public static ComponentMapper<Label> labelMapper = ComponentMapper.getFor(Label.class);
 }

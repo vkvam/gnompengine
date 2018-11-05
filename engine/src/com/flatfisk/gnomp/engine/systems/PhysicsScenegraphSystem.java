@@ -17,7 +17,7 @@ Acts on entities with physicsConstructorMap-components and a Scenegraph parent,
 PhysicsBody.Container and Light.Container
  */
 public class PhysicsScenegraphSystem extends IteratingSystem implements ApplicationListener {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     public PhysicsScenegraphSystem(int priority) {
 

@@ -17,10 +17,9 @@ import com.flatfisk.gnomp.utils.Pools;
  * Project:Raven
  */
 public class Circle extends AbstractShape {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     public com.badlogic.gdx.math.Circle circle = new com.badlogic.gdx.math.Circle();
-    private Vector2 from = Pools.obtainVector(),
-            to=Pools.obtainVector();
+    private Vector2 from = Pools.obtainVector(), to=Pools.obtainVector();
 
     public Circle(float lineWidth, float radius, Color lineColor, Color fillColor) {
         super(lineWidth, lineColor, fillColor);

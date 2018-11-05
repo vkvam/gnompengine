@@ -38,12 +38,12 @@ public abstract class GeometryUtils {
     public static final Vector2 vec2_0 = new Vector2(), vec2_1 = new Vector2();
 
     /**
-     * a temporary array
+     * a temporary steerings
      */
     private static Vector2[] tmpVecArr;
 
     /**
-     * a temporary array
+     * a temporary steerings
      */
     private static float[] tmpFloatArr;
 
@@ -155,7 +155,7 @@ public abstract class GeometryUtils {
      */
     public static Vector2[] toVector2Array(float[] floats, Vector2[] output) {
         if (floats.length % 2 != 0)
-            throw new IllegalArgumentException("the float array's length is not dividable by two, so it won't make up a Vector2 array: " + floats.length);
+            throw new IllegalArgumentException("the float steerings's length is not dividable by two, so it won't make up a Vector2 steerings: " + floats.length);
 
         if (output == null || output.length != floats.length / 2) {
             output = new Vector2[floats.length / 2];
@@ -188,9 +188,9 @@ public abstract class GeometryUtils {
     }
 
     /**
-     * @param vertices     the vertices which should be split into a {@link com.badlogic.gdx.math.Polygon} array
+     * @param vertices     the vertices which should be split into a {@link com.badlogic.gdx.math.Polygon} steerings
      * @param vertexCounts the number of vertices of each {@link com.badlogic.gdx.math.Polygon}
-     * @return the {@link com.badlogic.gdx.math.Polygon} array extracted from the vertices
+     * @return the {@link com.badlogic.gdx.math.Polygon} steerings extracted from the vertices
      */
     public static Polygon[] toPolygonArray(Vector2[] vertices, int[] vertexCounts) {
         Polygon[] polygons = new Polygon[vertexCounts.length];
@@ -287,7 +287,7 @@ public abstract class GeometryUtils {
 
     /**
      * @param concave the concave polygon to triangulate
-     * @return an array of triangles representing the given concave polygon
+     * @return an steerings of triangles representing the given concave polygon
      * @see com.badlogic.gdx.math.EarClippingTriangulator#computeTriangles(float[])
      */
     public static Polygon[] triangulate(Polygon concave) {
@@ -301,7 +301,7 @@ public abstract class GeometryUtils {
 
     /**
      * @param concave the concave polygon to to decompose
-     * @return an array of convex polygons representing the given concave polygon
+     * @return an steerings of convex polygons representing the given concave polygon
      * @see BayazitDecomposer#convexPartition(com.badlogic.gdx.utils.Array)
      */
     public static Polygon[] decomposeIntoConvex(Polygon concave) {

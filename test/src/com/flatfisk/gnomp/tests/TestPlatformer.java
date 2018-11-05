@@ -25,7 +25,7 @@ import com.flatfisk.gnomp.tests.systems.PhysicsEventListener;
 
 public class TestPlatformer extends Test {
 
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     public TestPlatformer(ShapeTextureFactory shapeTextureFactory){
         this.shapeTextureFactory = shapeTextureFactory;
@@ -85,7 +85,7 @@ public class TestPlatformer extends Test {
         engine.constructEntity(platform2);
 
         i=0;
-        for(;i<10;i++){
+        for(;i<100;i++){
             Entity enemy = createEnemy(engine,new Transform(-250-i*250,250,0));
             
             engine.constructEntity(enemy);
@@ -276,13 +276,12 @@ public class TestPlatformer extends Test {
         Spatial.Node orientationRelative = engine.addComponent(Spatial.Node.class,e);
         orientationRelative.local = translation;
 
-        Velocity velocityComponent = engine.addComponent(Velocity.class,e);
-        velocityComponent.velocity = velocity;
+        PhysicsBodyState physicsBodyStateComponent = engine.addComponent(PhysicsBodyState.class,e);
+        physicsBodyStateComponent.velocity = velocity;
         engine.addComponent(Player.class,e);
 
         Shape structure = engine.addComponent(Shape.class,e);
-        Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
-        structure.geometry = rectangularLineShape;
+        structure.geometry = new Circle(1,11,Color.WHITE,Color.FIREBRICK);;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -310,7 +309,7 @@ public class TestPlatformer extends Test {
         orientationRelative.local = translation;
         orientationRelative.world = translation;
 
-        Shape<RectangularLine> shape = engine.addComponent(Shape.class,e);
+        Shape<RectangularLine> shape = engine.addComponent(Shape.class,e );
         shape.geometry = new RectangularLine(1,(float) 5,Color.WHITE,color);
         shape.geometry.from.set(-width/2,0);
         shape.geometry.to.set(width/2,0);
@@ -324,8 +323,8 @@ public class TestPlatformer extends Test {
 
         PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {
-            Velocity velocity = engine.addComponent(Velocity.class,e);
-            velocity.velocity = new Transform(0, 0, 6);
+            PhysicsBodyState physicsBodyState = engine.addComponent(PhysicsBodyState.class,e);
+            physicsBodyState.velocity = new Transform(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.StaticBody;

@@ -2,6 +2,7 @@ package com.flatfisk.gnomp.engine.constructors;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.engine.Constructor;
@@ -18,7 +19,7 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
  * Created by Vemund Kvam on 06/12/15.
  */
 public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, Component, TextureCoordinates> {
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.DEBUG);
+    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
 
     public BoundsConstructor() {
         super(Renderable.class,Renderable.Node.class, null);
@@ -31,6 +32,12 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         if (textureCoordinates != null) {
             renderable.boundingRectangle = textureCoordinates.getBoundingRectangle();
         }
+
+        if(renderable.boundingRectangle == null){
+            Gdx.app.log(getClass().getName(),"IS NULL");
+        }
+
+        Gdx.app.log(getClass().getName(),"Constructed parent");
     }
 
     @Override
@@ -41,7 +48,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class);
         TextureCoordinates textureCoordinates = null;
 
-        if (structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {
+        if (structure != null && structure.geometry != null && renderableNode != null && !renderableNode.intermediate) {
             textureCoordinates = structure.geometry.getTextureCoordinates(null, transform);
         }
 
@@ -58,9 +65,11 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         Transform transform = Pools.obtain(Transform.class).set(childOrientation.world).subtract(constructorOrientation.world);
         transform.vector.rotate(-constructorOrientation.world.rotation);
 
-        if(shape.geometry !=null &&! renderableNode.intermediate){
+        if(shape != null && shape.geometry !=null &&! renderableNode.intermediate){
             textureCoordinates = shape.geometry.getTextureCoordinates(textureCoordinates, transform);
         }
+
+        Gdx.app.log(getClass().getName(),"Added child");
         Pools.free(transform);
         return textureCoordinates;
     }

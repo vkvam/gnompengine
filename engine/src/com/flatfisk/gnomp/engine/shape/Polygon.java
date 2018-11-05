@@ -4,7 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
 import com.flatfisk.gnomp.PhysicsConstants;
+import com.flatfisk.gnomp.engine.GnompEngine;
 import com.flatfisk.gnomp.engine.shape.texture.TextureCoordinates;
 import com.flatfisk.gnomp.math.GeometryUtils;
 import com.flatfisk.gnomp.math.Transform;
@@ -44,7 +47,6 @@ public class Polygon extends AbstractShape {
 
         com.badlogic.gdx.math.Polygon transformedPolygon = new com.badlogic.gdx.math.Polygon(physicsPolygon.getTransformedVertices());
         com.badlogic.gdx.math.Polygon[] polygons = GeometryUtils.decomposeIntoConvex(transformedPolygon);
-
         FixtureDef[] fixtureDefs = new FixtureDef[polygons.length];
         int i = 0;
         for (com.badlogic.gdx.math.Polygon p : polygons) {
@@ -53,6 +55,7 @@ public class Polygon extends AbstractShape {
         physicsPolygon.setScale(1, 1);
         physicsPolygon.setPosition(0, 0);
         return fixtureDefs;
+
     }
 
     @Override
@@ -72,9 +75,39 @@ public class Polygon extends AbstractShape {
         polygon.setVertices(vertices);
     }
 
+    public void setVertices(Array<Vector2> vertices){
+        float [] verts = GeometryUtils.toFloatArray((Vector2[]) vertices.toArray(Vector2.class));
+        if(GeometryUtils.areVerticesClockwise(verts)){
+            vertices.reverse();
+            verts = GeometryUtils.toFloatArray((Vector2[]) vertices.toArray(Vector2.class));
+        }
+        setVertices(verts);
+    }
+
+    /**
+     * Shifts all vertices by the polygon's centroid offset.
+     *
+     * @return The center shifted to
+     */
+    public Vector2 shiftCenterToCentroid(){
+        float[] verts = polygon.getVertices();
+        // TODO: Get from pool
+        Vector2 center = new Vector2();
+        com.badlogic.gdx.math.GeometryUtils.polygonCentroid(verts, 0,verts.length, center);
+
+        for (int i=0;i<verts.length;i++) {
+            if(i%2==0) {
+                verts[i] -= center.x;
+            }else{
+                verts[i] -= center.y;
+            }
+        }
+        return center;
+    }
+
     @Override
     public TextureCoordinates getTextureCoordinates(TextureCoordinates textureCoordinates, Transform transform) {
-        Gdx.app.log(getClass().getName(), transform.toString());
+        //Gdx.app.log(getClass().getName(), transform.toString());
 
         setRotation(transform.rotation);
         com.badlogic.gdx.math.Polygon renderPolygon = getRenderPolygon();

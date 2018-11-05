@@ -9,16 +9,21 @@ import com.flatfisk.gnomp.math.Transform;
 
 /**
  * Created by Vemund Kvam on 05/12/15.
+ *
+ * Gets updated physics properties from box2D JNI without converting to world space
  */
-public class Velocity implements ISerializable<Velocity>, Component, Pool.Poolable {
+public class PhysicsBodyState implements ISerializable<PhysicsBodyState>, Component, Pool.Poolable {
     public Transform velocity = new Transform();
+    public float mass;
+    public float intertia;
+
     @Override
     public void reset() {
         velocity.setZero();
     }
 
     @Override
-    public Velocity addCopy(GnompEngine gnompEngine, Entity entity) {
+    public PhysicsBodyState addCopy(GnompEngine gnompEngine, Entity entity) {
         return null;
     }
 }

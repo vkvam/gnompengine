@@ -26,14 +26,20 @@ import java.nio.IntBuffer;
  */
 public class AWTTextureFactory extends ShapeTextureFactory {
     @Override
-    public ShapeTexture createShapeTexture(TextureCoordinates.BoundingRectangle boundingRectangle){
+    public ShapeTexture createShapeTexture(TextureCoordinates.BoundingRectangle boundingRectangle, int textureId){
         return new DesktopShapeTexture(boundingRectangle);
     }
 
+    @Override
+    public void dispose() {
+
+    }
+
     public static class DesktopShapeTexture extends Texture implements ShapeTexture {
+
         public TextureCoordinates.BoundingRectangle bounds;
-        private BufferedImage bufferImg;
-        private IntBuffer buffer;
+        private static BufferedImage bufferImg;
+        private static IntBuffer buffer;
         private final Color BACKGROUND = new Color(0, 0, 0, 0);
         private Vector2 offset;
         private Graphics2D g2d;
@@ -42,7 +48,6 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             this(Math.round(envelope.width), Math.round(envelope.height));
             offset = new Vector2(envelope.offsetX,envelope.offsetY);
             setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
             bounds = envelope;
         }
 
@@ -59,6 +64,11 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2d.setBackground(BACKGROUND);
             g2d.clearRect(0, 0, bufferImg.getWidth(), bufferImg.getHeight());
+        }
+
+        @Override
+        public boolean isCached() {
+            return false;
         }
 
         @Override
@@ -106,6 +116,7 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             Gdx.gl.glTexSubImage2D(GL20.GL_TEXTURE_2D, 0, 0, 0, bufferImg.getWidth(), bufferImg.getHeight(),
                     GL12.GL_BGRA, GL12.GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
             g2d.dispose();
+
             return this;
         }
 
@@ -191,7 +202,6 @@ public class AWTTextureFactory extends ShapeTextureFactory {
             awtCircle.height = circleDiam;
             awtCircle.x = circleX;
             awtCircle.y = circleY;
-
             return awtCircle;
         }
 

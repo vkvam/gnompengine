@@ -112,8 +112,6 @@ public class TestAddRemove extends Test {
 
 
         Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
-
-
         PhysicsBody.Node physicsBodyRelative = engine.addComponent(PhysicsBody.Node.class,e);
 
         Shape structure = engine.addComponent(Shape.class,e);
@@ -156,10 +154,10 @@ public class TestAddRemove extends Test {
         orientationRelative.local = translation;
         //orientationRelative.relativeType = Relative.CHILD;
 
-        Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
+        engine.addComponent(Renderable.Node.class,e);
 
-        Velocity velocityComponent = engine.addComponent(Velocity.class,e);
-        velocityComponent.velocity = velocity;
+        PhysicsBodyState physicsBodyStateComponent = engine.addComponent(PhysicsBodyState.class,e);
+        physicsBodyStateComponent.velocity = velocity;
         engine.addComponent(Player.class,e);
 
         Shape structure = engine.addComponent(Shape.class,e);
@@ -245,8 +243,8 @@ public class TestAddRemove extends Test {
 
         PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
         if(hasVelocity) {
-            Velocity velocity = engine.addComponent(Velocity.class,e);
-            velocity.velocity = new Transform(0, 0, 6);
+            PhysicsBodyState physicsBodyState = engine.addComponent(PhysicsBodyState.class,e);
+            physicsBodyState.velocity = new Transform(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.StaticBody;

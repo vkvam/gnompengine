@@ -43,11 +43,12 @@ public class PhysicsEventListener extends EntitySystem implements QueryCallback 
 
     @Override
     public void update(float f) {
-        findEvent();
+        //findEvent();
         hooverMessenger.update();
         addStats();
     }
 
+    /*
     private void findEvent(){
         Rectangle vp = cameraSystem.viewport;
         press.set(Gdx.input.getX(),Gdx.input.getY(),0);
@@ -57,6 +58,7 @@ public class PhysicsEventListener extends EntitySystem implements QueryCallback 
         float delta = PhysicsConstants.METERS_PER_PIXEL*0.5f; // The physicsConstructorMap equivalent of one pixel.
         box2DWorld.QueryAABB(this, press.x - delta, press.y - delta, press.x + delta, press.y + delta);
     }
+    */
 
 
     private void addStats(){
