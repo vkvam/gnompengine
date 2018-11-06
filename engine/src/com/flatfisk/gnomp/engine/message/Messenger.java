@@ -8,7 +8,6 @@ import com.flatfisk.gnomp.engine.GnompEngine;
 /**
  * Sends messages to other systems in the form of entities.
  *
- * Created by Vemund Kvam on 19/02/16.
  */
 public class Messenger<E extends Message>{
     private final GnompEngine engine;

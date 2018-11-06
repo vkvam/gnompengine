@@ -112,16 +112,22 @@ public class TestAddRemove extends Test {
 
 
         Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
+
+
         PhysicsBody.Node physicsBodyRelative = engine.addComponent(PhysicsBody.Node.class,e);
 
-        Shape structure = engine.addComponent(Shape.class,e);
+        Shape<RectangularLine> structure = engine.addComponent(Shape.class,e);
 
-        RectangularLine rectangularLineShape = new RectangularLine(1,4,Color.OLIVE,Color.BLUE);
+        RectangularLine rectangularLineShape = structure.obtain(RectangularLine.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.halfRectangleWidth = 4;
+        rectangularLineShape.lineColor = Color.OLIVE;
+        rectangularLineShape.fillColor = Color.BLUE;
+
         rectangularLineShape.from.set(-1.5f,0);
         rectangularLineShape.to.set(1.5f,0);
         rectangularLineShape.createPolygonVertices();
 
-        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -154,15 +160,20 @@ public class TestAddRemove extends Test {
         orientationRelative.local = translation;
         //orientationRelative.relativeType = Relative.CHILD;
 
-        engine.addComponent(Renderable.Node.class,e);
+        Renderable.Node renderableRelative = engine.addComponent(Renderable.Node.class,e);
 
-        PhysicsBodyState physicsBodyStateComponent = engine.addComponent(PhysicsBodyState.class,e);
-        physicsBodyStateComponent.velocity = velocity;
+        PhysicsBodyState velocityComponent = engine.addComponent(PhysicsBodyState.class,e);
+        velocityComponent.velocity = velocity;
         engine.addComponent(Player.class,e);
 
-        Shape structure = engine.addComponent(Shape.class,e);
-        Circle rectangularLineShape = new Circle(1,11,Color.WHITE,Color.FIREBRICK);
-        structure.geometry = rectangularLineShape;
+        Shape<Circle> structure = engine.addComponent(Shape.class,e);
+
+
+        Circle rectangularLineShape = structure.obtain(Circle.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.setRadius(11);
+        rectangularLineShape.lineColor = Color.WHITE;
+        rectangularLineShape.fillColor = Color.FIREBRICK;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 1;
@@ -197,9 +208,13 @@ public class TestAddRemove extends Test {
 
         engine.addComponent(Renderable.Node.class,e);
 
-        Shape structure = engine.addComponent(Shape.class,e);
-        Circle rectangularLineShape = new Circle(1,5,Color.RED,Color.BLUE);
-        structure.geometry = rectangularLineShape;
+        Shape<Circle> structure = engine.addComponent(Shape.class,e);
+        Circle rectangularLineShape = structure.obtain(Circle.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.setRadius(5);
+        rectangularLineShape.lineColor  = Color.RED;
+        rectangularLineShape.fillColor = Color.BLUE;
+
 /*
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = .01f;
@@ -214,7 +229,7 @@ public class TestAddRemove extends Test {
         return e;
     }
 
-    protected Entity createPlatform(Transform translation,float width,Color color, boolean hasVelocity){
+    protected Entity createPlatform(Transform translation,float width,Color color, boolean hasPhysicsBodyState){
 
         Entity e = engine.addEntity();
 
@@ -225,13 +240,16 @@ public class TestAddRemove extends Test {
         engine.addComponent(Renderable.Node.class,e);
         engine.addComponent(PhysicsBody.Node.class,e);
 
-        Shape structure = engine.addComponent(Shape.class,e);
-        RectangularLine rectangularLineShape = new RectangularLine(1,(float) 5,Color.WHITE,color);
+        Shape<RectangularLine> structure = engine.addComponent(Shape.class,e);
+        RectangularLine rectangularLineShape = structure.obtain(RectangularLine.class);
+        rectangularLineShape.lineWidth = 1;
+        rectangularLineShape.halfRectangleWidth = 5;
+        rectangularLineShape.lineColor = Color.WHITE;
+        rectangularLineShape.fillColor = color;
         rectangularLineShape.from.set(-width/2,0);
         rectangularLineShape.to.set(width/2,0);
         rectangularLineShape.createPolygonVertices();
 
-        structure.geometry = rectangularLineShape;
 
         PhysicalProperties physicalProperties = engine.addComponent(PhysicalProperties.class,e);
         physicalProperties.density = 0;
@@ -242,9 +260,9 @@ public class TestAddRemove extends Test {
         engine.addComponent(Renderable.class,e);
 
         PhysicsBody physicsBodyDef = engine.addComponent(PhysicsBody.class,e);
-        if(hasVelocity) {
-            PhysicsBodyState physicsBodyState = engine.addComponent(PhysicsBodyState.class,e);
-            physicsBodyState.velocity = new Transform(0, 0, 6);
+        if(hasPhysicsBodyState) {
+            PhysicsBodyState velocity = engine.addComponent(PhysicsBodyState.class,e);
+            velocity.velocity = new Transform(0, 0, 6);
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.KinematicBody;
         }else{
             physicsBodyDef.bodyDef.type = BodyDef.BodyType.StaticBody;

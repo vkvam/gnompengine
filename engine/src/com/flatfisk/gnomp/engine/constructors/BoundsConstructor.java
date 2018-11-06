@@ -29,12 +29,6 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
         if (textureCoordinates != null) {
             renderable.boundingRectangle = textureCoordinates.getBoundingRectangle();
         }
-
-        if(renderable.boundingRectangle == null){
-            Gdx.app.log(getClass().getName(),"IS NULL");
-        }
-
-        Gdx.app.log(getClass().getName(),"Constructed parent");
     }
 
     @Override
@@ -66,7 +60,7 @@ public class BoundsConstructor extends Constructor<Renderable,Renderable.Node, C
             textureCoordinates = shape.getGeometry().getTextureCoordinates(textureCoordinates, transform);
         }
 
-        Gdx.app.log(getClass().getName(),"Added child");
+        Gdx.app.debug(getClass().getName(),"Added child");
         Pools.free(transform);
         return textureCoordinates;
     }

@@ -25,19 +25,18 @@ public class SnowballGrowSystem extends IntervalSystem {
     protected void updateInterval() {
 
         Entity e = getEngine().getEntitiesFor(Family.all(Player.class).get()).get(0);
-        CatmullPolygon p = (CatmullPolygon) e.getComponent(Shape.class).geometry;
+        CatmullPolygon p = (CatmullPolygon) e.getComponent(Shape.class).getGeometry();
 
         Renderable.Container n = e.getComponent(Renderable.Container.class);
         float w = n.texture.getWidth();
 
         PhysicsBodyState v = e.getComponent(PhysicsBodyState.class);
-        float length = v.velocity.vector.len()*0.002f;
+        float length = v.velocity.vector.len()*0.2f;
 
         if(Math.random()>0.994f) {
             Entity child = e.getComponent(Spatial.Node.class).children.get(0);
             e.getComponent(Spatial.Node.class).removeChild(child);
             getEngine().removeEntity(child);
-
 
             child = TestCatmullRender.createDot((GnompEngine) getEngine(), new Transform(0, 0, 0), w / 300);
             e.getComponent(Spatial.Node.class).addChild(child);

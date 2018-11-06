@@ -105,6 +105,9 @@ public class CameraSystem extends EntitySystem implements ApplicationListener {
     }
 
     private void drawBackground() {
+        if(this.backgroundProvider == null){
+            return;
+        }
         backgroundPosition.set(worldCamera.position.x, worldCamera.position.y).scl(0.2f);
 
         for (Sprite t : this.backgroundProvider.getTexture(backgroundPosition)) {

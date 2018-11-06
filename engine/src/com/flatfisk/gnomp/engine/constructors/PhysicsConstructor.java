@@ -20,7 +20,6 @@ import static com.flatfisk.gnomp.engine.GnompMappers.*;
  */
 public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node,PhysicsBody.Container, Array<PhysicsConstructor.FixtureDefWrapper>> {
     private final World box2DWorld;
-    private Logger LOG = new Logger(this.getClass().getName(),Logger.ERROR);
     private GnompEngine engine;
 
     public PhysicsConstructor(GnompEngine engine,World box2DWorld) {
@@ -53,7 +52,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             bodyContainer.body.setAngularVelocity(velocityTransform.rotation);
             Pools.free(velocityTransform);
         }
-        Gdx.app.log(getClass().getName(),"Constructed parent");
+        Gdx.app.debug(getClass().getName(),"Constructed parent");
     }
 
     @Override
@@ -87,7 +86,7 @@ public class PhysicsConstructor extends Constructor<PhysicsBody,PhysicsBody.Node
             }
         }
         Pools.free(t);
-        Gdx.app.log(getClass().getName(),"Added child");
+        Gdx.app.debug(getClass().getName(),"Added child");
         return fixtureDefs;
     }
 
